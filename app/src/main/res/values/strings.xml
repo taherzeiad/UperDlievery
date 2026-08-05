@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  انسخي هاي الـ entries جوا res/values/strings.xml الأساسي عندك
+  (لو app_name موجود أصلاً بس تجاهليه من هون).
+-->
+<resources>
+    <string name="app_name">Aber Driver</string>
+
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_get_started">GET STARTED</string>
+
+    <string name="onboarding_page1_title">Accept a Job</string>
+    <string name="onboarding_page1_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac vestibulum</string>
+
+    <string name="onboarding_page2_title">Tracking Realtime</string>
+    <string name="onboarding_page2_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac vestibulum</string>
+
+    <string name="onboarding_page3_title">Earn Money</string>
+    <string name="onboarding_page3_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac vestibulum</string>
+
+    <string name="location_title">Enable Your Location</string>
+    <string name="location_description">Choose your location to start find the request around you.</string>
+    <string name="location_use_my_location">USE MY LOCATION</string>
+    <string name="location_skip">Skip for now</string>
+</resources>

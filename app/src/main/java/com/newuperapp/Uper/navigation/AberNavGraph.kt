@@ -1,0 +1,61 @@
+package com.newuperapp.Uper.navigation
+
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.newuperapp.Uper.ui.screens.location.EnableLocationRoute
+import com.newuperapp.Uper.ui.screens.onboarding.OnboardingRoute
+import com.newuperapp.Uper.ui.screens.splash.SplashRoute
+
+@Composable
+fun AberNavGraph(
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(
+        navController = navController,
+        startDestination = AberDestination.Splash.route
+    ) {
+        composable(AberDestination.Splash.route) {
+            SplashRoute(
+                onNavigateToOnboarding = {
+                    navController.navigate(AberDestination.Onboarding.route) {
+                        popUpTo(AberDestination.Splash.route) { inclusive = true }
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate(AberDestination.Home.route) {
+                        popUpTo(AberDestination.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(AberDestination.Onboarding.route) {
+            OnboardingRoute(
+                onFinished = {
+                    navController.navigate(AberDestination.EnableLocation.route) {
+                        popUpTo(AberDestination.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(AberDestination.EnableLocation.route) {
+            EnableLocationRoute(
+                onLocationResolved = {
+                    navController.navigate(AberDestination.Home.route) {
+                        popUpTo(AberDestination.EnableLocation.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(AberDestination.Home.route) {
+            // TODO: بدّليها بشاشة الهوم الحقيقية لما تجهز
+            Text("Home")
+        }
+    }
+}
