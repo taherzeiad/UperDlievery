@@ -32,8 +32,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 
 @Composable
 fun OnboardingRoute(
-    onFinished: () -> Unit,
-    viewModel: OnboardingViewModel = hiltViewModel()
+    onFinished: () -> Unit, viewModel: OnboardingViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -61,8 +60,7 @@ fun OnboardingScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.weight(1f)
+            state = pagerState, modifier = Modifier.weight(1f)
         ) { page ->
             OnboardingPageContent(page = pages[page])
         }
@@ -80,8 +78,7 @@ fun OnboardingScreen(
                 )
             } else {
                 AberTextLink(
-                    text = stringResource(id = R.string.onboarding_skip),
-                    onClick = onSkip
+                    text = stringResource(id = R.string.onboarding_skip), onClick = onSkip
                 )
             }
         }
@@ -106,25 +103,25 @@ private fun OnboardingPageContent(page: OnboardingPage, modifier: Modifier = Mod
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(72.dp))
+        Spacer(modifier = Modifier.height(150.dp))
         Image(
-            painter = painterResource(id = page.illustrationRes),
+            painter = painterResource(id = R.drawable.artwoek),
             contentDescription = null,
-            modifier = Modifier.size(220.dp)
+            modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = stringResource(id = page.titleRes),
-            fontSize = 28.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = AberColor.Ink,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         Text(
             text = stringResource(id = page.descriptionRes),
-            fontSize = 16.sp,
-            color = AberColor.BorderGray,
+            fontSize = 17.sp,
+            color = AberColor.Ink,
             textAlign = TextAlign.Center,
             lineHeight = 22.sp
         )
