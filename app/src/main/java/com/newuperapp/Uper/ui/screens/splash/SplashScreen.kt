@@ -70,7 +70,7 @@ fun SplashScreen(modifier: Modifier = Modifier) {
                 contentDescription = null,
                 modifier = Modifier.size(280.dp)            )
 
-            Spacer(modifier = Modifier.height(150.dp))
+            Spacer(modifier = Modifier.height(165.dp))
 
         }
     }
