@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val MIN_SPLASH_DURATION_MS = 1200L
 
@@ -29,7 +30,7 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val minDuration = async { delay(MIN_SPLASH_DURATION_MS) }
+            val minDuration = async { delay(MIN_SPLASH_DURATION_MS.milliseconds) }
             val hasCompletedOnboarding = onboardingRepository.hasCompletedOnboarding.first()
             minDuration.await()
 
