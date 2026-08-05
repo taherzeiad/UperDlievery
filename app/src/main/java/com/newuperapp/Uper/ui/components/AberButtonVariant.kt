@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,7 +35,8 @@ fun AberButton(
     enabled: Boolean = true
 ) {
     val shape = RoundedCornerShape(10.dp)
-    val height = 52.dp
+    val height = 45.dp
+    val width = 220.dp
 
     when (variant) {
         AberButtonVariant.Primary -> Button(
@@ -48,7 +50,7 @@ fun AberButton(
                 disabledContentColor = AberColor.Ink.copy(alpha = 0.4f)
             ),
             modifier = modifier
-                .fillMaxWidth()
+                .width(width)
                 .height(height)
         ) { AberButtonLabel(text) }
 
@@ -84,7 +86,7 @@ fun AberButton(
 
 @Composable
 private fun AberButtonLabel(text: String) {
-    Text(text = text, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+    Text(text = text, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
 }
 
 @Preview(showBackground = true)

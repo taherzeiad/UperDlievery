@@ -21,7 +21,7 @@ fun AberTextLink(
 ) {
     Text(
         text = text,
-        fontSize = 16.sp,
+        fontSize = 17.sp,
         fontWeight = FontWeight.Medium,
         color = AberColor.BorderGray,
         modifier = modifier.clickable(

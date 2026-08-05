@@ -23,8 +23,8 @@ fun AberPageIndicator(
     pageCount: Int,
     currentPage: Int,
     modifier: Modifier = Modifier,
-    dotSize: Dp = 8.dp,
-    spacing: Dp = 6.dp
+    dotSize: Dp = 12.dp,
+    spacing: Dp = 18.6.dp
 ) {
     Row(
         modifier = modifier, horizontalArrangement = Arrangement.spacedBy(spacing)

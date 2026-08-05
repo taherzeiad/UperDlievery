@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +32,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 @Composable
 fun EnableLocationRoute(
     onLocationResolved: () -> Unit,
-    viewModel: EnableLocationViewModel = hiltViewModel()
+    viewModel: EnableLocationViewModel = hiltViewModel(),
 ) {
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -50,16 +51,13 @@ fun EnableLocationRoute(
     EnableLocationScreen(
         onUseMyLocationClick = {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        },
-        onSkipClick = viewModel::onSkip
+        }, onSkipClick = viewModel::onSkip
     )
 }
 
 @Composable
 fun EnableLocationScreen(
-    onUseMyLocationClick: () -> Unit,
-    onSkipClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onUseMyLocationClick: () -> Unit, onSkipClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -69,37 +67,37 @@ fun EnableLocationScreen(
     ) {
         Spacer(modifier = Modifier.height(96.dp))
         Image(
-            painter = painterResource(id = R.drawable.ic_enable_location),
+            painter = painterResource(id = R.drawable.located),
             contentDescription = null,
-            modifier = Modifier.size(240.dp)
+            modifier = Modifier
+                .width(263.dp)
+                .height(230.dp)
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = stringResource(id = R.string.location_title),
-            fontSize = 26.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = AberColor.Ink,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = stringResource(id = R.string.location_description),
-            fontSize = 16.sp,
-            color = AberColor.BorderGray,
+            fontSize = 17.sp,
+            color = AberColor.Ink,
             textAlign = TextAlign.Center,
-            lineHeight = 22.sp
+            lineHeight = 20.sp
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(70.dp))
         AberButton(
             text = stringResource(id = R.string.location_use_my_location),
             onClick = onUseMyLocationClick
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(45.dp))
         AberTextLink(
-            text = stringResource(id = R.string.location_skip),
-            onClick = onSkipClick
+            text = stringResource(id = R.string.location_skip), onClick = onSkipClick
         )
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

@@ -19,7 +19,7 @@
     <string name="onboarding_page3_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac vestibulum</string>
 
     <string name="location_title">Enable Your Location</string>
-    <string name="location_description">Choose your location to start find the request around you.</string>
+    <string name="location_description">Choose your location to start find the \n request around you.</string>
     <string name="location_use_my_location">USE MY LOCATION</string>
     <string name="location_skip">Skip for now</string>
 </resources>
