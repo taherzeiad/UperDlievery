@@ -12,17 +12,15 @@ data class OnboardingPage(
 
 val onboardingPages = listOf(
     OnboardingPage(
-        illustrationRes = R.drawable.ic_onboarding_accept_job,
+        illustrationRes = R.drawable.artwork1,
         titleRes = R.string.onboarding_page1_title,
         descriptionRes = R.string.onboarding_page1_description
-    ),
-    OnboardingPage(
-        illustrationRes = R.drawable.ic_onboarding_tracking,
+    ), OnboardingPage(
+        illustrationRes = R.drawable.artwork2,
         titleRes = R.string.onboarding_page2_title,
         descriptionRes = R.string.onboarding_page2_description
-    ),
-    OnboardingPage(
-        illustrationRes = R.drawable.ic_onboarding_earn_money,
+    ), OnboardingPage(
+        illustrationRes = R.drawable.artwork3,
         titleRes = R.string.onboarding_page3_title,
         descriptionRes = R.string.onboarding_page3_description
     )

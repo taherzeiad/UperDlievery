@@ -29,7 +29,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 fun SplashRoute(
     onNavigateToOnboarding: () -> Unit,
     onNavigateToHome: () -> Unit,
-    viewModel: SplashViewModel = hiltViewModel()
+    viewModel: SplashViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(Unit) {
         viewModel.destination.collect { destination ->
@@ -68,7 +68,8 @@ fun SplashScreen(modifier: Modifier = Modifier) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(280.dp)            )
+                modifier = Modifier.size(250.dp),
+            )
 
             Spacer(modifier = Modifier.height(165.dp))
 

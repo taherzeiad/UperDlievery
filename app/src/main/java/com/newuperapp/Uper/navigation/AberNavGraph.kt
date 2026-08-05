@@ -1,18 +1,18 @@
 package com.newuperapp.Uper.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.newuperapp.Uper.ui.screens.home.HomeScreen
 import com.newuperapp.Uper.ui.screens.location.EnableLocationRoute
 import com.newuperapp.Uper.ui.screens.onboarding.OnboardingRoute
 import com.newuperapp.Uper.ui.screens.splash.SplashRoute
 
 @Composable
 fun AberNavGraph(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
@@ -54,8 +54,7 @@ fun AberNavGraph(
         }
 
         composable(AberDestination.Home.route) {
-            // TODO: بدّليها بشاشة الهوم الحقيقية لما تجهز
-            Text("Home")
+            HomeScreen()
         }
     }
 }

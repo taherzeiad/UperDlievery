@@ -32,7 +32,8 @@ import com.newuperapp.Uper.ui.theme.AberColor
 
 @Composable
 fun OnboardingRoute(
-    onFinished: () -> Unit, viewModel: OnboardingViewModel = hiltViewModel()
+    onFinished: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -55,7 +56,7 @@ fun OnboardingScreen(
     onGetStarted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(pageCount = { pages.size })
+    val pagerState = rememberPagerState { pages.size }
     val isLastPage = pagerState.currentPage == pages.lastIndex
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -105,7 +106,7 @@ private fun OnboardingPageContent(page: OnboardingPage, modifier: Modifier = Mod
     ) {
         Spacer(modifier = Modifier.height(150.dp))
         Image(
-            painter = painterResource(id = R.drawable.artwoek),
+            painter = painterResource(id = page.illustrationRes),
             contentDescription = null,
             modifier = Modifier.size(300.dp)
         )
