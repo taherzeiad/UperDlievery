@@ -66,8 +66,7 @@ fun SplashScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .size(96.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(AberColor.Ink),
-                contentAlignment = Alignment.Center
+                    .background(AberColor.Ink), contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_logo_wheel),
