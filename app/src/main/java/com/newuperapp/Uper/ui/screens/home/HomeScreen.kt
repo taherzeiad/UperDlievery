@@ -37,8 +37,7 @@ private fun LatLng.toGoogle() = GoogleLatLng(latitude, longitude)
 
 @Composable
 fun HomeRoute(
-    onOpenMenu: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    onOpenMenu: () -> Unit, viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -60,7 +59,11 @@ fun HomeScreen(
     onMenuClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize().background(AberColor.SurfaceGray)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(AberColor.SurfaceGray)
+    ) {
         // 1. الخريطة في الخلفية
         HomeMap(
             isOnline = uiState.isOnline,
@@ -91,7 +94,10 @@ fun HomeScreen(
             onClick = { /* Center location */ },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = if (uiState.activeRequest != null || !uiState.isOnline) 300.dp else 240.dp, end = 16.dp)
+                .padding(
+                    bottom = if (uiState.activeRequest != null || !uiState.isOnline) 300.dp else 240.dp,
+                    end = 16.dp
+                )
                 .size(48.dp),
             shape = CircleShape,
             containerColor = AberColor.White,
@@ -116,8 +122,7 @@ fun HomeScreen(
                     hoursOnline = 10.2,
                     totalDistanceKm = 30.0,
                     totalJobs = 20
-                ),
-                modifier = Modifier.align(Alignment.BottomCenter)
+                ), modifier = Modifier.align(Alignment.BottomCenter)
             )
         } else {
             uiState.activeRequest?.let { request ->
@@ -146,8 +151,7 @@ fun HomeTopBar(
         contentAlignment = Alignment.Center
     ) {
         IconButton(
-            onClick = onMenuClick,
-            modifier = Modifier.align(Alignment.CenterStart)
+            onClick = onMenuClick, modifier = Modifier.align(Alignment.CenterStart)
         ) {
             Icon(
                 imageVector = Icons.Default.Menu,
@@ -182,9 +186,7 @@ fun HomeTopBar(
 @Composable
 fun OfflineBanner(modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = AberColor.Orange,
-        contentColor = AberColor.Ink
+        modifier = modifier.fillMaxWidth(), color = AberColor.Orange, contentColor = AberColor.Ink
     ) {
         Row(
             modifier = Modifier
@@ -266,11 +268,8 @@ fun HomeMap(
             )
             Polyline(
                 points = listOf(
-                    request.pickupLocation.toGoogle(),
-                    request.dropoffLocation.toGoogle()
-                ),
-                color = Color(0xFF3858F6),
-                width = 12f
+                    request.pickupLocation.toGoogle(), request.dropoffLocation.toGoogle()
+                ), color = Color(0xFF3858F6), width = 12f
             )
         }
     }
@@ -278,8 +277,7 @@ fun HomeMap(
 
 @Composable
 fun DriverStatsCard(
-    profile: DriverProfile,
-    modifier: Modifier = Modifier
+    profile: DriverProfile, modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -288,8 +286,7 @@ fun DriverStatsCard(
         shadowElevation = 16.dp
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
@@ -309,8 +306,7 @@ fun DriverStatsCard(
                         modifier = Modifier
                             .size(52.dp)
                             .clip(CircleShape)
-                            .background(AberColor.SurfaceGray),
-                        contentAlignment = Alignment.Center
+                            .background(AberColor.SurfaceGray), contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = profile.name.take(1),
@@ -328,9 +324,7 @@ fun DriverStatsCard(
                             color = AberColor.Ink
                         )
                         Text(
-                            text = profile.level,
-                            fontSize = 13.sp,
-                            color = AberColor.BorderGray
+                            text = profile.level, fontSize = 13.sp, color = AberColor.BorderGray
                         )
                     }
                 }
@@ -344,9 +338,7 @@ fun DriverStatsCard(
                         color = AberColor.Ink
                     )
                     Text(
-                        text = "Earned",
-                        fontSize = 13.sp,
-                        color = AberColor.BorderGray
+                        text = "Earned", fontSize = 13.sp, color = AberColor.BorderGray
                     )
                 }
             }
@@ -374,9 +366,7 @@ fun DriverStatsCard(
                         label = "TOTAL DISTANCE"
                     )
                     YellowStatItem(
-                        icon = null,
-                        value = "${profile.totalJobs}",
-                        label = "TOTAL JOBS"
+                        icon = null, value = "${profile.totalJobs}", label = "TOTAL JOBS"
                     )
                 }
             }
@@ -386,9 +376,7 @@ fun DriverStatsCard(
 
 @Composable
 fun YellowStatItem(
-    icon: ImageVector?,
-    value: String,
-    label: String
+    icon: ImageVector?, value: String, label: String
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         if (icon != null) {
@@ -403,10 +391,7 @@ fun YellowStatItem(
             Spacer(modifier = Modifier.height(28.dp))
         }
         Text(
-            text = value,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = AberColor.Ink
+            text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
         )
         Text(
             text = label,
@@ -419,10 +404,7 @@ fun YellowStatItem(
 
 @Composable
 fun RideRequestCard(
-    request: RideRequest,
-    onAccept: () -> Unit,
-    onIgnore: () -> Unit,
-    modifier: Modifier = Modifier
+    request: RideRequest, onAccept: () -> Unit, onIgnore: () -> Unit, modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -441,8 +423,7 @@ fun RideRequestCard(
                         modifier = Modifier
                             .size(52.dp)
                             .clip(CircleShape)
-                            .background(AberColor.SurfaceGray),
-                        contentAlignment = Alignment.Center
+                            .background(AberColor.SurfaceGray), contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = request.passengerName.take(1),
@@ -475,9 +456,7 @@ fun RideRequestCard(
                         color = AberColor.Ink
                     )
                     Text(
-                        text = request.distanceText,
-                        fontSize = 13.sp,
-                        color = AberColor.BorderGray
+                        text = request.distanceText, fontSize = 13.sp, color = AberColor.BorderGray
                     )
                 }
             }
@@ -528,8 +507,7 @@ fun RideRequestCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(
-                    onClick = onIgnore,
-                    modifier = Modifier
+                    onClick = onIgnore, modifier = Modifier
                         .weight(1f)
                         .height(50.dp)
                 ) {
@@ -550,14 +528,11 @@ fun RideRequestCard(
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = AberColor.Yellow,
-                        contentColor = AberColor.Ink
+                        containerColor = AberColor.Yellow, contentColor = AberColor.Ink
                     )
                 ) {
                     Text(
-                        text = "Accept",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        text = "Accept", fontSize = 16.sp, fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -568,8 +543,7 @@ fun RideRequestCard(
 @Composable
 fun BadgeChip(text: String) {
     Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = AberColor.Yellow
+        shape = RoundedCornerShape(12.dp), color = AberColor.Yellow
     ) {
         Text(
             text = text,
@@ -594,6 +568,5 @@ fun HomeScreenOfflinePreview() {
         onToggleOnline = {},
         onAcceptRequest = {},
         onIgnoreRequest = {},
-        onMenuClick = {}
-    )
+        onMenuClick = {})
 }
