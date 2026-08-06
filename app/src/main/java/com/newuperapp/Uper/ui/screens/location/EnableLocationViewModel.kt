@@ -21,11 +21,20 @@ class EnableLocationViewModel @Inject constructor(
     private val _events = Channel<EnableLocationEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    fun onPermissionResult(granted: Boolean) = finishFirstRunFlow()
+    private var isProcessing = false
 
-    fun onSkip() = finishFirstRunFlow()
+    fun onPermissionResult(granted: Boolean) {
+        if (isProcessing) return
+        finishFirstRunFlow()
+    }
+
+    fun onSkip() {
+        if (isProcessing) return
+        finishFirstRunFlow()
+    }
 
     private fun finishFirstRunFlow() {
+        isProcessing = true
         viewModelScope.launch {
             onboardingRepository.setOnboardingCompleted()
             _events.send(EnableLocationEvent.Continue)
