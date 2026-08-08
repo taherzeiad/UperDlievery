@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.newuperapp.Uper.ui.screens.home.HomeRoute
 import com.newuperapp.Uper.ui.screens.home.HomeScreen
 import com.newuperapp.Uper.ui.screens.location.EnableLocationRoute
 import com.newuperapp.Uper.ui.screens.onboarding.OnboardingRoute
@@ -54,7 +55,9 @@ fun AberNavGraph(
         }
 
         composable(AberDestination.Home.route) {
-            HomeScreen()
+            HomeRoute(
+                onOpenMenu = { /* TODO */ }
+            )
         }
     }
 }
