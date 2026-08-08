@@ -1,6 +1,5 @@
 package com.newuperapp.Uper.ui.screens.auth
 
-import android.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -31,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.auth.CountryCode
 import com.newuperapp.Uper.domain.auth.defaultCountryCodes
 import com.newuperapp.Uper.ui.components.AberButton
@@ -40,7 +45,7 @@ import com.newuperapp.Uper.ui.components.AberTextField
 import com.newuperapp.Uper.ui.theme.AberColor
 
 /**
- * نقطة الدخول الحقيقية (متوصولة بالـ ViewModel والـ Navigation).
+ * نقطة دخول شاشة التسجيل (تربط بين الـ ViewModel والـ Navigation).
  */
 @Composable
 fun SignUpRoute(
@@ -70,7 +75,9 @@ fun SignUpRoute(
 }
 
 /**
- * الشاشة نفسها بدون أي منطق — قابلة للمعاينة (Preview) بشكل مباشر.
+ * الشاشة الفعلية: بطاقة عائمة بزوايا دائرية على خلفية رمادية فاتحة،
+ * تطابق تصميم الصورة المرجعية بدقة (الهيدر الأصفر + الحقول + الزر داخل البطاقة،
+ * ورابط "Sign In" خارجها على الخلفية).
  */
 @Composable
 fun SignUpScreen(
@@ -86,78 +93,118 @@ fun SignUpScreen(
         modifier = modifier
             .fillMaxSize()
             .background(AberColor.SurfaceGrayAlt)
+            .padding(horizontal = 16.dp)
     ) {
-        // البطاقة الصفراء العلوية مع العنوان وخط أفق المدينة
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(280.dp)
-                .background(AberColor.Yellow)
+        Spacer(modifier = Modifier.height(64.dp))
+
+        // البطاقة العائمة: هيدر أصفر + حقول + زر، بزوايا دائرية وظل خفيف
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(containerColor = AberColor.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
-            Image(
-                painter = painterResource(id = com.newuperapp.Uper.R.drawable.img_splash_skyline),
-                contentDescription = null,
+            // الهيدر الأصفر مع رسمة أفق المدينة (3 طبقات حقيقية بنفس ترتيب Figma)
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Sign up ") }
-                    append("with email and phone number")
-                },
-                fontSize = 34.sp,
-                lineHeight = 40.sp,
-                color = AberColor.Ink,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(24.dp)
-            )
-        }
+                    .height(280.dp)
+                    .background(AberColor.Yellow)
+            ) {
+                // الطبقة الخلفية: أفق كامل العرض بلون ذهبي متوسط (Fill_1)
+                Image(
+                    painter = painterResource(id = R.drawable.fill_1),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            AberTextField(
-                value = uiState.email,
-                onValueChange = onEmailChange,
-                placeholder = "name@example.com",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = uiState.errorMessage != null,
-                modifier = Modifier.fillMaxWidth()
-            )
+                // الطبقتان الأماميتان: تتجاوران تمامًا بنفس نسبة أبعادهما الأصلية (192:183)
+                // بدون أي فراغ أو تراكب بينهما، مطابقةً للتصميم الأصلي
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.fill_1_copy_2),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.weight(192f)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.fill_1_copy),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.weight(183f)
+                    )
+                }
 
-            AberPhoneField(
-                number = uiState.phoneNumber,
-                onNumberChange = onPhoneNumberChange,
-                selectedCountry = uiState.country,
-                onCountrySelected = onCountrySelected,
-                countries = defaultCountryCodes
-            )
-
-            uiState.errorMessage?.let { message ->
-                Text(text = message, fontSize = 13.sp, color = AberColor.Orange)
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Sign up ") }
+                        append("with\nemail and phone\nnumber")
+                    },
+                    fontSize = 30.sp,
+                    lineHeight = 36.sp,
+                    color = AberColor.Ink,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 24.dp, top = 32.dp, end = 16.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            // الحقول والزر
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                AberTextField(
+                    value = uiState.email,
+                    onValueChange = onEmailChange,
+                    placeholder = "name@example.com",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    isError = uiState.errorMessage != null,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            AberButton(
-                text = "SIGN UP",
-                onClick = onSignUpClick,
-                variant = AberButtonVariant.Dark,
-                isLoading = uiState.isSubmitting
-            )
+                AberPhoneField(
+                    number = uiState.phoneNumber,
+                    onNumberChange = onPhoneNumberChange,
+                    selectedCountry = uiState.country,
+                    onCountrySelected = onCountrySelected,
+                    countries = defaultCountryCodes,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                uiState.errorMessage?.let { message ->
+                    Text(text = message, fontSize = 13.sp, color = AberColor.Orange)
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                AberButton(
+                    text = "SIGN UP",
+                    onClick = onSignUpClick,
+                    variant = AberButtonVariant.Dark,
+                    isLoading = uiState.isSubmitting,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
+        // رابط "لديك حساب بالفعل؟ سجّل الدخول" خارج البطاقة، على الخلفية الرمادية
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 32.dp),
+                .padding(bottom = 40.dp),
             contentAlignment = Alignment.Center
         ) {
             Row(modifier = Modifier.padding(8.dp)) {
@@ -183,6 +230,5 @@ private fun SignUpScreenPreview() {
         onPhoneNumberChange = {},
         onCountrySelected = {},
         onSignUpClick = {},
-        onSignInClick = {}
-    )
+        onSignInClick = {})
 }
