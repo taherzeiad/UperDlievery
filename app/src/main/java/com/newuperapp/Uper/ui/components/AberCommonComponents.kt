@@ -1,6 +1,5 @@
 package com.newuperapp.Uper.ui.components
 
-import android.system.Os.close
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.newuperapp.Uper.domain.auth.CountryCode
 import com.newuperapp.Uper.ui.theme.AberColor
-import kotlin.io.path.Path
 
 @Composable
 fun AberOtpInput(
@@ -96,7 +94,7 @@ fun AberNumericKeypad(
         modifier = modifier
             .fillMaxWidth()
             .background(KeypadBackground)
-            .padding(horizontal = 16.dp, top = 16.dp, bottom = 12.dp)
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 12.dp)
     ) {
         numberRows.forEach { row ->
             Row(

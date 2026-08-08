@@ -47,7 +47,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 @Composable
 fun SignInRoute(
     onNavigateToVerification: () -> Unit,
-    viewModel: SignInViewModel = hiltViewModel()
+    viewModel: SignInViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -248,6 +248,6 @@ private fun SignInScreenPreview() {
         onCountrySelected = {},
         onDigitClick = {},
         onBackspaceClick = {},
-        onNextClick = {}
+        onNextClick = {},
     )
 }

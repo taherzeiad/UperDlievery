@@ -50,7 +50,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 fun SignUpRoute(
     onNavigateToVerification: () -> Unit,
     onNavigateToSignIn: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -229,5 +229,6 @@ private fun SignUpScreenPreview() {
         onPhoneNumberChange = {},
         onCountrySelected = {},
         onSignUpClick = {},
-        onSignInClick = {})
+        onSignInClick = {},
+    )
 }

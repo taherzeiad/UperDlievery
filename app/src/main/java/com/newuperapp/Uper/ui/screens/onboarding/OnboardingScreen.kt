@@ -45,7 +45,7 @@ fun OnboardingRoute(
     OnboardingScreen(
         pages = onboardingPages,
         onSkip = viewModel::onOnboardingFinished,
-        onGetStarted = viewModel::onOnboardingFinished
+        onGetStarted = viewModel::onOnboardingFinished,
     )
 }
 
@@ -54,7 +54,7 @@ fun OnboardingScreen(
     pages: List<OnboardingPage>,
     onSkip: () -> Unit,
     onGetStarted: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState { pages.size }
     val isLastPage = pagerState.currentPage == pages.lastIndex
@@ -132,5 +132,9 @@ private fun OnboardingPageContent(page: OnboardingPage, modifier: Modifier = Mod
 @Preview(showBackground = true)
 @Composable
 private fun OnboardingScreenPreview() {
-    OnboardingScreen(pages = onboardingPages, onSkip = {}, onGetStarted = {})
+    OnboardingScreen(
+        pages = onboardingPages,
+        onSkip = {},
+        onGetStarted = {},
+    )
 }
