@@ -34,7 +34,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 fun PhoneVerifyRoute(
     onVerified: () -> Unit,
     onBack: () -> Unit,
-    viewModel: PhoneVerifyViewModel = hiltViewModel()
+    viewModel: PhoneVerifyViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -120,7 +120,8 @@ fun PhoneVerifyScreen(
 
         AberNumericKeypad(
             onDigitClick = onDigitClick,
-            onBackspaceClick = onBackspaceClick
+            onBackspaceClick = onBackspaceClick,
+            onMicClick = { /* Voice input TODO */ },
         )
     }
 }
@@ -133,6 +134,6 @@ private fun PhoneVerifyScreenPreview() {
         onBackClick = {},
         onDigitClick = {},
         onBackspaceClick = {},
-        onVerifyClick = {}
+        onVerifyClick = {},
     )
 }

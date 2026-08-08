@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.home
 
 import android.annotation.SuppressLint
+import java.util.Locale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -37,7 +38,8 @@ private fun LatLng.toGoogle() = GoogleLatLng(latitude, longitude)
 
 @Composable
 fun HomeRoute(
-    onOpenMenu: () -> Unit, viewModel: HomeViewModel = hiltViewModel()
+    onOpenMenu: () -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -95,7 +97,7 @@ fun HomeScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(
-                    bottom = if (uiState.activeRequest != null || !uiState.isOnline) 300.dp else 240.dp,
+                    bottom = if ((uiState.activeRequest != null) || (!uiState.isOnline)) 300.dp else 240.dp,
                     end = 16.dp
                 )
                 .size(48.dp),
@@ -332,7 +334,7 @@ fun DriverStatsCard(
                 Column(horizontalAlignment = Alignment.End) {
                     // تم الاعتماد على totalEarned هنا
                     Text(
-                        text = "$${String.format("%.2f", profile.totalEarned)}",
+                        text = "$${String.format(Locale.US, "%.2f", profile.totalEarned)}",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         color = AberColor.Ink
@@ -357,7 +359,7 @@ fun DriverStatsCard(
                 ) {
                     YellowStatItem(
                         icon = Icons.Default.AccessTime,
-                        value = "${profile.hoursOnline}",
+                        value = profile.hoursOnline.toString(),
                         label = "HOURS ONLINE"
                     )
                     YellowStatItem(
@@ -366,7 +368,9 @@ fun DriverStatsCard(
                         label = "TOTAL DISTANCE"
                     )
                     YellowStatItem(
-                        icon = null, value = "${profile.totalJobs}", label = "TOTAL JOBS"
+                        icon = null,
+                        value = profile.totalJobs.toString(),
+                        label = "TOTAL JOBS"
                     )
                 }
             }
@@ -450,7 +454,7 @@ fun RideRequestCard(
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "$${String.format("%.2f", request.fare)}",
+                        text = "$${String.format(Locale.US, "%.2f", request.fare)}",
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         color = AberColor.Ink
@@ -556,8 +560,6 @@ fun BadgeChip(text: String) {
 }
 
 // تم حذف الامتداد totalEarnings لأنه أصبح موجوداً بشكل رسمي تحت اسم totalEarned
-val DriverProfile.totalDistanceKm: Double get() = 30.0
-val RideRequest.passengerName: String get() = "Esther Berry"
 val RideRequest.distanceText: String get() = "2.2 km"
 
 @Preview(showBackground = true)
@@ -568,5 +570,6 @@ fun HomeScreenOfflinePreview() {
         onToggleOnline = {},
         onAcceptRequest = {},
         onIgnoreRequest = {},
-        onMenuClick = {})
+        onMenuClick = {},
+    )
 }

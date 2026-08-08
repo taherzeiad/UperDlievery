@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
@@ -51,7 +50,7 @@ import com.newuperapp.Uper.ui.theme.AberColor
 fun SignUpRoute(
     onNavigateToVerification: () -> Unit,
     onNavigateToSignIn: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -230,5 +229,6 @@ private fun SignUpScreenPreview() {
         onPhoneNumberChange = {},
         onCountrySelected = {},
         onSignUpClick = {},
-        onSignInClick = {})
+        onSignInClick = {},
+    )
 }
