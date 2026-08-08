@@ -50,7 +50,7 @@ fun SplashScreen(modifier: Modifier = Modifier) {
     ) {
         // صورة المباني السفلية بالارتفاع والتمدد المضبوط
         Image(
-            painter = painterResource(id = R.drawable.group2),
+            painter = painterResource(id = R.drawable.group_2),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
