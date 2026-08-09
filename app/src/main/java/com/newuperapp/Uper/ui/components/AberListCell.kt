@@ -66,7 +66,7 @@ fun AberListCell(
 private fun AberListCellPreview() {
     Column {
         AberListCell(title = "Title", subtitle = "Subtitle", onClick = {})
-        AberDivider(startInset = 16.dp)
+        AberDivider()
         AberListCell(title = "Title", subtitle = "Subtitle", showChevron = false)
     }
 }
