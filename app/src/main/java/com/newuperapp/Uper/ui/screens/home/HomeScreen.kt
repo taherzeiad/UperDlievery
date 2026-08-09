@@ -39,9 +39,18 @@ private fun LatLng.toGoogle() = GoogleLatLng(latitude, longitude)
 @Composable
 fun HomeRoute(
     onOpenMenu: () -> Unit,
+    onNavigateToBookingDetails: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is HomeEvent.NavigateToBookingDetails -> onNavigateToBookingDetails(event.rideId)
+            }
+        }
+    }
 
     HomeScreen(
         uiState = uiState,
@@ -59,7 +68,7 @@ fun HomeScreen(
     onAcceptRequest: () -> Unit,
     onIgnoreRequest: () -> Unit,
     onMenuClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
