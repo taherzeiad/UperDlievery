@@ -13,4 +13,9 @@ interface DriverProfileRepository {
 interface RideRequestRepository {
     /** بترجع طلب رحلة جديد كل ما توصل واحد، أو null لإخفاء البطاقة الحالية. */
     fun observeIncomingRequests(): Flow<RideRequest?>
+    
+    suspend fun getBookingDetails(rideId: String): BookingDetails?
+    suspend fun cancelBooking(rideId: String)
+    fun observePickupNavigation(rideId: String): Flow<PickupNavigationState?>
+    suspend fun markArrivedAtPickup(rideId: String)
 }

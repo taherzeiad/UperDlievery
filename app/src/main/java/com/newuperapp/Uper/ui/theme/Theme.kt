@@ -18,6 +18,10 @@ object AberColor {
     val SurfaceGray   = Color(0xFFF1F2F6) // خلفية ثانوية للشاشات والكروت
     val SurfaceGrayAlt = Color(0xFFF7F8FA) // خلفية فاتحة جداً لحقول الإدخال والأقسام
     val BorderGray    = Color(0xFFBEC2CE) // حدود، فواصل، نص ثانوي (subtitle) ومعطّل (disabled)
+    val TagBackground = Color(0xFFEBEFF2) // خلفية الشارات (Tags)
+    val RouteBlue     = Color(0xFF3858F6) // لون مسار الخريطة
+    val IconMuted     = Color(0xFF9AA0AC) // لون الأيقونات غير النشطة
+    val Danger        = Color(0xFFE22D2D) // لون التنبيه/الخطأ
 }
 
 @Composable

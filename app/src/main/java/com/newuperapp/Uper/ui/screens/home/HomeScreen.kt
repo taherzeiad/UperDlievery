@@ -460,7 +460,7 @@ fun RideRequestCard(
                         color = AberColor.Ink
                     )
                     Text(
-                        text = request.distanceText, fontSize = 13.sp, color = AberColor.BorderGray
+                        text = "${request.distanceKm} km", fontSize = 13.sp, color = AberColor.BorderGray
                     )
                 }
             }
@@ -560,7 +560,6 @@ fun BadgeChip(text: String) {
 }
 
 // تم حذف الامتداد totalEarnings لأنه أصبح موجوداً بشكل رسمي تحت اسم totalEarned
-val RideRequest.distanceText: String get() = "2.2 km"
 
 @Preview(showBackground = true)
 @Composable

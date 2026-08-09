@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.newuperapp.Uper.data.auth.FakeAuthRepository
 import com.newuperapp.Uper.data.home.FakeDriverProfileRepository
 import com.newuperapp.Uper.data.home.FakeRideRequestRepository
 import com.newuperapp.Uper.data.onboarding.OnboardingRepositoryImpl
+import com.newuperapp.Uper.domain.auth.AuthRepository
 import com.newuperapp.Uper.domain.home.DriverProfileRepository
 import com.newuperapp.Uper.domain.home.RideRequestRepository
 import com.newuperapp.Uper.domain.onboarding.OnboardingRepository
@@ -52,4 +54,10 @@ abstract class RepositoryModule {
     abstract fun bindRideRequestRepository(
         impl: FakeRideRequestRepository
     ): RideRequestRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        impl: FakeAuthRepository
+    ): AuthRepository
 }
