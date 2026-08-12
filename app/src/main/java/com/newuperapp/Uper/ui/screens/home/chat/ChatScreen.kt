@@ -3,73 +3,71 @@ package com.newuperapp.Uper.ui.screens.home.chat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.components.AberMessageInputBar
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen providing a messaging interface between the driver and a passenger or support.
+ *
+ * @param name The name of the recipient to display in the header.
+ * @param onBackClick Navigation callback.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
     name: String,
     onBackClick: () -> Unit
 ) {
+    var messageText by remember { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(name, style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = name, 
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = AberColor.Yellow
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
             )
         },
+        containerColor = AberColor.SurfaceGrayAlt,
         bottomBar = {
-            // Simplified input bar for now
-            Surface(tonalElevation = 2.dp, color = AberColor.White) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.weight(1f),
-                        placeholder = { Text("Type a message...") },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = AberColor.SurfaceGray,
-                            focusedContainerColor = AberColor.SurfaceGray,
-                            unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = Color.Transparent
-                        )
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Send, contentDescription = "Send", tint = AberColor.Yellow)
-                    }
-                }
+            Box(modifier = Modifier.padding(20.dp)) {
+                AberMessageInputBar(
+                    value = messageText,
+                    onValueChange = { messageText = it },
+                    placeholder = stringResource(R.string.chat_type_message_placeholder)
+                )
             }
-        },
-        containerColor = AberColor.White
+        }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -79,81 +77,59 @@ fun ChatScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Text(
-                    "Today at 5:03 PM",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = AberTypography.Caption.copy(fontSize = 12.sp)
-                )
-            }
-            
-            item {
                 MessageBubble(
-                    text = "Hello, are you nearby?",
+                    text = "Hello! I am waiting at the main entrance.",
                     isFromMe = false
                 )
             }
-            
             item {
                 MessageBubble(
-                    text = "I'll be there in a few mins",
+                    text = "Got it. I'll be there in 2 minutes.",
                     isFromMe = true
                 )
             }
-            
             item {
                 MessageBubble(
-                    text = "OK, I am waiting at Vinmark Store",
+                    text = "Great, see you soon!",
                     isFromMe = false
-                )
-            }
-            
-            item {
-                Text(
-                    "5:33 PM",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = AberTypography.Caption.copy(fontSize = 12.sp)
-                )
-            }
-            
-            item {
-                MessageBubble(
-                    text = "Sorry, I'm stuck in traffic. Please give me a moment.",
-                    isFromMe = true
                 )
             }
         }
     }
 }
 
+/**
+ * Chat bubble component representing a single message.
+ *
+ * @param text The message content.
+ * @param isFromMe Whether the message was sent by the current user (affects alignment and color).
+ */
 @Composable
 private fun MessageBubble(text: String, isFromMe: Boolean) {
-    Box(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        contentAlignment = if (isFromMe) Alignment.CenterEnd else Alignment.CenterStart
+        horizontalAlignment = if (isFromMe) Alignment.End else Alignment.Start
     ) {
-        Box(
-            modifier = Modifier
-                .widthIn(max = 280.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 12.dp,
-                        topEnd = 12.dp,
-                        bottomStart = if (isFromMe) 12.dp else 0.dp,
-                        bottomEnd = if (isFromMe) 0.dp else 12.dp
-                    )
-                )
-                .background(if (isFromMe) AberColor.Yellow else AberColor.SurfaceGray)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+        Surface(
+            color = if (isFromMe) AberColor.Yellow else Color.White,
+            shape = RoundedCornerShape(
+                topStart = 16.dp,
+                topEnd = 16.dp,
+                bottomStart = if (isFromMe) 16.dp else 0.dp,
+                bottomEnd = if (isFromMe) 0.dp else 16.dp
+            )
         ) {
             Text(
                 text = text,
-                style = AberTypography.Subtitle.copy(
-                    fontSize = 16.sp,
-                    color = AberColor.Ink
-                )
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                style = AberTypography.Subtitle.copy(fontSize = 15.sp)
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChatScreenPreview() {
+    ChatScreen(name = "Esther Berry", onBackClick = {})
 }

@@ -10,9 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
@@ -20,6 +22,9 @@ import com.newuperapp.Uper.ui.components.AberOtpInput
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * OTP Verification screen where drivers enter the code sent to their phone.
+ */
 @Composable
 fun PhoneVerifyRoute(
     viewModel: PhoneVerifyViewModel = hiltViewModel(),
@@ -71,8 +76,14 @@ fun PhoneVerifyScreen(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp).padding(top = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text("Phone Verification", style = AberTypography.ScreenTitle)
-                Text("Enter your OTP code here", style = AberTypography.Subtitle)
+                Text(
+                    text = stringResource(R.string.auth_phone_verification_title),
+                    style = AberTypography.ScreenTitle
+                )
+                Text(
+                    text = stringResource(R.string.auth_otp_description),
+                    style = AberTypography.Subtitle
+                )
 
                 Spacer(Modifier.height(36.dp))
 
@@ -86,7 +97,7 @@ fun PhoneVerifyScreen(
                 Spacer(Modifier.height(24.dp))
 
                 AberButton(
-                    text = "Verify now",
+                    text = stringResource(R.string.auth_verify_now_cta),
                     onClick = onVerifyClick,
                     style = AberButtonStyle.Primary,
                     enabled = uiState.isVerifyEnabled,
@@ -96,7 +107,11 @@ fun PhoneVerifyScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = if (uiState.isResending) "Resending..." else "Resend code",
+                    text = if (uiState.isResending) {
+                        stringResource(R.string.auth_resending)
+                    } else {
+                        stringResource(R.string.auth_resend_code_cta)
+                    },
                     style = AberTypography.semibody17(AberColor.Orange).copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .padding(vertical = 8.dp)
@@ -109,7 +124,7 @@ fun PhoneVerifyScreen(
             AberNumericKeypad(
                 onDigit = onDigitPressed,
                 onBackspace = onBackspace,
-                onMicClick = { /* voice input */ }
+                onMicClick = { /* voice input placeholder */ }
             )
         }
     }

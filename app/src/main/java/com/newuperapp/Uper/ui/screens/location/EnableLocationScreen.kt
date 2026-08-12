@@ -4,12 +4,7 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +23,9 @@ import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberTextLink
 import com.newuperapp.Uper.ui.theme.AberColor
 
+/**
+ * Screen requesting location permissions from the driver to enable trip matching and tracking.
+ */
 @Composable
 fun EnableLocationRoute(
     onLocationResolved: () -> Unit,
@@ -50,7 +48,8 @@ fun EnableLocationRoute(
     EnableLocationScreen(
         onUseMyLocationClick = {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }, onSkipClick = viewModel::onSkip
+        }, 
+        onSkipClick = viewModel::onSkip
     )
 }
 
@@ -97,7 +96,8 @@ fun EnableLocationScreen(
         )
         Spacer(modifier = Modifier.height(45.dp))
         AberTextLink(
-            text = stringResource(id = R.string.location_skip), onClick = onSkipClick
+            text = stringResource(id = R.string.location_skip), 
+            onClick = onSkipClick
         )
     }
 }

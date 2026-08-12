@@ -14,12 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen for managing driver legal documents (IDs, License, etc.).
+ *
+ * @param onBackClick Navigation callback.
+ * @param onDrivingLicenseClick Navigation to specific driving license details.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocumentManagementScreen(
@@ -29,7 +36,12 @@ fun DocumentManagementScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Document Management", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.document_management_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
@@ -49,14 +61,14 @@ fun DocumentManagementScreen(
         ) {
             item {
                 DocumentItem(
-                    title = "Identification cards",
+                    title = stringResource(R.string.document_id_cards_title),
                     iconColor = AberColor.Yellow,
                     onClick = { }
                 )
             }
             item {
                 DocumentItem(
-                    title = "Driving license",
+                    title = stringResource(R.string.document_driving_license_title),
                     iconColor = AberColor.Orange,
                     onClick = onDrivingLicenseClick
                 )
@@ -65,6 +77,9 @@ fun DocumentManagementScreen(
     }
 }
 
+/**
+ * Visual card representing a document type with placeholder illustrations.
+ */
 @Composable
 private fun DocumentItem(title: String, iconColor: Color, onClick: () -> Unit) {
     Card(

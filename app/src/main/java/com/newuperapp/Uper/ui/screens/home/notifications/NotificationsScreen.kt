@@ -6,41 +6,58 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Percent
-import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.newuperapp.Uper.domain.model.Notification
-import com.newuperapp.Uper.domain.model.NotificationType
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+data class Notification(val id: String, val title: String, val description: String, val time: String)
+
+/**
+ * Screen displaying a list of push notifications and system messages for the driver.
+ *
+ * @param onBackClick Navigation callback.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(
     onBackClick: () -> Unit
 ) {
+    val notifications = listOf(
+        Notification("1", "System Update", "Your app has been updated to the latest version.", "2 hours ago"),
+        Notification("2", "Promotion", "Earn double points this weekend!", "5 hours ago"),
+        Notification("3", "Ride Feedback", "A passenger gave you a 5-star rating!", "1 day ago")
+    )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Notifications", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.notifications_title), 
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.Menu, contentDescription = "Back", tint = AberColor.Yellow)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = AberColor.Yellow
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = AberColor.White
-                )
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
             )
         },
         containerColor = AberColor.White
@@ -50,57 +67,47 @@ fun NotificationsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            val items = listOf(
-                Notification("1", NotificationType.SYSTEM, "System", "Booking #1234 has been success...", "Today"),
-                Notification("2", NotificationType.PROMOTION, "Promotion", "Invite friends - Get 3 coupons each!", "Today"),
-                Notification("3", NotificationType.PROMOTION, "Promotion", "Invite friends - Get 3 coupons each!", "Today"),
-                Notification("4", NotificationType.CANCELLED, "System", "Booking #1205 has been cancelled", "Today"),
-                Notification("5", NotificationType.WALLET, "System", "Thank you! Your transaction is com...", "Today"),
-                Notification("6", NotificationType.PROMOTION, "Promotion", "Invite friends - Get 3 coupons each!", "Today")
-            )
-
-            items(items) { item ->
-                NotificationItem(item)
-                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 1.dp)
+            items(notifications) { notification ->
+                NotificationItem(notification)
+                HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
             }
         }
     }
 }
 
+/**
+ * Single notification entry row.
+ */
 @Composable
 private fun NotificationItem(notification: Notification) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
-        val (icon, color) = when (notification.type) {
-            NotificationType.SYSTEM -> Icons.Default.Check to androidx.compose.ui.graphics.Color(0xFF3858F6)
-            NotificationType.PROMOTION -> Icons.Default.Percent to AberColor.Yellow
-            NotificationType.WALLET -> Icons.Default.Wallet to androidx.compose.ui.graphics.Color(0xFF2ECC71)
-            NotificationType.CANCELLED -> Icons.Default.Close to AberColor.Danger
-        }
-
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(44.dp)
                 .clip(CircleShape)
-                .background(color),
+                .background(AberColor.SurfaceGray),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, contentDescription = null, tint = AberColor.White, modifier = Modifier.size(24.dp))
+            Icon(Icons.Default.Notifications, contentDescription = null, tint = AberColor.Yellow, modifier = Modifier.size(24.dp))
         }
-
         Spacer(Modifier.width(16.dp))
-
-        Column {
-            Text(notification.title, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
-            Text(
-                notification.message,
-                style = AberTypography.Subtitle.copy(color = AberColor.Ink.copy(alpha = 0.7f), fontSize = 14.sp),
-                maxLines = 1
-            )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = notification.title, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+            Spacer(Modifier.height(4.dp))
+            Text(text = notification.description, style = AberTypography.Subtitle.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.7f)))
+            Spacer(Modifier.height(8.dp))
+            Text(text = notification.time, style = AberTypography.Caption)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NotificationsScreenPreview() {
+    NotificationsScreen(onBackClick = {})
 }

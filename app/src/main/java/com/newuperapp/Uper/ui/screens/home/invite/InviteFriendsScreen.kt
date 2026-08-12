@@ -7,44 +7,63 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.newuperapp.Uper.domain.model.Contact
-import com.newuperapp.Uper.ui.components.AberButton
-import com.newuperapp.Uper.ui.components.AberTextField
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+data class Contact(val id: String, val name: String, val mutualFriendsCount: Int)
+
+/**
+ * Screen allowing drivers to share their referral code and invite contacts to join.
+ *
+ * @param onBackClick Navigation callback.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InviteFriendsScreen(
     onBackClick: () -> Unit
 ) {
-    var showContacts by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Invite Friends", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.invite_friends_title), 
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
-                    IconButton(onClick = if (showContacts) { { showContacts = false } } else onBackClick) {
-                        Icon(if (showContacts) Icons.Default.ArrowBack else Icons.Default.Menu, contentDescription = "Back", tint = AberColor.Yellow)
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = AberColor.Yellow
+                        )
                     }
                 },
                 actions = {
-                    if (showContacts) {
-                        TextButton(onClick = { /* Handle Next */ }) {
-                            Text("Next", color = AberColor.Orange, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
-                        }
+                    TextButton(onClick = {}) {
+                        Text(
+                            text = stringResource(R.string.invite_next_cta), 
+                            color = AberColor.Orange, 
+                            style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
@@ -52,102 +71,96 @@ fun InviteFriendsScreen(
         },
         containerColor = AberColor.White
     ) { padding ->
-        if (!showContacts) {
-            InviteReferralContent(padding) { showContacts = true }
-        } else {
-            InviteContactsContent(padding)
+        Column(modifier = Modifier.padding(padding)) {
+            TabRow(
+                selectedTabIndex = selectedTab,
+                containerColor = Color.White,
+                contentColor = AberColor.Yellow,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                        color = AberColor.Yellow
+                    )
+                }
+            ) {
+                Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }) {
+                    Text(text = "Referral", modifier = Modifier.padding(16.dp), style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                }
+                Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }) {
+                    Text(text = "Contact", modifier = Modifier.padding(16.dp), style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                }
+            }
+
+            if (selectedTab == 0) {
+                InviteReferralContent(padding)
+            } else {
+                InviteContactsContent(padding)
+            }
         }
     }
 }
 
 @Composable
-private fun InviteReferralContent(padding: PaddingValues, onInviteClick: () -> Unit) {
+private fun InviteReferralContent(padding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
-            .padding(horizontal = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(180.dp)
-                .clip(CircleShape)
-                .background(AberColor.Yellow),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Default.Group, contentDescription = null, modifier = Modifier.size(100.dp), tint = AberColor.Ink)
-        }
-        
         Spacer(Modifier.height(40.dp))
-        
-        Text("Invite Friends", style = AberTypography.HeroTitleBold)
-        Text("Earn up to $150 a day", style = AberTypography.HeroTitle.copy(fontSize = 28.sp))
-        
-        Spacer(Modifier.height(24.dp))
-        
-        Text(
-            "When your friend sign up with your referral code, you can receive up to $150 a day.",
-            style = AberTypography.Subtitle.copy(color = AberColor.Ink.copy(alpha = 0.6f)),
-            textAlign = TextAlign.Center
-        )
+        Text(text = stringResource(R.string.invite_friends_title), style = AberTypography.HeroTitleBold)
+        Text(text = stringResource(R.string.invite_earn_title), style = AberTypography.HeroTitle.copy(fontSize = 28.sp))
         
         Spacer(Modifier.height(60.dp))
         
-        Text("SHARE YOUR INVITE CODE", style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray))
+        Text(
+            text = stringResource(R.string.invite_share_code_label),
+            style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray, fontSize = 12.sp)
+        )
         
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
         
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(AberColor.SurfaceGray),
-            contentAlignment = Alignment.Center
+        Surface(
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = AberColor.SurfaceGray
         ) {
-            Text("0905070017", style = AberTypography.CardTitle)
+            Box(contentAlignment = Alignment.Center) {
+                Text(text = "0905070017", style = AberTypography.CardTitle)
+            }
         }
-        
-        Spacer(Modifier.height(24.dp))
-        
-        AberButton(text = "INVITE", onClick = onInviteClick)
     }
 }
 
 @Composable
 private fun InviteContactsContent(padding: PaddingValues) {
-    Column(modifier = Modifier.padding(padding)) {
-        OutlinedTextField(
+    val contacts = listOf(
+        Contact("1", "Avery Weaver", 12),
+        Contact("2", "Steve Bowen", 5),
+        Contact("3", "Lula Briggs", 8)
+    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        TextField(
             value = "",
             onValueChange = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            placeholder = { Text("Search") },
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            placeholder = { Text(text = stringResource(R.string.invite_search_placeholder)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            trailingIcon = { Icon(Icons.Default.Mic, contentDescription = null) },
-            shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = AberColor.SurfaceGray,
+            colors = TextFieldDefaults.colors(
                 focusedContainerColor = AberColor.SurfaceGray,
-                unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
-            )
-        )
-
-        val contacts = listOf(
-            Contact("1", "Jackson Daniel", null, 5),
-            Contact("2", "Nellie Scott", null, 5),
-            Contact("3", "Shane Morales", null, 5),
-            Contact("4", "Sophie Bell", null, 5),
-            Contact("5", "Rhoda Palmer", null, 5)
+                unfocusedContainerColor = AberColor.SurfaceGray,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(12.dp)
         )
 
         LazyColumn {
             items(contacts) { contact ->
                 ContactItem(contact)
+                HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
             }
         }
     }
@@ -158,15 +171,24 @@ private fun ContactItem(contact: Contact) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.size(52.dp).clip(CircleShape).background(AberColor.SurfaceGray))
+        Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(AberColor.SurfaceGray))
         Spacer(Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(contact.name, style = AberTypography.CardTitle.copy(fontSize = 17.sp))
-            Text("${contact.mutualFriendsCount} mutual friends", style = AberTypography.Caption)
+            Text(text = contact.name, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+            Text(
+                text = stringResource(R.string.invite_mutual_friends, contact.mutualFriendsCount), 
+                style = AberTypography.Caption
+            )
         }
-        RadioButton(selected = contact.isSelected, onClick = { /* Toggle */ }, colors = RadioButtonDefaults.colors(selectedColor = AberColor.Orange))
+        Checkbox(checked = false, onCheckedChange = {}, colors = CheckboxDefaults.colors(checkedColor = AberColor.Yellow))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun InviteFriendsScreenPreview() {
+    InviteFriendsScreen(onBackClick = {})
 }

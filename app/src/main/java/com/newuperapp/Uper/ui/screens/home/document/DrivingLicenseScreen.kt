@@ -15,11 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen for updating or viewing the driver's license details.
+ *
+ * @param onBackClick Navigation callback.
+ * @param onCompleteClick Submission callback.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrivingLicenseScreen(
@@ -31,7 +39,12 @@ fun DrivingLicenseScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Driving license", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.document_driving_license_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
@@ -52,7 +65,10 @@ fun DrivingLicenseScreen(
                     contentColor = AberColor.Ink
                 )
             ) {
-                Text("COMPLETE", style = AberTypography.semibody17())
+                Text(
+                    text = stringResource(R.string.vehicle_complete_cta),
+                    style = AberTypography.semibody17()
+                )
             }
         },
         containerColor = AberColor.SurfaceGrayAlt
@@ -93,7 +109,7 @@ fun DrivingLicenseScreen(
                             }
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                "Update photo",
+                                text = stringResource(R.string.document_update_photo),
                                 color = AberColor.Yellow,
                                 style = AberTypography.CardTitle.copy(fontSize = 22.sp),
                                 modifier = Modifier.clickable { showPhotoOptions = true }
@@ -103,11 +119,11 @@ fun DrivingLicenseScreen(
                 }
 
                 item {
-                    DocumentField("CARD NUMBER", "1234 567 890")
+                    DocumentField(stringResource(R.string.document_card_number_label), "1234 567 890")
                 }
 
                 item {
-                    DocumentField("EXPIRATION DATE", "MM/DD/YYYY", isDate = true)
+                    DocumentField(stringResource(R.string.document_expiration_date_label), "MM/DD/YYYY", isDate = true)
                 }
             }
 
@@ -118,6 +134,9 @@ fun DrivingLicenseScreen(
     }
 }
 
+/**
+ * Reusable input field for document numbers or dates.
+ */
 @Composable
 private fun DocumentField(label: String, value: String, isDate: Boolean = false) {
     Column {
@@ -141,9 +160,11 @@ private fun DocumentField(label: String, value: String, isDate: Boolean = false)
     }
 }
 
+/**
+ * Bottom sheet style overlay for choosing photo source.
+ */
 @Composable
 private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
-    // A simplified ModalBottomSheet using a Box and background dim
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -161,14 +182,20 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Take a picture", style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6)))
+                Text(
+                    text = stringResource(R.string.document_take_picture),
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                )
             }
             HorizontalDivider(color = AberColor.SurfaceGray)
             TextButton(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Choose a picture", style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6)))
+                Text(
+                    text = stringResource(R.string.document_choose_picture),
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                )
             }
             Spacer(Modifier.height(12.dp))
             Button(
@@ -177,7 +204,10 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AberColor.SurfaceGray)
             ) {
-                Text("Cancel", style = AberTypography.semibody17(color = Color(0xFF3858F6)))
+                Text(
+                    text = stringResource(R.string.document_cancel),
+                    style = AberTypography.semibody17(color = Color(0xFF3858F6))
+                )
             }
         }
     }

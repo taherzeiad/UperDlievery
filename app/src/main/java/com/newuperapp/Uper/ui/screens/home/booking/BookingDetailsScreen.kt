@@ -19,11 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.BookingDetails
 import com.newuperapp.Uper.domain.model.FareLine
 import com.newuperapp.Uper.domain.model.LatLngPoint
@@ -34,6 +36,9 @@ import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Detailed view of a confirmed booking, providing rider contact and navigation actions.
+ */
 @Composable
 fun BookingDetailsRoute(
     viewModel: BookingDetailsViewModel = hiltViewModel(),
@@ -47,12 +52,10 @@ fun BookingDetailsRoute(
             when (event) {
                 is BookingDetailsEvent.NavigateToPickupNavigation -> onNavigateToPickup(event.rideId)
                 BookingDetailsEvent.NavigateBackAfterCancel -> onBackClick()
-                is BookingDetailsEvent.LaunchDialer -> {
-                    // Logic for dialer
+                is BookingDetailsEvent.LaunchDialer -> { /* Dialer logic */
                 }
 
-                is BookingDetailsEvent.LaunchMessenger -> {
-                    // Logic for messenger
+                is BookingDetailsEvent.LaunchMessenger -> { /* Messenger logic */
                 }
             }
         }
@@ -86,7 +89,7 @@ fun BookingDetailsScreen(
                 .padding(padding)
         ) {
 
-            // ---- Top bar ----
+            // Top Bar with Booking ID
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,7 +127,7 @@ fun BookingDetailsScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
             ) {
-                // ---- Rider summary ----
+                // Rider Summary Card
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,40 +158,56 @@ fun BookingDetailsScreen(
                     }
                 }
 
-                AddressBlock("Pick up", details.request.pickupAddress)
+                AddressBlock(
+                    stringResource(R.string.booking_pick_up_label), details.request.pickupAddress
+                )
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
-                AddressBlock("Drop off", details.request.dropoffAddress)
+                AddressBlock(
+                    stringResource(R.string.booking_drop_off_label), details.request.dropoffAddress
+                )
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
 
+                // Passenger Note
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 14.dp)
                 ) {
-                    Text("NOTED", style = AberTypography.SectionLabel)
+                    Text(
+                        stringResource(R.string.booking_noted_label),
+                        style = AberTypography.SectionLabel
+                    )
                     Spacer(Modifier.height(8.dp))
                     Text(details.note, style = AberTypography.semibody17())
                 }
 
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f), thickness = 1.dp)
 
+                // Fare Breakdown
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 14.dp)
                 ) {
-                    Text("TRIP FARE", style = AberTypography.SectionLabel)
+                    Text(
+                        stringResource(R.string.booking_trip_fare_label),
+                        style = AberTypography.SectionLabel
+                    )
                     Spacer(Modifier.height(10.dp))
                     details.fareBreakdown.forEach { line ->
                         FareRow(line.label, line.amount)
                         Spacer(Modifier.height(10.dp))
                     }
-                    FareRow("Paid amount", details.paidAmount, emphasize = true)
+                    FareRow(
+                        stringResource(R.string.booking_paid_amount),
+                        details.paidAmount,
+                        emphasize = true
+                    )
                 }
 
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f), thickness = 1.dp)
 
-                // ---- Call / Message / Cancel ----
+                // Contact Actions
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -196,21 +215,21 @@ fun BookingDetailsScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ActionTile(
-                        label = "Call",
+                        label = stringResource(R.string.booking_call),
                         icon = Icons.Default.Call,
                         background = Color(0xFF3DD9A6),
                         onClick = onCallClick,
                         modifier = Modifier.weight(1f)
                     )
                     ActionTile(
-                        label = "Message",
+                        label = stringResource(R.string.booking_message),
                         icon = Icons.AutoMirrored.Filled.Message,
                         background = Color(0xFF4C5FF0),
                         onClick = onMessageClick,
                         modifier = Modifier.weight(1f)
                     )
                     ActionTile(
-                        label = "Cancel",
+                        label = stringResource(R.string.booking_cancel),
                         icon = Icons.Default.DeleteOutline,
                         background = AberColor.BorderGray,
                         onClick = onCancelClick,
@@ -220,7 +239,7 @@ fun BookingDetailsScreen(
                 }
             }
 
-            // ---- Go to pick up ----
+            // Primary Navigation CTA
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,7 +247,7 @@ fun BookingDetailsScreen(
                     .padding(20.dp)
             ) {
                 AberButton(
-                    text = "Go to pick up",
+                    text = stringResource(R.string.booking_go_to_pick_up),
                     onClick = onGoToPickupClick,
                     style = AberButtonStyle.Primary
                 )
