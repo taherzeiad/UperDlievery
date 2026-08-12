@@ -10,23 +10,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.newuperapp.Uper.domain.auth.CountryCode
-import com.newuperapp.Uper.domain.auth.defaultCountryCodes
 import com.newuperapp.Uper.ui.components.AberButton
-import com.newuperapp.Uper.ui.components.AberButtonVariant
+import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberPhoneField
 import com.newuperapp.Uper.ui.components.AberTextField
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/** Stateful entry point — wired to Hilt + navigation. */
 @Composable
 fun SignUpRoute(
     viewModel: SignUpViewModel = hiltViewModel(),
@@ -52,6 +52,7 @@ fun SignUpRoute(
     )
 }
 
+/** Stateless — pure function of [uiState], safe for @Preview. */
 @Composable
 fun SignUpScreen(
     uiState: SignUpUiState,
@@ -71,18 +72,17 @@ fun SignUpScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp)
+                    .height(300.dp)
                     .background(AberColor.Yellow)
             ) {
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Sign up") }
-                        append(" with email and phone number")
+                        withStyle(AberTypography.HeroTitleBold.toSpanStyle()) { append("Sign up") }
+                        withStyle(AberTypography.HeroTitle.toSpanStyle()) { append(" with email and phone number") }
                     },
-                    style = AberTypography.HeroTitle.copy(fontSize = 28.sp),
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(top = 80.dp, start = 28.dp, end = 40.dp)
+                        .padding(top = 90.dp, start = 28.dp, end = 40.dp)
                 )
             }
 
@@ -98,14 +98,13 @@ fun SignUpScreen(
                     value = uiState.email,
                     onValueChange = onEmailChange,
                     placeholder = "name@example.com",
-                    label = "Email"
+                    keyboardType = KeyboardType.Email
                 )
                 AberPhoneField(
-                    number = uiState.phoneNumber,
-                    onNumberChange = onPhoneChange,
-                    selectedCountry = CountryCode("VN", "Vietnam", "🇻🇳", "+84"),
-                    onCountrySelected = {},
-                    countries = defaultCountryCodes
+                    countryFlagEmoji = "🇻🇳",
+                    dialCode = uiState.dialCode,
+                    value = uiState.phoneNumber,
+                    onValueChange = onPhoneChange
                 )
 
                 uiState.errorMessage?.let {
@@ -116,7 +115,7 @@ fun SignUpScreen(
                 AberButton(
                     text = "Sign up",
                     onClick = onSignUpClick,
-                    variant = AberButtonVariant.Dark,
+                    style = AberButtonStyle.Dark,
                     enabled = uiState.isSubmitEnabled,
                     isLoading = uiState.isSubmitting
                 )
@@ -124,30 +123,23 @@ fun SignUpScreen(
 
             Spacer(Modifier.height(60.dp))
 
-            Row(
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(AberTypography.Subtitle.toSpanStyle()) { append("Already have an account? ") }
+                    withStyle(
+                        AberTypography.semibody17().copy(fontWeight = FontWeight.Bold).toSpanStyle()
+                    ) { append("Sign In") }
+                },
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 40.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Already have an account? ", style = AberTypography.Caption)
-                Text(
-                    text = "Sign In", style = AberTypography.Caption.copy(
-                        fontWeight = FontWeight.Bold, color = AberColor.Ink
-                    ), modifier = Modifier.clickable(onClick = onSignInClick)
-                )
-            }
+                    .clickable(onClick = onSignInClick)
+                    .padding(vertical = 16.dp)
+            )
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun SignUpScreenPreview() {
-    SignUpScreen(
-        uiState = SignUpUiState(),
-        onEmailChange = {},
-        onPhoneChange = {},
-        onSignUpClick = {},
-        onSignInClick = {})
-}
+private fun TextStyle.toSpanStyle() = SpanStyle(
+    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
+)

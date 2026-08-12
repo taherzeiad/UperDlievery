@@ -3,8 +3,8 @@ package com.newuperapp.Uper.ui.screens.home.booking
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.newuperapp.Uper.domain.home.BookingDetails
-import com.newuperapp.Uper.domain.home.RideRequestRepository
+import com.newuperapp.Uper.domain.model.BookingDetails
+import com.newuperapp.Uper.domain.repository.RideRequestRepository
 import com.newuperapp.Uper.navigation.AberDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,29 +1,21 @@
 package com.newuperapp.Uper.ui.screens.auth.signin
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.newuperapp.Uper.R
-import com.newuperapp.Uper.domain.auth.CountryCode
-import com.newuperapp.Uper.domain.auth.defaultCountryCodes
 import com.newuperapp.Uper.ui.components.AberButton
-import com.newuperapp.Uper.ui.components.AberButtonVariant
+import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
 import com.newuperapp.Uper.ui.components.AberPhoneDisplayField
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -46,9 +38,9 @@ fun SignInRoute(
 
     SignInScreen(
         uiState = uiState,
-        onCountrySelected = { /* TODO if needed */ },
         onDigitPressed = viewModel::onDigitPressed,
         onBackspace = viewModel::onBackspace,
+        onClearClick = viewModel::onClearClick,
         onNextClick = viewModel::onNextClick
     )
 }
@@ -56,81 +48,65 @@ fun SignInRoute(
 @Composable
 fun SignInScreen(
     uiState: SignInUiState,
-    onCountrySelected: (CountryCode) -> Unit,
     onDigitPressed: (String) -> Unit,
     onBackspace: () -> Unit,
+    onClearClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(AberColor.Yellow)) {
-        Box(modifier = Modifier.weight(1f)) {
-            // Header Image
-            Image(
-                painter = painterResource(id = R.drawable.group_2),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-            )
+    Scaffold(containerColor = AberColor.Yellow) { padding ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
 
-            // White Card
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                    .background(AberColor.White)
-                    .padding(horizontal = 32.dp, vertical = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Login") }
-                        append(" with your phone number")
-                    },
-                    style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
-                )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.height(200.dp))
 
-                AberPhoneDisplayField(
-                    number = uiState.phoneNumber,
-                    selectedCountry = CountryCode("VN", "Vietnam", "🇻🇳", "+84"),
-                    onCountrySelected = onCountrySelected,
-                    countries = defaultCountryCodes,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(top = 200.dp)
+                        .fillMaxWidth()
+                        .background(AberColor.White, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                        .padding(horizontal = 28.dp, vertical = 32.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) { append("Login") }
+                            withStyle(AberTypography.HeroTitle.toSpanStyle()) { append(" with your phone number") }
+                        },
+                        style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
+                    )
 
-                uiState.errorMessage?.let {
-                    Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange))
+                    AberPhoneDisplayField(
+                        countryFlagEmoji = "🇻🇳",
+                        dialCode = uiState.dialCode,
+                        value = uiState.phoneNumber,
+                        onClearClick = onClearClick
+                    )
+
+                    uiState.errorMessage?.let {
+                        Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange))
+                    }
+
+                    AberButton(
+                        text = "Next",
+                        onClick = onNextClick,
+                        style = AberButtonStyle.Dark,
+                        enabled = uiState.isNextEnabled,
+                        isLoading = uiState.isSubmitting
+                    )
                 }
-
-                AberButton(
-                    text = "Next",
-                    onClick = onNextClick,
-                    variant = AberButtonVariant.Dark,
-                    enabled = uiState.isNextEnabled,
-                    isLoading = uiState.isSubmitting
-                )
             }
-        }
 
-        AberNumericKeypad(
-            onDigitClick = onDigitPressed,
-            onBackspaceClick = onBackspace,
-            onMicClick = { /* voice input */ }
-        )
+            Spacer(Modifier.weight(1f))
+
+            AberNumericKeypad(
+                onDigit = onDigitPressed,
+                onBackspace = onBackspace,
+                onMicClick = { /* voice input */ }
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun SignInScreenPreview() {
-    SignInScreen(
-        uiState = SignInUiState(),
-        onCountrySelected = {},
-        onDigitPressed = {},
-        onBackspace = {},
-        onNextClick = {}
-    )
-}
+private fun TextStyle.toSpanStyle() = SpanStyle(
+    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
+)

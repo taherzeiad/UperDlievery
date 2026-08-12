@@ -65,6 +65,18 @@ object AberTypography {
         fontWeight = FontWeight.Bold
     )
 
+    val StatValue = TextStyle(
+        color = AberColor.Ink,
+        fontSize = 19.sp,
+        fontWeight = FontWeight.Bold
+    )
+
+    val StatLabel = TextStyle(
+        color = AberColor.Ink.copy(alpha = 0.5f),
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Bold
+    )
+
     val OtpDigit = TextStyle(
         color = AberColor.Ink,
         fontSize = 32.sp,

@@ -1,9 +1,12 @@
 package com.newuperapp.Uper.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 /**
  * Aber Driver – لوحة الألوان الأساسية.
@@ -24,24 +27,38 @@ object AberColor {
     val Danger        = Color(0xFFE22D2D) // لون التنبيه/الخطأ
 }
 
+private val AberShapes = Shapes(
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(28.dp)
+)
+
+private val AberColorScheme = lightColorScheme(
+    primary = AberColor.Yellow,
+    onPrimary = AberColor.Ink,
+    secondary = AberColor.Orange,
+    onSecondary = AberColor.White,
+    background = AberColor.SurfaceGrayAlt,
+    onBackground = AberColor.Ink,
+    surface = AberColor.White,
+    onSurface = AberColor.Ink,
+    error = AberColor.Danger
+)
+
+@Composable
+fun AberTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = AberColorScheme,
+        shapes = AberShapes,
+        content = content
+    )
+}
+
 @Composable
 fun MyApplicationTheme(
     content: @Composable () -> Unit
 ) {
-    val colorScheme = lightColorScheme(
-        primary = AberColor.Yellow,
-        secondary = AberColor.Orange,
-        background = AberColor.SurfaceGray,
-        surface = AberColor.White,
-        onPrimary = AberColor.Ink,
-        onSecondary = AberColor.White,
-        onBackground = AberColor.Ink,
-        onSurface = AberColor.Ink,
-    )
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    AberTheme(content = content)
 }

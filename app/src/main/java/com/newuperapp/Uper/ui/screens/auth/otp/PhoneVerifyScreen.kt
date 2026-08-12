@@ -10,13 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.newuperapp.Uper.ui.components.AberButton
-import com.newuperapp.Uper.ui.components.AberButtonVariant
+import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
 import com.newuperapp.Uper.ui.components.AberOtpInput
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -78,12 +76,11 @@ fun PhoneVerifyScreen(
 
                 Spacer(Modifier.height(36.dp))
 
-                // Using the one from AberCommonComponents
                 AberOtpInput(code = uiState.code, length = 4)
 
                 uiState.errorMessage?.let {
                     Spacer(Modifier.height(12.dp))
-                    Text(it, style = AberTypography.Caption.copy(color = AberColor.Danger))
+                    Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange))
                 }
 
                 Spacer(Modifier.height(24.dp))
@@ -91,7 +88,7 @@ fun PhoneVerifyScreen(
                 AberButton(
                     text = "Verify now",
                     onClick = onVerifyClick,
-                    variant = AberButtonVariant.Primary,
+                    style = AberButtonStyle.Primary,
                     enabled = uiState.isVerifyEnabled,
                     isLoading = uiState.isVerifying
                 )
@@ -110,23 +107,10 @@ fun PhoneVerifyScreen(
             Spacer(Modifier.weight(1f))
 
             AberNumericKeypad(
-                onDigitClick = onDigitPressed,
-                onBackspaceClick = onBackspace,
+                onDigit = onDigitPressed,
+                onBackspace = onBackspace,
                 onMicClick = { /* voice input */ }
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PhoneVerifyScreenPreview() {
-    PhoneVerifyScreen(
-        uiState = PhoneVerifyUiState(),
-        onBackClick = {},
-        onDigitPressed = {},
-        onBackspace = {},
-        onVerifyClick = {},
-        onResendClick = {}
-    )
 }

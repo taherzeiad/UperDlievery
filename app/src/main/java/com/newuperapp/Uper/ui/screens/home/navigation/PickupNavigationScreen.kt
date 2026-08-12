@@ -18,16 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.newuperapp.Uper.domain.home.NavigationStep
-import com.newuperapp.Uper.domain.home.PickupNavigationState
-import com.newuperapp.Uper.domain.home.TurnManeuver
+import com.newuperapp.Uper.domain.model.NavigationStep
+import com.newuperapp.Uper.domain.model.PickupNavigationState
+import com.newuperapp.Uper.domain.model.TurnManeuver
 import com.newuperapp.Uper.ui.components.AberButton
-import com.newuperapp.Uper.ui.components.AberButtonVariant
+import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 import com.google.android.gms.maps.model.CameraPosition
@@ -43,7 +42,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun PickupNavigationRoute(
     viewModel: PickupNavigationViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onNavigateToDropoffFlow: () -> Unit
+    onNavigateToDropoffFlow: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -67,11 +66,11 @@ fun PickupNavigationRoute(
 fun PickupNavigationScreen(
     state: PickupNavigationState?,
     onBackClick: () -> Unit,
-    onArrivedClick: () -> Unit
+    onArrivedClick: () -> Unit,
 ) {
     val cameraPositionState = rememberCameraPositionState {
         state?.let {
-            position = CameraPosition.fromLatLngZoom(LatLng(it.driverLocation.latitude, it.driverLocation.longitude), 16f)
+            position = CameraPosition.fromLatLngZoom(LatLng(it.driverLocation.lat, it.driverLocation.lng), 16f)
         }
     }
     val sheetState = rememberBottomSheetScaffoldState()
@@ -117,7 +116,7 @@ fun PickupNavigationScreen(
             ) {
                 state?.let {
                     Polyline(
-                        points = it.routePolyline.map { p -> LatLng(p.latitude, p.longitude) },
+                        points = it.routePolyline.map { p -> LatLng(p.lat, p.lng) },
                         color = AberColor.RouteBlue,
                         width = 10f
                     )
@@ -166,6 +165,7 @@ private fun SheetDragHandle() {
     }
 }
 
+/** Collapsed → "Pick up at {address}". Expanded → EST/Distance/Fare + Drop off CTA + turn list. */
 @Composable
 private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
@@ -199,7 +199,7 @@ private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () 
         Spacer(Modifier.height(16.dp))
 
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-            AberButton(text = "Drop off", onClick = onArrivedClick, variant = AberButtonVariant.Primary)
+            AberButton(text = "Drop off", onClick = onArrivedClick, style = AberButtonStyle.Primary)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -239,7 +239,7 @@ private fun DirectionRow(step: NavigationStep) {
             Spacer(Modifier.height(8.dp))
             HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
             Spacer(Modifier.height(4.dp))
-            Text(step.distanceText, style = AberTypography.Caption.copy(color = if (step.isActive) AberColor.Orange else AberColor.BorderGray))
+            Text(step.distanceText, style = AberTypography.Caption.copy(color = if (step.isActive) AberColor.Orange else AberColor.IconMuted))
         }
     }
 }
@@ -250,49 +250,4 @@ private fun TurnManeuver.toIcon(): ImageVector = when (this) {
     TurnManeuver.TURN_RIGHT -> Icons.Default.TurnRight
     TurnManeuver.SLIGHT_LEFT -> Icons.Default.TurnLeft
     TurnManeuver.SLIGHT_RIGHT -> Icons.AutoMirrored.Filled.ArrowForward
-    TurnManeuver.ARRIVED -> Icons.Default.Navigation
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PickupNavigationScreenPreview() {
-    PickupNavigationScreen(
-        state = PickupNavigationState(
-            rideId = "ride_123",
-            riderName = "Esther Berry",
-            pickupAddress = "7958 Swift Village",
-            distanceToPickup = "1.2 km",
-            timeToPickup = "4 min",
-            driverLocation = com.newuperapp.Uper.domain.home.LatLng(60.1699, 24.9384),
-            riderLocation = com.newuperapp.Uper.domain.home.LatLng(60.1710, 24.9400),
-            routePolyline = listOf(
-                com.newuperapp.Uper.domain.home.LatLng(60.1699, 24.9384),
-                com.newuperapp.Uper.domain.home.LatLng(60.1710, 24.9400)
-            ),
-            currentBanner = NavigationStep(
-                instruction = "Turn left onto Main St",
-                distanceText = "200 m",
-                maneuver = TurnManeuver.TURN_LEFT,
-                isActive = true
-            ),
-            steps = listOf(
-                NavigationStep(
-                    instruction = "Turn left onto Main St",
-                    distanceText = "200 m",
-                    maneuver = TurnManeuver.TURN_LEFT,
-                    isActive = true
-                ),
-                NavigationStep(
-                    instruction = "Go straight for 1 km",
-                    distanceText = "1 km",
-                    maneuver = TurnManeuver.STRAIGHT
-                )
-            ),
-            etaMinutes = 4,
-            distanceKm = 1.2,
-            fare = 25.0
-        ),
-        onBackClick = {},
-        onArrivedClick = {}
-    )
 }
