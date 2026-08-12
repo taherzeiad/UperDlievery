@@ -1,14 +1,7 @@
 package com.newuperapp.Uper.ui.screens.onboarding
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -30,6 +23,12 @@ import com.newuperapp.Uper.ui.components.AberPageIndicator
 import com.newuperapp.Uper.ui.components.AberTextLink
 import com.newuperapp.Uper.ui.theme.AberColor
 
+/**
+ * Pager-based onboarding screen introduce the app's core features to new drivers.
+ *
+ * @param onFinished Callback invoked when the user skips or completes the onboarding.
+ * @param viewModel The state management unit for onboarding logic.
+ */
 @Composable
 fun OnboardingRoute(
     onFinished: () -> Unit,
@@ -61,7 +60,8 @@ fun OnboardingScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         HorizontalPager(
-            state = pagerState, modifier = Modifier.weight(1f)
+            state = pagerState, 
+            modifier = Modifier.weight(1f)
         ) { page ->
             OnboardingPageContent(page = pages[page])
         }
@@ -79,13 +79,15 @@ fun OnboardingScreen(
                 )
             } else {
                 AberTextLink(
-                    text = stringResource(id = R.string.onboarding_skip), onClick = onSkip
+                    text = stringResource(id = R.string.onboarding_skip), 
+                    onClick = onSkip
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(40.dp))
 
+        // Custom indicator matching the design's dot style
         AberPageIndicator(
             pageCount = pages.size,
             currentPage = pagerState.currentPage,
@@ -96,6 +98,9 @@ fun OnboardingScreen(
     }
 }
 
+/**
+ * Individual onboarding page layout.
+ */
 @Composable
 private fun OnboardingPageContent(page: OnboardingPage, modifier: Modifier = Modifier) {
     Column(
