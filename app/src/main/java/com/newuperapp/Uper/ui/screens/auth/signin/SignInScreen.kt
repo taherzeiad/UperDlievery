@@ -8,7 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
@@ -24,6 +26,9 @@ import com.newuperapp.Uper.ui.components.AberPhoneDisplayField
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Sign In screen handling phone number input using a custom numeric keypad.
+ */
 @Composable
 fun SignInRoute(
     viewModel: SignInViewModel = hiltViewModel(),
@@ -75,8 +80,12 @@ fun SignInScreen(
                 ) {
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) { append("Login") }
-                            withStyle(AberTypography.HeroTitle.toSpanStyle()) { append(" with your phone number") }
+                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) { 
+                                append(stringResource(R.string.auth_login_title)) 
+                            }
+                            withStyle(AberTypography.HeroTitle.toSpanStyle()) { 
+                                append(stringResource(R.string.auth_login_subtitle)) 
+                            }
                         },
                         style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
                     )
@@ -93,7 +102,7 @@ fun SignInScreen(
                     }
 
                     AberButton(
-                        text = "Next",
+                        text = stringResource(R.string.auth_next_cta),
                         onClick = onNextClick,
                         style = AberButtonStyle.Dark,
                         enabled = uiState.isNextEnabled,
@@ -102,10 +111,14 @@ fun SignInScreen(
 
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(AberTypography.Subtitle.toSpanStyle()) { append("Don't have an account? ") }
+                            withStyle(AberTypography.Subtitle.toSpanStyle()) { 
+                                append(stringResource(R.string.auth_no_account)) 
+                            }
                             withStyle(
                                 SpanStyle(fontWeight = FontWeight.Bold, color = AberColor.Orange)
-                            ) { append("Sign Up") }
+                            ) { 
+                                append(stringResource(R.string.auth_sign_up_cta)) 
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -121,7 +134,7 @@ fun SignInScreen(
             AberNumericKeypad(
                 onDigit = onDigitPressed,
                 onBackspace = onBackspace,
-                onMicClick = { /* voice input */ }
+                onMicClick = { /* voice input placeholder */ }
             )
         }
     }

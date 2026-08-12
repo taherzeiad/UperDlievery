@@ -18,10 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.NavigationStep
 import com.newuperapp.Uper.domain.model.PickupNavigationState
 import com.newuperapp.Uper.domain.model.TurnManeuver
@@ -31,12 +34,12 @@ import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Polyline
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.*
 
+/**
+ * Screen providing turn-by-turn navigation for the driver to reach the pickup location.
+ * Integrates Google Maps with real-time route visualization and metric updates.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickupNavigationRoute(
@@ -88,10 +91,15 @@ fun PickupNavigationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow, modifier = Modifier.size(26.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = stringResource(R.string.nav_back_content_desc), 
+                            tint = AberColor.Yellow, 
+                            modifier = Modifier.size(26.dp)
+                        )
                     }
                     Text(
-                        "Pick up",
+                        text = stringResource(R.string.nav_pickup_title),
                         style = AberTypography.CardTitle.copy(fontSize = 20.sp),
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
@@ -130,6 +138,9 @@ fun PickupNavigationScreen(
     }
 }
 
+/**
+ * High-visibility banner showing the current navigation instruction at the top of the map.
+ */
 @Composable
 private fun TurnBanner(step: NavigationStep) {
     Row(
@@ -138,11 +149,21 @@ private fun TurnBanner(step: NavigationStep) {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Icon(step.maneuver.toIcon(), contentDescription = null, tint = AberColor.Ink)
-        Text(step.distanceText, style = AberTypography.semibody17(AberColor.Ink).copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold))
-        Text(step.instruction, style = AberTypography.semibody17(AberColor.Ink), maxLines = 1)
+        Text(
+            text = step.distanceText, 
+            style = AberTypography.semibody17(AberColor.Ink).copy(fontWeight = FontWeight.Bold)
+        )
+        Text(
+            text = step.instruction, 
+            style = AberTypography.semibody17(AberColor.Ink), 
+            maxLines = 1
+        )
     }
 }
 
+/**
+ * Custom pulse-styled marker for the driver's current position on the map.
+ */
 @Composable
 private fun DriverLocationMarker(modifier: Modifier = Modifier) {
     Box(modifier = modifier.size(140.dp), contentAlignment = Alignment.Center) {
@@ -165,7 +186,9 @@ private fun SheetDragHandle() {
     }
 }
 
-/** Collapsed → "Pick up at {address}". Expanded → EST/Distance/Fare + Drop off CTA + turn list. */
+/**
+ * Bottom sheet content showing trip metrics (ETA, Distance, Fare) and the arrival confirmation action.
+ */
 @Composable
 private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
@@ -177,11 +200,16 @@ private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () 
             Box(
                 modifier = Modifier.size(40.dp).clip(CircleShape).background(AberColor.Orange),
                 contentAlignment = Alignment.Center
-            ) { Text("A", style = AberTypography.semibody17(AberColor.White).copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)) }
+            ) { 
+                Text(
+                    text = "A", 
+                    style = AberTypography.semibody17(AberColor.White).copy(fontWeight = FontWeight.Bold)
+                ) 
+            }
             Spacer(Modifier.width(14.dp))
             Column {
-                Text("Pick up at", style = AberTypography.Caption)
-                Text(state.pickupAddress, style = AberTypography.CardTitle)
+                Text(text = stringResource(R.string.nav_pickup_at), style = AberTypography.Caption)
+                Text(text = state.pickupAddress, style = AberTypography.CardTitle)
             }
         }
 
@@ -191,15 +219,19 @@ private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () 
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            MetricColumn(label = "EST", value = "${state.etaMinutes} min")
-            MetricColumn(label = "Distance", value = "${state.distanceKm} km")
-            MetricColumn(label = "Fare", value = "$${"%.2f".format(state.fare)}")
+            MetricColumn(label = stringResource(R.string.nav_est_label), value = "${state.etaMinutes} min")
+            MetricColumn(label = stringResource(R.string.nav_distance_label), value = "${state.distanceKm} km")
+            MetricColumn(label = stringResource(R.string.nav_fare_label), value = "$${"%.2f".format(state.fare)}")
         }
 
         Spacer(Modifier.height(16.dp))
 
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-            AberButton(text = "Drop off", onClick = onArrivedClick, style = AberButtonStyle.Primary)
+            AberButton(
+                text = stringResource(R.string.nav_drop_off_cta), 
+                onClick = onArrivedClick, 
+                style = AberButtonStyle.Primary
+            )
         }
 
         Spacer(Modifier.height(8.dp))
@@ -226,12 +258,12 @@ private fun DirectionRow(step: NavigationStep) {
             Icon(step.maneuver.toIcon(), contentDescription = null, tint = contentColor, modifier = Modifier.size(22.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    step.instruction,
-                    style = AberTypography.semibody17(contentColor).copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    text = step.instruction,
+                    style = AberTypography.semibody17(contentColor).copy(fontWeight = FontWeight.Bold)
                 )
                 step.subtext?.let {
                     Spacer(Modifier.height(2.dp))
-                    Text(it, style = AberTypography.Caption)
+                    Text(text = it, style = AberTypography.Caption)
                 }
             }
         }
@@ -239,11 +271,17 @@ private fun DirectionRow(step: NavigationStep) {
             Spacer(Modifier.height(8.dp))
             HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
             Spacer(Modifier.height(4.dp))
-            Text(step.distanceText, style = AberTypography.Caption.copy(color = if (step.isActive) AberColor.Orange else AberColor.IconMuted))
+            Text(
+                text = step.distanceText, 
+                style = AberTypography.Caption.copy(color = if (step.isActive) AberColor.Orange else AberColor.IconMuted)
+            )
         }
     }
 }
 
+/**
+ * Mapping of [TurnManeuver] enum to its visual [ImageVector] representation.
+ */
 private fun TurnManeuver.toIcon(): ImageVector = when (this) {
     TurnManeuver.STRAIGHT -> Icons.Default.ArrowUpward
     TurnManeuver.TURN_LEFT -> Icons.Default.TurnLeft

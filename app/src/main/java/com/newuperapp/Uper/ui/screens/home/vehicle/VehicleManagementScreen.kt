@@ -18,12 +18,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.Vehicle
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen displaying the driver's registered vehicles and allows selecting the active one.
+ *
+ * @param onBackClick Navigation callback.
+ * @param onAddVehicleClick Navigation to add a new vehicle.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleManagementScreen(
@@ -33,7 +41,12 @@ fun VehicleManagementScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Vehicle Management", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.vehicle_management_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
@@ -75,6 +88,9 @@ fun VehicleManagementScreen(
     }
 }
 
+/**
+ * Card component for a single vehicle in the list.
+ */
 @Composable
 private fun VehicleItem(vehicle: Vehicle) {
     Card(

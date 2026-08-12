@@ -1,6 +1,5 @@
 package com.newuperapp.Uper.ui.screens.home.vehicle
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -8,16 +7,22 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.RectangleShape
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Form for adding a new vehicle to the driver's account.
+ *
+ * @param onBackClick Navigation callback.
+ * @param onCompleteClick Submission callback.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddVehicleScreen(
@@ -27,7 +32,12 @@ fun AddVehicleScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Add a new Vehicle", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.vehicle_add_new_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
@@ -48,7 +58,10 @@ fun AddVehicleScreen(
                     contentColor = AberColor.Ink
                 )
             ) {
-                Text("COMPLETE", style = AberTypography.semibody17())
+                Text(
+                    text = stringResource(R.string.vehicle_complete_cta),
+                    style = AberTypography.semibody17()
+                )
             }
         },
         containerColor = AberColor.SurfaceGrayAlt
@@ -60,16 +73,19 @@ fun AddVehicleScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { VehicleField("VEHICLE BRAND", "Toyota") }
-            item { VehicleField("MODEL", "Camry") }
-            item { VehicleField("YEAR", "2018") }
-            item { VehicleField("LICENSE PLATE", "43A 364.82") }
-            item { VehicleField("COLOR", "Black") }
-            item { VehicleField("BOOKING TYPE", "Taxi 7 Seat") }
+            item { VehicleField(stringResource(R.string.vehicle_brand_label), "Toyota") }
+            item { VehicleField(stringResource(R.string.vehicle_model_label), "Camry") }
+            item { VehicleField(stringResource(R.string.vehicle_year_label), "2018") }
+            item { VehicleField(stringResource(R.string.vehicle_license_plate_label), "43A 364.82") }
+            item { VehicleField(stringResource(R.string.vehicle_color_label), "Black") }
+            item { VehicleField(stringResource(R.string.vehicle_booking_type_label), "Taxi 7 Seat") }
         }
     }
 }
 
+/**
+ * Single input field with a label and chevron for selection-based forms.
+ */
 @Composable
 private fun VehicleField(label: String, value: String) {
     Column {

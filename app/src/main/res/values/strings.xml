@@ -44,6 +44,36 @@
     <string name="navigation_fare">Fare</string>
     <string name="navigation_drop_off_cta">Drop off</string>
 
+    <!-- Navigation Screen -->
+    <string name="nav_pickup_title">Pick up</string>
+    <string name="nav_pickup_at">Pick up at</string>
+    <string name="nav_est_label">EST</string>
+    <string name="nav_distance_label">Distance</string>
+    <string name="nav_fare_label">Fare</string>
+    <string name="nav_drop_off_cta">Drop off</string>
+    <string name="nav_back_content_desc">Back</string>
+
+    <!-- History Screen -->
+    <string name="history_title">History</string>
+    <string name="history_total_earned">Total Earned</string>
+    <string name="history_total_jobs">Total Jobs</string>
+    <string name="history_trips">Trips</string>
+    <string name="history_earned">Earned</string>
+
+    <!-- Notifications Screen -->
+    <string name="notifications_title">Notifications</string>
+
+    <!-- Invite Friends Screen -->
+    <string name="invite_friends_title">Invite Friends</string>
+    <string name="invite_next_cta">Next</string>
+    <string name="invite_earn_title">Earn up to $150 a day</string>
+    <string name="invite_share_code_label">SHARE YOUR INVITE CODE</string>
+    <string name="invite_search_placeholder">Search</string>
+    <string name="invite_mutual_friends">%1$d mutual friends</string>
+
+    <!-- Chat Screen -->
+    <string name="chat_type_message_placeholder">Type a message&#8230;</string>
+
     <!-- Profile -->
     <string name="profile_edit">Edit</string>
     <string name="profile_informations_label">INFORMATIONS</string>
@@ -107,4 +137,20 @@
     <string name="welcome_subtitle">Start earning money with your car today!</string>
     <string name="welcome_sign_up_cta">Sign Up</string>
     <string name="welcome_already_have_account">Already have an account? Sign In</string>
+
+    <!-- Auth -->
+    <string name="auth_login_title">Login</string>
+    <string name="auth_login_subtitle"> with your phone number</string>
+    <string name="auth_sign_up_title">Sign up</string>
+    <string name="auth_sign_up_subtitle"> with email and phone number</string>
+    <string name="auth_next_cta">Next</string>
+    <string name="auth_sign_in_cta">Sign In</string>
+    <string name="auth_sign_up_cta">Sign Up</string>
+    <string name="auth_no_account">Don\'t have an account? </string>
+    <string name="auth_already_account">Already have an account? </string>
+    <string name="auth_phone_verification_title">Phone Verification</string>
+    <string name="auth_otp_description">Enter your OTP code here</string>
+    <string name="auth_verify_now_cta">Verify now</string>
+    <string name="auth_resend_code_cta">Resend code</string>
+    <string name="auth_resending">Resending&#8230;</string>
 </resources>
