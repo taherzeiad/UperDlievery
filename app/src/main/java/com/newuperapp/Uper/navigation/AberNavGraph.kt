@@ -22,22 +22,18 @@ fun AberNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
-        navController = navController,
-        startDestination = AberDestination.Splash.route
+        navController = navController, startDestination = AberDestination.Splash.route
     ) {
         composable(AberDestination.Splash.route) {
-            SplashRoute(
-                onNavigateToOnboarding = {
-                    navController.navigate(AberDestination.Onboarding.route) {
-                        popUpTo(AberDestination.Splash.route) { inclusive = true }
-                    }
-                },
-                onNavigateToHome = {
-                    navController.navigate(AberDestination.Home.route) {
-                        popUpTo(AberDestination.Splash.route) { inclusive = true }
-                    }
+            SplashRoute(onNavigateToOnboarding = {
+                navController.navigate(AberDestination.Onboarding.route) {
+                    popUpTo(AberDestination.Splash.route) { inclusive = true }
                 }
-            )
+            }, onNavigateToHome = {
+                navController.navigate(AberDestination.Home.route) {
+                    popUpTo(AberDestination.Splash.route) { inclusive = true }
+                }
+            })
         }
 
         composable(AberDestination.Onboarding.route) {
@@ -46,8 +42,7 @@ fun AberNavGraph(
                     navController.navigate(AberDestination.EnableLocation.route) {
                         popUpTo(AberDestination.Onboarding.route) { inclusive = true }
                     }
-                }
-            )
+                })
         }
 
         composable(AberDestination.EnableLocation.route) {
@@ -56,17 +51,13 @@ fun AberNavGraph(
                     navController.navigate(AberDestination.Home.route) {
                         popUpTo(AberDestination.EnableLocation.route) { inclusive = true }
                     }
-                }
-            )
+                })
         }
 
         composable(AberDestination.Home.route) {
-            HomeRoute(
-                onOpenMenu = { /* TODO */ },
-                onNavigateToBookingDetails = { rideId ->
-                    navController.navigate(AberDestination.BookingDetails.createRoute(rideId))
-                }
-            )
+            HomeRoute(onOpenMenu = { /* TODO */ }, onNavigateToBookingDetails = { rideId ->
+                navController.navigate(AberDestination.BookingDetails.createRoute(rideId))
+            })
         }
 
         composable(AberDestination.BookingDetails.route) {
@@ -74,8 +65,7 @@ fun AberNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onNavigateToPickup = { rideId ->
                     navController.navigate(AberDestination.PickupNavigation.createRoute(rideId))
-                }
-            )
+                })
         }
 
         composable(AberDestination.PickupNavigation.route) {
@@ -84,38 +74,30 @@ fun AberNavGraph(
                 onNavigateToDropoffFlow = {
                     // TODO: Implement dropoff flow
                     navController.popBackStack(AberDestination.Home.route, false)
-                }
-            )
+                })
         }
 
         composable(AberDestination.SignUp.route) {
-            SignUpRoute(
-                onNavigateToOtp = { phone ->
-                    navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
-                },
-                onNavigateToSignIn = {
-                    navController.navigate(AberDestination.SignIn.route)
-                }
-            )
+            SignUpRoute(onNavigateToOtp = { phone ->
+                navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
+            }, onNavigateToSignIn = {
+                navController.navigate(AberDestination.SignIn.route)
+            })
         }
 
         composable(AberDestination.SignIn.route) {
             SignInRoute(
                 onNavigateToOtp = { phone ->
                     navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
-                }
-            )
+                })
         }
 
         composable(AberDestination.PhoneVerify.route) {
-            PhoneVerifyRoute(
-                onBackClick = { navController.popBackStack() },
-                onNavigateToHome = {
-                    navController.navigate(AberDestination.Home.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
+            PhoneVerifyRoute(onBackClick = { navController.popBackStack() }, onNavigateToHome = {
+                navController.navigate(AberDestination.Home.route) {
+                    popUpTo(0) { inclusive = true }
                 }
-            )
+            })
         }
     }
 }
