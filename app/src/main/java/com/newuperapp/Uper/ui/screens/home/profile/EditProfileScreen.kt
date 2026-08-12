@@ -1,0 +1,131 @@
+package com.newuperapp.Uper.ui.screens.home.profile
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.ui.theme.AberColor
+import com.newuperapp.Uper.ui.theme.AberTypography
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditProfileScreen(
+    onCancelClick: () -> Unit,
+    onDoneClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { },
+                navigationIcon = {
+                    TextButton(onClick = onCancelClick) {
+                        Text("Cancel", color = AberColor.Orange, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                    }
+                },
+                actions = {
+                    TextButton(onClick = onDoneClick) {
+                        Text("Done", color = AberColor.BorderGray, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            )
+        },
+        containerColor = AberColor.White
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(AberColor.SurfaceGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Default.CameraAlt, contentDescription = null, tint = AberColor.Yellow, modifier = Modifier.size(40.dp))
+                    }
+                    Spacer(Modifier.width(20.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        TextField(
+                            value = "Martha",
+                            onValueChange = {},
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                unfocusedIndicatorColor = AberColor.SurfaceGray,
+                                focusedIndicatorColor = AberColor.Orange
+                            )
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        TextField(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Last name", color = AberColor.BorderGray) },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                unfocusedIndicatorColor = AberColor.SurfaceGray,
+                                focusedIndicatorColor = AberColor.Orange
+                            )
+                        )
+                    }
+                }
+                
+                TextButton(
+                    onClick = {},
+                    modifier = Modifier.padding(start = 20.dp)
+                ) {
+                    Text("Edit photo", color = AberColor.Orange, style = AberTypography.Subtitle)
+                }
+                
+                Spacer(Modifier.height(20.dp))
+                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 1.dp)
+            }
+
+            item {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                    EditInfoItem("Phone number", "584-490-9153")
+                    HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
+                    EditInfoItem("Email", "freeslab88@gmail.com")
+                    HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
+                    EditInfoItem("Gender", "Female")
+                    HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
+                    EditInfoItem("Birthday", "April 16, 1988")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditInfoItem(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, style = AberTypography.Subtitle.copy(fontSize = 18.sp), modifier = Modifier.weight(1f))
+        Text(value, style = AberTypography.Subtitle.copy(color = AberColor.BorderGray, fontSize = 18.sp))
+    }
+}

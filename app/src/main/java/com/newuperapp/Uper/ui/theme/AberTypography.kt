@@ -12,92 +12,62 @@ import androidx.compose.ui.graphics.Color
  */
 object AberTypography {
     fun semibody17(color: Color = AberColor.Ink) = TextStyle(
-        color = color,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.SemiBold
+        color = color, fontSize = 17.sp, fontWeight = FontWeight.SemiBold
     )
 
     val CardTitle = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 18.sp, fontWeight = FontWeight.Bold
     )
 
     val ScreenTitle = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 32.sp, fontWeight = FontWeight.Bold
     )
 
     val Subtitle = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.Normal
+        color = AberColor.Ink, fontSize = 17.sp, fontWeight = FontWeight.Normal
     )
 
     val HeroTitle = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Normal
+        color = AberColor.Ink, fontSize = 32.sp, fontWeight = FontWeight.Normal
     )
 
     val HeroTitleBold = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 32.sp, fontWeight = FontWeight.Bold
     )
 
     val PriceTag = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 20.sp, fontWeight = FontWeight.Bold
     )
 
     val Caption = TextStyle(
-        color = AberColor.BorderGray,
-        fontSize = 13.sp,
-        fontWeight = FontWeight.Normal
+        color = AberColor.BorderGray, fontSize = 13.sp, fontWeight = FontWeight.Normal
     )
 
     val SectionLabel = TextStyle(
-        color = AberColor.BorderGray,
-        fontSize = 11.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.BorderGray, fontSize = 11.sp, fontWeight = FontWeight.Bold
     )
 
     val StatValue = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 19.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 19.sp, fontWeight = FontWeight.Bold
     )
 
     val StatLabel = TextStyle(
-        color = AberColor.Ink.copy(alpha = 0.5f),
-        fontSize = 10.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink.copy(alpha = 0.5f), fontSize = 10.sp, fontWeight = FontWeight.Bold
     )
 
     val OtpDigit = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 32.sp, fontWeight = FontWeight.Bold
     )
 
     val FieldHint = TextStyle(
-        color = AberColor.BorderGray,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.Normal
+        color = AberColor.BorderGray, fontSize = 17.sp, fontWeight = FontWeight.Normal
     )
 
     val Semibold17Black = TextStyle(
-        color = AberColor.Ink,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.SemiBold
+        color = AberColor.Ink, fontSize = 17.sp, fontWeight = FontWeight.SemiBold
     )
 
     val Semibold17White = TextStyle(
-        color = AberColor.White,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.SemiBold
+        color = AberColor.White, fontSize = 17.sp, fontWeight = FontWeight.SemiBold
     )
 }

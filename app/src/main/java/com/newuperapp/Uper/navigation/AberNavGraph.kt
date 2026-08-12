@@ -12,7 +12,12 @@ import com.newuperapp.Uper.ui.screens.auth.signin.SignInRoute
 import com.newuperapp.Uper.ui.screens.auth.signup.SignUpRoute
 import com.newuperapp.Uper.ui.screens.home.HomeRoute
 import com.newuperapp.Uper.ui.screens.home.booking.BookingDetailsRoute
+import com.newuperapp.Uper.ui.screens.home.chat.ChatScreen
+import com.newuperapp.Uper.ui.screens.home.history.HistoryScreen
+import com.newuperapp.Uper.ui.screens.home.invite.InviteFriendsScreen
 import com.newuperapp.Uper.ui.screens.home.navigation.PickupNavigationRoute
+import com.newuperapp.Uper.ui.screens.home.notifications.NotificationsScreen
+import com.newuperapp.Uper.ui.screens.home.settings.SettingsScreen
 import com.newuperapp.Uper.ui.screens.location.EnableLocationRoute
 import com.newuperapp.Uper.ui.screens.onboarding.OnboardingRoute
 import com.newuperapp.Uper.ui.screens.splash.SplashRoute
@@ -62,11 +67,41 @@ fun AberNavGraph(
 
         composable(AberDestination.Home.route) {
             HomeRoute(
-                onOpenMenu = { /* TODO */ },
+                onOpenMenu = { /* Handled internally by drawer in HomeRoute */ },
                 onNavigateToBookingDetails = { rideId ->
                     navController.navigate(AberDestination.BookingDetails.createRoute(rideId))
-                }
+                },
+                onNavigateToHistory = { navController.navigate(AberDestination.History.route) },
+                onNavigateToNotifications = { navController.navigate(AberDestination.Notifications.route) },
+                onNavigateToInviteFriends = { navController.navigate(AberDestination.InviteFriends.route) },
+                onNavigateToSettings = { navController.navigate(AberDestination.Settings.route) },
+                onNavigateToWallet = { navController.navigate(AberDestination.Wallet.route) }
             )
+        }
+
+        composable(AberDestination.History.route) {
+            HistoryScreen(onBackClick = { navController.popBackStack() })
+        }
+
+        composable(AberDestination.Notifications.route) {
+            NotificationsScreen(onBackClick = { navController.popBackStack() })
+        }
+
+        composable(AberDestination.InviteFriends.route) {
+            InviteFriendsScreen(onBackClick = { navController.popBackStack() })
+        }
+
+        composable(AberDestination.Settings.route) {
+            // We might need to pass the profile here as well, or use a shared ViewModel
+            SettingsScreen(profile = null, onBackClick = { navController.popBackStack() })
+        }
+
+        composable(
+            route = AberDestination.Chat.route,
+            arguments = listOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
+            ChatScreen(name = name, onBackClick = { navController.popBackStack() })
         }
 
         composable(AberDestination.SignUp.route) {
