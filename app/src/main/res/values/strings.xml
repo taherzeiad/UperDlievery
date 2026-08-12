@@ -43,4 +43,68 @@
     <string name="navigation_distance">Distance</string>
     <string name="navigation_fare">Fare</string>
     <string name="navigation_drop_off_cta">Drop off</string>
+
+    <!-- Profile -->
+    <string name="profile_edit">Edit</string>
+    <string name="profile_informations_label">INFORMATIONS</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_phone_number">Phone number</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_gender">Gender</string>
+    <string name="profile_birthday">Birthday</string>
+    <string name="profile_edit_photo">Edit photo</string>
+    <string name="profile_cancel">Cancel</string>
+    <string name="profile_done">Done</string>
+    <string name="profile_last_name_placeholder">Last name</string>
+
+    <!-- Wallet -->
+    <string name="wallet_title">My Wallet</string>
+    <string name="wallet_total_earn">TOTAL EARN</string>
+    <string name="wallet_payment_method">Payment method</string>
+    <string name="wallet_payment_history">PAYMENT HISTORY</string>
+    <string name="wallet_cash">Cash</string>
+    <string name="wallet_discount">Discount</string>
+
+    <!-- Payment -->
+    <string name="payment_method_title">Payment method</string>
+    <string name="payment_add_new_card">Add a new card</string>
+    <string name="payment_credit_cards_label">CREDIT CARDS</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_vehicle_management">Vehicle Management</string>
+    <string name="settings_document_management">Document Management</string>
+    <string name="settings_reviews">Reviews</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_terms_privacy">Terms &amp; Privacy Policy</string>
+    <string name="settings_contact_us">Contact us</string>
+
+    <!-- Vehicle -->
+    <string name="vehicle_management_title">Vehicle Management</string>
+    <string name="vehicle_add_new_title">Add a new Vehicle</string>
+    <string name="vehicle_brand_label">VEHICLE BRAND</string>
+    <string name="vehicle_model_label">MODEL</string>
+    <string name="vehicle_year_label">YEAR</string>
+    <string name="vehicle_license_plate_label">LICENSE PLATE</string>
+    <string name="vehicle_color_label">COLOR</string>
+    <string name="vehicle_booking_type_label">BOOKING TYPE</string>
+    <string name="vehicle_complete_cta">COMPLETE</string>
+
+    <!-- Documents -->
+    <string name="document_management_title">Document Management</string>
+    <string name="document_driving_license_title">Driving license</string>
+    <string name="document_id_cards_title">Identification cards</string>
+    <string name="document_update_photo">Update photo</string>
+    <string name="document_card_number_label">CARD NUMBER</string>
+    <string name="document_expiration_date_label">EXPIRATION DATE</string>
+    <string name="document_take_picture">Take a picture</string>
+    <string name="document_choose_picture">Choose a picture</string>
+    <string name="document_cancel">Cancel</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_subtitle">Start earning money with your car today!</string>
+    <string name="welcome_sign_up_cta">Sign Up</string>
+    <string name="welcome_already_have_account">Already have an account? Sign In</string>
 </resources>

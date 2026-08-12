@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.home.vehicle
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -106,13 +107,8 @@ private fun VehicleItem(vehicle: Vehicle) {
                 Box(
                     modifier = Modifier
                         .size(28.dp)
-                        .clip(CircleShape)
-                        .background(Color.Transparent)
-                        .then(Modifier.background(Color.Transparent, CircleShape).padding(1.dp).background(Color.White, CircleShape).padding(1.dp))
-                        .then(Modifier.background(AberColor.Orange.copy(alpha = 0.5f), CircleShape).padding(2.dp).background(Color.White, CircleShape))
-                ) {
-                   // Simplified unselected circle
-                }
+                        .border(1.dp, AberColor.Orange, CircleShape)
+                )
             }
         }
     }

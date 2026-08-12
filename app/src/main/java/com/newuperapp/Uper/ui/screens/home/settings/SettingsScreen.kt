@@ -26,7 +26,10 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 @Composable
 fun SettingsScreen(
     profile: DriverProfile?,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onVehicleManagementClick: () -> Unit,
+    onDocumentManagementClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -44,40 +47,41 @@ fun SettingsScreen(
     ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
             item {
-                ProfileHeader(profile)
+                ProfileHeader(profile, onClick = onProfileClick)
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = AberColor.SurfaceGray, thickness = 8.dp)
             }
 
             item {
-                SettingsItem(Icons.Default.DirectionsCar, "Vehicle Management", Color(0xFFFF8900))
+                SettingsItem(Icons.Default.DirectionsCar, "Vehicle Management", Color(0xFFFF8900), onClick = onVehicleManagementClick)
                 HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp))
-                SettingsItem(Icons.Default.AssignmentInd, "Document Management", Color(0xFF2ECC71))
+                SettingsItem(Icons.Default.AssignmentInd, "Document Management", Color(0xFF2ECC71), onClick = onDocumentManagementClick)
                 HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp))
-                SettingsItem(Icons.Default.Star, "Reviews", Color(0xFFFFD428))
+                SettingsItem(Icons.Default.Star, "Reviews", Color(0xFFFFD428), onClick = {})
                 HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp))
-                SettingsItem(Icons.Default.Language, "Language", Color(0xFF3858F6))
+                SettingsItem(Icons.Default.Language, "Language", Color(0xFF3858F6), onClick = {})
                 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = AberColor.SurfaceGray, thickness = 8.dp)
             }
 
             item {
-                SettingsItem(Icons.Default.Notifications, "Notifications", Color(0xFF3858F6))
+                SettingsItem(Icons.Default.Notifications, "Notifications", Color(0xFF3858F6), onClick = {})
                 HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp))
-                SettingsItem(Icons.Default.Policy, "Terms & Privacy Policy", Color(0xFF9AA0AC))
+                SettingsItem(Icons.Default.Policy, "Terms & Privacy Policy", Color(0xFF9AA0AC), onClick = {})
                 HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp))
-                SettingsItem(Icons.Default.Help, "Contact us", Color(0xFFE22D2D))
+                SettingsItem(Icons.Default.Help, "Contact us", Color(0xFFE22D2D), onClick = {})
             }
         }
     }
 }
 
 @Composable
-private fun ProfileHeader(profile: DriverProfile?) {
+private fun ProfileHeader(profile: DriverProfile?, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -92,11 +96,11 @@ private fun ProfileHeader(profile: DriverProfile?) {
 }
 
 @Composable
-private fun SettingsItem(icon: ImageVector, label: String, iconBgColor: Color) {
+private fun SettingsItem(icon: ImageVector, label: String, iconBgColor: Color, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { }
+            .clickable(onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
