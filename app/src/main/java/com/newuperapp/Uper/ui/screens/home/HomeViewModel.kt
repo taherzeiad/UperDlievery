@@ -9,10 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,16 +36,20 @@ class HomeViewModel @Inject constructor(
     private val _events = MutableSharedFlow<HomeEvent>()
     val events: SharedFlow<HomeEvent> = _events
 
-    val incomingRequests: StateFlow<RideRequest?> = rideRequestRepository
-        .observeIncomingRequests()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    init {
+        viewModelScope.launch {
+            rideRequestRepository.observeIncomingRequests().collect { request ->
+                _uiState.value = _uiState.value.copy(activeRequest = request)
+            }
+        }
+    }
 
     fun onToggleOnline() {
         _uiState.value = _uiState.value.copy(isOnline = !_uiState.value.isOnline)
     }
 
     fun onAcceptRequest() {
-        val request = incomingRequests.value ?: return
+        val request = _uiState.value.activeRequest ?: return
         viewModelScope.launch {
             _events.emit(HomeEvent.NavigateToBookingDetails("ride_123")) // Fake ID
         }

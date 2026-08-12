@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -250,4 +251,48 @@ private fun TurnManeuver.toIcon(): ImageVector = when (this) {
     TurnManeuver.SLIGHT_LEFT -> Icons.Default.TurnLeft
     TurnManeuver.SLIGHT_RIGHT -> Icons.AutoMirrored.Filled.ArrowForward
     TurnManeuver.ARRIVED -> Icons.Default.Navigation
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PickupNavigationScreenPreview() {
+    PickupNavigationScreen(
+        state = PickupNavigationState(
+            rideId = "ride_123",
+            riderName = "Esther Berry",
+            pickupAddress = "7958 Swift Village",
+            distanceToPickup = "1.2 km",
+            timeToPickup = "4 min",
+            driverLocation = com.newuperapp.Uper.domain.home.LatLng(60.1699, 24.9384),
+            riderLocation = com.newuperapp.Uper.domain.home.LatLng(60.1710, 24.9400),
+            routePolyline = listOf(
+                com.newuperapp.Uper.domain.home.LatLng(60.1699, 24.9384),
+                com.newuperapp.Uper.domain.home.LatLng(60.1710, 24.9400)
+            ),
+            currentBanner = NavigationStep(
+                instruction = "Turn left onto Main St",
+                distanceText = "200 m",
+                maneuver = TurnManeuver.TURN_LEFT,
+                isActive = true
+            ),
+            steps = listOf(
+                NavigationStep(
+                    instruction = "Turn left onto Main St",
+                    distanceText = "200 m",
+                    maneuver = TurnManeuver.TURN_LEFT,
+                    isActive = true
+                ),
+                NavigationStep(
+                    instruction = "Go straight for 1 km",
+                    distanceText = "1 km",
+                    maneuver = TurnManeuver.STRAIGHT
+                )
+            ),
+            etaMinutes = 4,
+            distanceKm = 1.2,
+            fare = 25.0
+        ),
+        onBackClick = {},
+        onArrivedClick = {}
+    )
 }

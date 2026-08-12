@@ -10,6 +10,12 @@ sealed class AberDestination(val route: String) {
     }
     data object EnableLocation : AberDestination("enable_location")
     data object Home : AberDestination("home")
+    data object BookingDetails : AberDestination("booking_details/{rideId}") {
+        fun createRoute(rideId: String) = "booking_details/$rideId"
+    }
+    data object PickupNavigation : AberDestination("pickup_navigation/{rideId}") {
+        fun createRoute(rideId: String) = "pickup_navigation/$rideId"
+    }
 
     companion object {
         const val ARG_PHONE = "phone"
