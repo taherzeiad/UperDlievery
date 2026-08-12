@@ -3,8 +3,8 @@ package com.newuperapp.Uper.ui.screens.auth.otp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.newuperapp.Uper.domain.auth.AuthRepository
-import com.newuperapp.Uper.domain.auth.AuthResult
+import com.newuperapp.Uper.domain.repository.AuthRepository
+import com.newuperapp.Uper.domain.repository.AuthResult
 import com.newuperapp.Uper.navigation.AberDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

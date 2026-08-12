@@ -1,46 +1,52 @@
 package com.newuperapp.Uper.ui.screens.home
 
-import android.annotation.SuppressLint
-import java.util.Locale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material.icons.filled.NightsStay
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng as GoogleLatLng
-import com.google.maps.android.compose.*
-import com.newuperapp.Uper.domain.home.DriverProfile
-import com.newuperapp.Uper.domain.home.LatLng
-import com.newuperapp.Uper.domain.home.RideRequest
+import com.newuperapp.Uper.domain.model.DriverProfile
+import com.newuperapp.Uper.domain.model.RidePaymentTag
+import com.newuperapp.Uper.domain.model.RideRequest
+import com.newuperapp.Uper.ui.components.AberButton
+import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.theme.AberColor
+import com.newuperapp.Uper.ui.theme.AberTypography
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
-private fun LatLng.toGoogle() = GoogleLatLng(latitude, longitude)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRoute(
-    onOpenMenu: () -> Unit,
-    onNavigateToBookingDetails: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    onOpenMenu: () -> Unit,
+    onNavigateToBookingDetails: (rideId: String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -55,498 +61,294 @@ fun HomeRoute(
     HomeScreen(
         uiState = uiState,
         onToggleOnline = viewModel::onToggleOnline,
-        onAcceptRequest = viewModel::onAcceptRequest,
-        onIgnoreRequest = viewModel::onIgnoreRequest,
-        onMenuClick = onOpenMenu
+        onMenuClick = onOpenMenu,
+        onRequestCardClick = viewModel::onRequestCardClick,
+        onAcceptClick = viewModel::onAcceptRide,
+        onIgnoreClick = viewModel::onIgnoreRide
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onToggleOnline: () -> Unit,
-    onAcceptRequest: () -> Unit,
-    onIgnoreRequest: () -> Unit,
+    onToggleOnline: (Boolean) -> Unit,
     onMenuClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    onRequestCardClick: (String) -> Unit,
+    onAcceptClick: (String) -> Unit,
+    onIgnoreClick: (String) -> Unit,
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AberColor.SurfaceGray)
-    ) {
-        // 1. الخريطة في الخلفية
-        HomeMap(
-            isOnline = uiState.isOnline,
-            currentLocation = uiState.currentLocation,
-            activeRequest = uiState.activeRequest,
-            modifier = Modifier.fillMaxSize()
-        )
+    val profile = uiState.driverProfile
+    val hasRequests = uiState.isOnline && uiState.pendingRequests.isNotEmpty()
 
-        // 2. الشريط العلوي البارز (Top Bar & Offline Banner)
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-        ) {
-            HomeTopBar(
-                isOnline = uiState.isOnline,
-                onMenuClick = onMenuClick,
-                onToggleOnline = onToggleOnline
-            )
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(
+            LatLng(profile?.currentLat ?: 60.1699, profile?.currentLng ?: 24.9384),
+            15f
+        )
+    }
+
+    val sheetState = rememberBottomSheetScaffoldState()
+
+    BottomSheetScaffold(
+        scaffoldState = sheetState,
+        sheetPeekHeight = if (hasRequests) 420.dp else 260.dp,
+        sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        sheetContainerColor = AberColor.White,
+        sheetDragHandle = { SheetDragHandle() },
+        topBar = {
+            HomeTopBar(isOnline = uiState.isOnline, onToggle = onToggleOnline, onMenuClick = onMenuClick)
+        },
+        sheetContent = {
+            if (hasRequests) {
+                PendingRequestsSheetContent(
+                    requests = uiState.pendingRequests,
+                    expandedRequestId = uiState.expandedRequestId,
+                    onCardClick = onRequestCardClick,
+                    onAcceptClick = onAcceptClick,
+                    onIgnoreClick = onIgnoreClick
+                )
+            } else if (profile != null) {
+                DriverStatsSheetContent(profile = profile)
+            }
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(isMyLocationEnabled = false),
+                uiSettings = MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false)
+            ) {
+                Marker(
+                    state = MarkerState(position = LatLng(profile?.currentLat ?: 60.1699, profile?.currentLng ?: 24.9384)),
+                    title = "You"
+                )
+                if (hasRequests) {
+                    uiState.pendingRequests.forEach { request ->
+                        Marker(
+                            state = MarkerState(position = LatLng(request.pickupLocation.lat, request.pickupLocation.lng)),
+                            title = request.riderName
+                        )
+                    }
+                }
+            }
 
             if (!uiState.isOnline) {
-                OfflineBanner()
+                OfflineBanner(modifier = Modifier.align(Alignment.TopCenter))
+            } else if (hasRequests) {
+                NewRequestsBanner(count = uiState.pendingRequests.size, modifier = Modifier.align(Alignment.TopCenter))
             }
-        }
 
-        // 3. زر تحديد الموقع الحالي (Location FAB)
-        FloatingActionButton(
-            onClick = { /* Center location */ },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(
-                    bottom = if ((uiState.activeRequest != null) || (!uiState.isOnline)) 300.dp else 240.dp,
-                    end = 16.dp
-                )
-                .size(48.dp),
-            shape = CircleShape,
-            containerColor = AberColor.White,
-            contentColor = AberColor.Ink,
-            elevation = FloatingActionButtonDefaults.elevation(4.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.MyLocation,
-                contentDescription = "My Location",
-                modifier = Modifier.size(20.dp)
+            RecenterFab(
+                onClick = {
+                    profile?.let {
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(it.currentLat, it.currentLng), 15f)
+                    }
+                },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp)
             )
-        }
-
-        // 4. البطاقات السفلية حسب الحالة (Driver Stats or Ride Request)
-        if (!uiState.isOnline) {
-            DriverStatsCard(
-                profile = uiState.driverProfile ?: DriverProfile(
-                    name = "Jeremiah Curtis",
-                    level = "Basic level",
-                    avatarUrl = "", // تم إضافة المتغير المفقود
-                    totalEarned = 325.00, // تم التعديل للاسم الصحيح
-                    hoursOnline = 10.2,
-                    totalDistanceKm = 30.0,
-                    totalJobs = 20
-                ), modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        } else {
-            uiState.activeRequest?.let { request ->
-                RideRequestCard(
-                    request = request,
-                    onAccept = onAcceptRequest,
-                    onIgnore = onIgnoreRequest,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                )
-            }
         }
     }
 }
 
 @Composable
-fun HomeTopBar(
-    isOnline: Boolean,
-    onMenuClick: () -> Unit,
-    onToggleOnline: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
+private fun HomeTopBar(isOnline: Boolean, onToggle: (Boolean) -> Unit, onMenuClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().background(AberColor.White).padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = onMenuClick, modifier = Modifier.align(Alignment.CenterStart)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Menu",
-                tint = AberColor.Ink,
-                modifier = Modifier.size(28.dp)
-            )
+        IconButton(onClick = onMenuClick, modifier = Modifier.size(28.dp)) {
+            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = AberColor.Ink)
         }
-
         Text(
             text = if (isOnline) "Online" else "Offline",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = AberColor.Ink
+            style = AberTypography.ScreenTitle.copy(fontSize = 20.sp),
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center
         )
-
         Switch(
             checked = isOnline,
-            onCheckedChange = { onToggleOnline() },
-            modifier = Modifier.align(Alignment.CenterEnd),
+            onCheckedChange = onToggle,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = AberColor.White,
                 checkedTrackColor = AberColor.Orange,
                 uncheckedThumbColor = AberColor.White,
-                uncheckedTrackColor = Color(0xFFCCCCCC),
-                uncheckedBorderColor = Color.Transparent
+                uncheckedTrackColor = AberColor.Ink
             )
         )
     }
 }
 
 @Composable
-fun OfflineBanner(modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.fillMaxWidth(), color = AberColor.Orange, contentColor = AberColor.Ink
+private fun OfflineBanner(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AberColor.Orange)
+            .padding(horizontal = 20.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
+        Box(
+            modifier = Modifier.size(44.dp).clip(CircleShape).border(2.dp, AberColor.Ink.copy(alpha = 0.35f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) { Icon(Icons.Default.DarkMode, contentDescription = null, tint = AberColor.Ink, modifier = Modifier.size(20.dp)) }
+        Column {
+            Text("You are offline !", style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+            Text("Go online to start accepting jobs.", style = AberTypography.Caption.copy(color = AberColor.Ink.copy(alpha = 0.7f)))
+        }
+    }
+}
+
+/** Orange "You have N new requests." banner shown while offers are queued (Home Online, swipe-up state). */
+@Composable
+private fun NewRequestsBanner(count: Int, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AberColor.Orange)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    ) {
+        Text(
+            "You have $count new requests.",
+            style = AberTypography.semibody17(AberColor.Ink).copy(fontSize = 17.sp)
+        )
+    }
+}
+
+@Composable
+private fun RecenterFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier.size(48.dp).background(AberColor.White, CircleShape).border(1.dp, AberColor.BorderGray.copy(alpha = 0.5f), CircleShape)
+    ) {
+        Icon(Icons.Default.MyLocation, contentDescription = "Recenter", tint = AberColor.Ink)
+    }
+}
+
+@Composable
+private fun SheetDragHandle() {
+    Box(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 4.dp), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.width(40.dp).height(4.dp).background(AberColor.BorderGray, RoundedCornerShape(2.dp)))
+    }
+}
+
+@Composable
+private fun DriverStatsSheetContent(profile: DriverProfile) {
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .background(Color.Black.copy(alpha = 0.15f), CircleShape)
-                    .border(1.dp, Color.Black.copy(alpha = 0.2f), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.NightsStay,
-                    contentDescription = null,
-                    tint = AberColor.Ink,
-                    modifier = Modifier.size(24.dp)
-                )
+            Box(modifier = Modifier.size(52.dp).clip(CircleShape).background(AberColor.SurfaceGray))
+            Spacer(Modifier.width(14.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(profile.name, style = AberTypography.CardTitle)
+                Text(profile.level, style = AberTypography.Caption)
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(
-                    text = "You are offline !",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = AberColor.Ink
-                )
-                Text(
-                    text = "Go online to start accepting jobs.",
-                    fontSize = 13.sp,
-                    color = AberColor.Ink.copy(alpha = 0.85f)
-                )
+            Column(horizontalAlignment = Alignment.End) {
+                Text("${profile.currencySymbol}${"%.2f".format(profile.totalEarned)}", style = AberTypography.PriceTag)
+                Text("Earned", style = AberTypography.Caption)
             }
         }
-    }
-}
 
-@SuppressLint("UnrememberedMutableState")
-@Composable
-fun HomeMap(
-    isOnline: Boolean,
-    currentLocation: LatLng,
-    activeRequest: RideRequest?,
-    modifier: Modifier = Modifier
-) {
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(currentLocation.toGoogle(), 15f)
-    }
-
-    GoogleMap(
-        modifier = modifier,
-        cameraPositionState = cameraPositionState,
-        uiSettings = MapUiSettings(zoomControlsEnabled = false, myLocationButtonEnabled = false)
-    ) {
-        if (!isOnline) {
-            Circle(
-                center = currentLocation.toGoogle(),
-                radius = 300.0,
-                fillColor = AberColor.Yellow.copy(alpha = 0.25f),
-                strokeColor = Color.Transparent
-            )
-        }
-
-        Marker(
-            state = MarkerState(position = currentLocation.toGoogle()),
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
-        )
-
-        activeRequest?.let { request ->
-            Marker(
-                state = MarkerState(position = request.pickupLocation.toGoogle()),
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
-            )
-            Marker(
-                state = MarkerState(position = request.dropoffLocation.toGoogle()),
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
-            )
-            Polyline(
-                points = listOf(
-                    request.pickupLocation.toGoogle(), request.dropoffLocation.toGoogle()
-                ), color = Color(0xFF3858F6), width = 12f
-            )
-        }
-    }
-}
-
-@Composable
-fun DriverStatsCard(
-    profile: DriverProfile, modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        color = AberColor.White,
-        shadowElevation = 16.dp
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(AberColor.Yellow)
+                .padding(vertical = 22.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .width(36.dp)
-                    .height(4.dp)
-                    .background(AberColor.BorderGray.copy(alpha = 0.5f), RoundedCornerShape(2.dp))
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(CircleShape)
-                            .background(AberColor.SurfaceGray), contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = profile.name.take(1),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AberColor.Ink
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text = profile.name,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = AberColor.Ink
-                        )
-                        Text(
-                            text = profile.level, fontSize = 13.sp, color = AberColor.BorderGray
-                        )
-                    }
-                }
-
-                Column(horizontalAlignment = Alignment.End) {
-                    // تم الاعتماد على totalEarned هنا
-                    Text(
-                        text = "$${String.format(Locale.US, "%.2f", profile.totalEarned)}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = AberColor.Ink
-                    )
-                    Text(
-                        text = "Earned", fontSize = 13.sp, color = AberColor.BorderGray
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = AberColor.Yellow
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    YellowStatItem(
-                        icon = Icons.Default.AccessTime,
-                        value = profile.hoursOnline.toString(),
-                        label = "HOURS ONLINE"
-                    )
-                    YellowStatItem(
-                        icon = Icons.Default.Speed,
-                        value = "${profile.totalDistanceKm.toInt()} KM",
-                        label = "TOTAL DISTANCE"
-                    )
-                    YellowStatItem(
-                        icon = null,
-                        value = profile.totalJobs.toString(),
-                        label = "TOTAL JOBS"
-                    )
-                }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                StatItem(icon = Icons.Default.AccessTime, value = "${profile.hoursOnline}", label = "HOURS ONLINE")
+                StatItem(icon = Icons.Default.Speed, value = "${profile.totalDistanceKm.toInt()} KM", label = "TOTAL DISTANCE")
+                StatItem(icon = Icons.Default.Route, value = "${profile.totalJobs}", label = "TOTAL JOBS")
             }
         }
     }
 }
 
 @Composable
-fun YellowStatItem(
-    icon: ImageVector?, value: String, label: String
-) {
+private fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = AberColor.Ink.copy(alpha = 0.7f),
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        } else {
-            Spacer(modifier = Modifier.height(28.dp))
-        }
-        Text(
-            text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
-        )
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = AberColor.Ink.copy(alpha = 0.6f)
-        )
+        Icon(icon, contentDescription = null, tint = AberColor.Ink)
+        Spacer(Modifier.height(6.dp))
+        Text(value, style = AberTypography.StatValue)
+        Text(label, style = AberTypography.StatLabel)
     }
 }
 
+/**
+ * Scrollable queue of pending offers (the "swipe up" state on Home Online).
+ * Tapping a collapsed card expands it in place to reveal its Accept button —
+ * matches the reference where only the tapped card grows an "Accept" CTA.
+ */
 @Composable
-fun RideRequestCard(
-    request: RideRequest, onAccept: () -> Unit, onIgnore: () -> Unit, modifier: Modifier = Modifier
+private fun PendingRequestsSheetContent(
+    requests: List<RideRequest>,
+    expandedRequestId: String?,
+    onCardClick: (String) -> Unit,
+    onAcceptClick: (String) -> Unit,
+    onIgnoreClick: (String) -> Unit
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        color = AberColor.White,
-        shadowElevation = 16.dp
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(CircleShape)
-                            .background(AberColor.SurfaceGray), contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = request.passengerName.take(1),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AberColor.Ink
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text = request.passengerName,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = AberColor.Ink
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            BadgeChip(text = "ApplePay")
-                            BadgeChip(text = "Discount")
-                        }
-                    }
-                }
+    LazyColumn(modifier = Modifier.fillMaxWidth().heightIn(max = 640.dp)) {
+        itemsIndexed(requests, key = { _, item -> item.id }) { index, request ->
+            RequestQueueCard(
+                request = request,
+                isExpanded = request.id == expandedRequestId,
+                onClick = { onCardClick(request.id) },
+                onAcceptClick = { onAcceptClick(request.id) }
+            )
+            if (index != requests.lastIndex) {
+                Box(modifier = Modifier.fillMaxWidth().height(8.dp).background(AberColor.SurfaceGrayAlt))
+            }
+        }
+    }
+}
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = "$${String.format(Locale.US, "%.2f", request.fare)}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = AberColor.Ink
-                    )
-                    Text(
-                        text = "${request.distanceKm} km", fontSize = 13.sp, color = AberColor.BorderGray
-                    )
+@Composable
+private fun RequestQueueCard(
+    request: RideRequest,
+    isExpanded: Boolean,
+    onClick: () -> Unit,
+    onAcceptClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(AberColor.SurfaceGray)
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.size(52.dp).clip(CircleShape).background(AberColor.BorderGray.copy(alpha = 0.4f)))
+            Spacer(Modifier.width(14.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(request.riderName, style = AberTypography.CardTitle)
+                Spacer(Modifier.height(6.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    request.tags.forEach { tag -> RequestTagPill(tag) }
                 }
             }
+            Column(horizontalAlignment = Alignment.End) {
+                Text("${request.currencySymbol}${"%.2f".format(request.price)}", style = AberTypography.PriceTag)
+                Text("${request.distanceKm} km", style = AberTypography.Caption)
+            }
+        }
 
-            Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider(color = AberColor.SurfaceGray, thickness = 1.dp)
-            Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.background(AberColor.White)) {
+            AddressBlock(label = "Pick up", address = request.pickupAddress)
+            HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f))
+            AddressBlock(label = "Drop off", address = request.dropoffAddress)
 
-            Text(
-                text = "PICK UP",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = AberColor.BorderGray,
-                letterSpacing = 0.5.sp
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = request.pickupAddress,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = AberColor.Ink
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(color = AberColor.SurfaceGray, thickness = 1.dp)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "DROP OFF",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = AberColor.BorderGray,
-                letterSpacing = 0.5.sp
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = request.dropoffAddress,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = AberColor.Ink
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(
-                    onClick = onIgnore, modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp)
-                ) {
-                    Text(
-                        text = "Ignore",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AberColor.BorderGray
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Button(
-                    onClick = onAccept,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = AberColor.Yellow, contentColor = AberColor.Ink
-                    )
-                ) {
-                    Text(
-                        text = "Accept", fontSize = 16.sp, fontWeight = FontWeight.Bold
-                    )
+            if (isExpanded) {
+                HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f))
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp)) {
+                    AberButton(text = "Accept", onClick = onAcceptClick, style = AberButtonStyle.Primary)
                 }
             }
         }
@@ -554,30 +356,38 @@ fun RideRequestCard(
 }
 
 @Composable
-fun BadgeChip(text: String) {
-    Surface(
-        shape = RoundedCornerShape(12.dp), color = AberColor.Yellow
+private fun RequestTagPill(tag: RidePaymentTag) {
+    val label = when (tag) {
+        RidePaymentTag.APPLE_PAY -> "ApplePay"
+        RidePaymentTag.DISCOUNT -> "Discount"
+        RidePaymentTag.CASH -> "Cash"
+        RidePaymentTag.CARD -> "Card"
+    }
+    Box(
+        modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(AberColor.TagBackground).padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
-        Text(
-            text = text,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold,
-            color = AberColor.Ink,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-        )
+        Text(label, style = AberTypography.Caption.copy(color = AberColor.Ink, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold))
     }
 }
 
-// تم حذف الامتداد totalEarnings لأنه أصبح موجوداً بشكل رسمي تحت اسم totalEarned
+@Composable
+private fun AddressBlock(label: String, address: String) {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp)) {
+        Text(label.uppercase(), style = AberTypography.SectionLabel)
+        Spacer(Modifier.height(6.dp))
+        Text(address, style = AberTypography.semibody17())
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenOfflinePreview() {
+private fun HomeScreenPreview() {
     HomeScreen(
-        uiState = HomeUiState(isOnline = false),
+        uiState = HomeUiState(isOnline = false, driverProfile = DriverProfile("1", "Taher", "Pro", null, 100.0, "$", 5.0, 20.0, 10, 60.1699, 24.9384)),
         onToggleOnline = {},
-        onAcceptRequest = {},
-        onIgnoreRequest = {},
         onMenuClick = {},
+        onRequestCardClick = {},
+        onAcceptClick = {},
+        onIgnoreClick = {}
     )
 }

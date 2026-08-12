@@ -4,13 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.newuperapp.Uper.data.auth.FakeAuthRepository
-import com.newuperapp.Uper.data.home.FakeDriverProfileRepository
-import com.newuperapp.Uper.data.home.FakeRideRequestRepository
+import com.newuperapp.Uper.data.repository.AuthRepositoryImpl
+import com.newuperapp.Uper.data.repository.RideRequestRepositoryImpl
 import com.newuperapp.Uper.data.onboarding.OnboardingRepositoryImpl
-import com.newuperapp.Uper.domain.auth.AuthRepository
-import com.newuperapp.Uper.domain.home.DriverProfileRepository
-import com.newuperapp.Uper.domain.home.RideRequestRepository
+import com.newuperapp.Uper.domain.repository.AuthRepository
+import com.newuperapp.Uper.domain.repository.RideRequestRepository
 import com.newuperapp.Uper.domain.onboarding.OnboardingRepository
 import dagger.Binds
 import dagger.Module
@@ -45,19 +43,13 @@ abstract class RepositoryModule {
     // TODO: بدّلي هالاتنين لتنفيذ حقيقي (Retrofit/سوكيت) قبل الإنتاج — حالياً Fake ثابت.
     @Binds
     @Singleton
-    abstract fun bindDriverProfileRepository(
-        impl: FakeDriverProfileRepository
-    ): DriverProfileRepository
-
-    @Binds
-    @Singleton
     abstract fun bindRideRequestRepository(
-        impl: FakeRideRequestRepository
+        impl: RideRequestRepositoryImpl
     ): RideRequestRepository
 
     @Binds
     @Singleton
     abstract fun bindAuthRepository(
-        impl: FakeAuthRepository
+        impl: AuthRepositoryImpl
     ): AuthRepository
 }

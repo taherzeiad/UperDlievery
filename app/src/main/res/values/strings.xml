@@ -22,4 +22,25 @@
     <string name="location_description">Choose your location to start find the \n request around you.</string>
     <string name="location_use_my_location">USE MY LOCATION</string>
     <string name="location_skip">Skip for now</string>
+
+    <string name="home_new_requests_banner">You have %1$d new requests.</string>
+    <string name="home_ignore">Ignore</string>
+    <string name="home_accept">Accept</string>
+
+    <string name="booking_pick_up_label">PICK UP</string>
+    <string name="booking_drop_off_label">DROP OFF</string>
+    <string name="booking_noted_label">NOTED</string>
+    <string name="booking_trip_fare_label">TRIP FARE</string>
+    <string name="booking_paid_amount">Paid amount</string>
+    <string name="booking_call">Call</string>
+    <string name="booking_message">Message</string>
+    <string name="booking_cancel">Cancel</string>
+    <string name="booking_go_to_pick_up">Go to pick up</string>
+
+    <string name="navigation_pick_up_title">Pick up</string>
+    <string name="navigation_pick_up_at">Pick up at</string>
+    <string name="navigation_est">EST</string>
+    <string name="navigation_distance">Distance</string>
+    <string name="navigation_fare">Fare</string>
+    <string name="navigation_drop_off_cta">Drop off</string>
 </resources>
