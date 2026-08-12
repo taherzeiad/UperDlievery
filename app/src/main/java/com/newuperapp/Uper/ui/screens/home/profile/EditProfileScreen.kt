@@ -12,12 +12,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen for editing driver profile information.
+ *
+ * @param onCancelClick Callback to discard changes and return.
+ * @param onDoneClick Callback to save changes and return.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
@@ -30,12 +38,20 @@ fun EditProfileScreen(
                 title = { },
                 navigationIcon = {
                     TextButton(onClick = onCancelClick) {
-                        Text("Cancel", color = AberColor.Orange, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                        Text(
+                            text = stringResource(R.string.profile_cancel),
+                            color = AberColor.Orange,
+                            style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                 },
                 actions = {
                     TextButton(onClick = onDoneClick) {
-                        Text("Done", color = AberColor.BorderGray, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                        Text(
+                            text = stringResource(R.string.profile_done),
+                            color = AberColor.BorderGray,
+                            style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
@@ -55,6 +71,7 @@ fun EditProfileScreen(
                         .padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Editable Photo Area
                     Box(
                         modifier = Modifier
                             .size(100.dp)
@@ -84,7 +101,13 @@ fun EditProfileScreen(
                             value = "",
                             onValueChange = {},
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Last name", color = AberColor.BorderGray, style = AberTypography.Subtitle.copy(fontSize = 18.sp)) },
+                            placeholder = { 
+                                Text(
+                                    text = stringResource(R.string.profile_last_name_placeholder),
+                                    color = AberColor.BorderGray,
+                                    style = AberTypography.Subtitle.copy(fontSize = 18.sp)
+                                ) 
+                            },
                             textStyle = AberTypography.Subtitle.copy(fontSize = 18.sp),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
@@ -101,7 +124,11 @@ fun EditProfileScreen(
                     onClick = {},
                     modifier = Modifier.padding(start = 20.dp)
                 ) {
-                    Text("Edit photo", color = AberColor.Orange, style = AberTypography.Subtitle)
+                    Text(
+                        text = stringResource(R.string.profile_edit_photo),
+                        color = AberColor.Orange,
+                        style = AberTypography.Subtitle
+                    )
                 }
                 
                 Spacer(Modifier.height(20.dp))
@@ -110,19 +137,22 @@ fun EditProfileScreen(
 
             item {
                 Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                    EditInfoItem("Phone number", "584-490-9153")
+                    EditInfoItem(stringResource(R.string.profile_phone_number), "584-490-9153")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    EditInfoItem("Email", "freeslab88@gmail.com")
+                    EditInfoItem(stringResource(R.string.profile_email), "freeslab88@gmail.com")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    EditInfoItem("Gender", "Female")
+                    EditInfoItem(stringResource(R.string.profile_gender), "Female")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    EditInfoItem("Birthday", "April 16, 1988")
+                    EditInfoItem(stringResource(R.string.profile_birthday), "April 16, 1988")
                 }
             }
         }
     }
 }
 
+/**
+ * Row item for editing profile fields.
+ */
 @Composable
 private fun EditInfoItem(label: String, value: String) {
     Row(

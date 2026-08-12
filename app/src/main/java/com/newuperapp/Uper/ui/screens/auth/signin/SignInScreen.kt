@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.auth.signin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
@@ -11,6 +12,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +27,8 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 @Composable
 fun SignInRoute(
     viewModel: SignInViewModel = hiltViewModel(),
-    onNavigateToOtp: (fullPhoneNumber: String) -> Unit
+    onNavigateToOtp: (fullPhoneNumber: String) -> Unit,
+    onNavigateToSignUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -41,7 +45,8 @@ fun SignInRoute(
         onDigitPressed = viewModel::onDigitPressed,
         onBackspace = viewModel::onBackspace,
         onClearClick = viewModel::onClearClick,
-        onNextClick = viewModel::onNextClick
+        onNextClick = viewModel::onNextClick,
+        onSignUpClick = onNavigateToSignUp
     )
 }
 
@@ -51,7 +56,8 @@ fun SignInScreen(
     onDigitPressed: (String) -> Unit,
     onBackspace: () -> Unit,
     onClearClick: () -> Unit,
-    onNextClick: () -> Unit
+    onNextClick: () -> Unit,
+    onSignUpClick: () -> Unit
 ) {
     Scaffold(containerColor = AberColor.Yellow) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
@@ -92,6 +98,20 @@ fun SignInScreen(
                         style = AberButtonStyle.Dark,
                         enabled = uiState.isNextEnabled,
                         isLoading = uiState.isSubmitting
+                    )
+
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(AberTypography.Subtitle.toSpanStyle()) { append("Don't have an account? ") }
+                            withStyle(
+                                SpanStyle(fontWeight = FontWeight.Bold, color = AberColor.Orange)
+                            ) { append("Sign Up") }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onSignUpClick)
+                            .padding(vertical = 8.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
             }

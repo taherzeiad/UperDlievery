@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.newuperapp.Uper.ui.screens.auth.WelcomeScreen
 import com.newuperapp.Uper.ui.screens.auth.otp.PhoneVerifyRoute
 import com.newuperapp.Uper.ui.screens.auth.signin.SignInRoute
 import com.newuperapp.Uper.ui.screens.auth.signup.SignUpRoute
@@ -56,10 +57,17 @@ fun AberNavGraph(
         composable(AberDestination.Onboarding.route) {
             OnboardingRoute(
                 onFinished = {
-                    navController.navigate(AberDestination.EnableLocation.route) {
+                    navController.navigate(AberDestination.Welcome.route) {
                         popUpTo(AberDestination.Onboarding.route) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(AberDestination.Welcome.route) {
+            WelcomeScreen(
+                onNavigateToSignUp = { navController.navigate(AberDestination.SignUp.route) },
+                onNavigateToSignIn = { navController.navigate(AberDestination.SignIn.route) }
             )
         }
 
@@ -190,6 +198,9 @@ fun AberNavGraph(
                 onNavigateToOtp = { phone ->
                     navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
                 },
+                onNavigateToSignUp = {
+                    navController.navigate(AberDestination.SignUp.route)
+                }
             )
         }
 
@@ -200,7 +211,7 @@ fun AberNavGraph(
             PhoneVerifyRoute(
                 onBackClick = { navController.popBackStack() },
                 onNavigateToHome = {
-                    navController.navigate(AberDestination.Home.route) {
+                    navController.navigate(AberDestination.EnableLocation.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 }

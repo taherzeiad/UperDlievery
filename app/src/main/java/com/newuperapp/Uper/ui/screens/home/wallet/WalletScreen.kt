@@ -17,14 +17,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.WalletTransaction
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Main Wallet screen showing current earnings, payment methods, and transaction history.
+ *
+ * @param onBackClick Callback for the menu/back icon.
+ * @param onPaymentMethodClick Callback to navigate to payment method management.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletScreen(
@@ -36,7 +43,12 @@ fun WalletScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("My Wallet", style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)) },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.wallet_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Back", tint = AberColor.Ink)
@@ -48,7 +60,7 @@ fun WalletScreen(
         containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            // Tabs
+            // Cash / Discount Toggle
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -57,11 +69,11 @@ fun WalletScreen(
                     .border(1.dp, AberColor.Ink, RoundedCornerShape(8.dp))
                     .clip(RoundedCornerShape(8.dp))
             ) {
-                TabButton("Cash", selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
-                TabButton("Discount", selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
+                TabButton(stringResource(R.string.wallet_cash), selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
+                TabButton(stringResource(R.string.wallet_discount), selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
             }
 
-            // Total Earned Section
+            // Earnings Summary
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -70,10 +82,13 @@ fun WalletScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("$325.00", style = AberTypography.ScreenTitle.copy(fontSize = 44.sp, fontWeight = FontWeight.Bold))
-                Text("TOTAL EARN", style = AberTypography.SectionLabel.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.5f)))
+                Text(
+                    text = stringResource(R.string.wallet_total_earn),
+                    style = AberTypography.SectionLabel.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.5f))
+                )
             }
 
-            // Payment Method Card
+            // Quick access to Payment Methods
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,14 +111,18 @@ fun WalletScreen(
                         Icon(Icons.Default.MonetizationOn, contentDescription = null, tint = Color.White)
                     }
                     Spacer(Modifier.width(16.dp))
-                    Text("Payment method", style = AberTypography.CardTitle.copy(fontSize = 20.sp), modifier = Modifier.weight(1f))
+                    Text(
+                        text = stringResource(R.string.wallet_payment_method),
+                        style = AberTypography.CardTitle.copy(fontSize = 20.sp),
+                        modifier = Modifier.weight(1f)
+                    )
                     Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray)
                 }
             }
 
-            // Payment History
+            // Recent Transactions
             Text(
-                "PAYMENT HISTORY",
+                text = stringResource(R.string.wallet_payment_history),
                 style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray, fontSize = 14.sp),
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
@@ -132,6 +151,9 @@ fun WalletScreen(
     }
 }
 
+/**
+ * Styled tab button for the wallet sub-navigation.
+ */
 @Composable
 private fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Surface(
@@ -151,6 +173,9 @@ private fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Mo
     }
 }
 
+/**
+ * List item representing a single transaction in the wallet history.
+ */
 @Composable
 private fun TransactionItem(transaction: WalletTransaction) {
     Row(

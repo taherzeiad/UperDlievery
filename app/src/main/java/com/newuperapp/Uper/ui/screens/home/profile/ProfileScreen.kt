@@ -1,7 +1,6 @@
 package com.newuperapp.Uper.ui.screens.home.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -13,13 +12,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
+/**
+ * Screen displaying the driver's profile details.
+ *
+ * @param profile The [DriverProfile] to display.
+ * @param onBackClick Callback for the back navigation action.
+ * @param onEditClick Callback to navigate to the profile editing screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -38,7 +46,11 @@ fun ProfileScreen(
                 },
                 actions = {
                     TextButton(onClick = onEditClick) {
-                        Text("Edit", color = AberColor.Orange, style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold))
+                        Text(
+                            text = stringResource(R.string.profile_edit),
+                            color = AberColor.Orange,
+                            style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
@@ -54,6 +66,7 @@ fun ProfileScreen(
         ) {
             item {
                 Spacer(Modifier.height(20.dp))
+                // Profile Photo Placeholder
                 Box(
                     modifier = Modifier
                         .size(120.dp)
@@ -68,24 +81,30 @@ fun ProfileScreen(
 
             item {
                 Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                    Text("INFORMATIONS", style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray, fontSize = 14.sp))
+                    Text(
+                        text = stringResource(R.string.profile_informations_label),
+                        style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray, fontSize = 14.sp)
+                    )
                     Spacer(Modifier.height(16.dp))
                     
-                    ProfileInfoItem("Username", profile?.name ?: "Martha Banks")
+                    ProfileInfoItem(stringResource(R.string.profile_username), profile?.name ?: "Martha Banks")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    ProfileInfoItem("Phone number", "584-490-9153")
+                    ProfileInfoItem(stringResource(R.string.profile_phone_number), "584-490-9153")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    ProfileInfoItem("Email", "freeslab88@gmail.com")
+                    ProfileInfoItem(stringResource(R.string.profile_email), "freeslab88@gmail.com")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    ProfileInfoItem("Gender", "Female")
+                    ProfileInfoItem(stringResource(R.string.profile_gender), "Female")
                     HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(vertical = 12.dp))
-                    ProfileInfoItem("Birthday", "April 16, 1988")
+                    ProfileInfoItem(stringResource(R.string.profile_birthday), "April 16, 1988")
                 }
             }
         }
     }
 }
 
+/**
+ * Reusable row item for displaying a label and its corresponding profile value.
+ */
 @Composable
 private fun ProfileInfoItem(label: String, value: String) {
     Row(
