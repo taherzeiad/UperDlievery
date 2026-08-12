@@ -185,5 +185,5 @@ private fun DrawerItem(
 }
 
 enum class DrawerMenuItem {
-    Home, Wallet, History, Notifications, InviteFriends, Settings, Logout
+    Home, Wallet, History, Notifications, InviteFriends, Settings, Logout, Profile
 }

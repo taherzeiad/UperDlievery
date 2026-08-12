@@ -119,7 +119,7 @@ private fun PaymentMethodItem(card: PaymentMethod) {
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Simplified icon based on type
+        // Brand icon box
         Box(
             modifier = Modifier
                 .size(44.dp)
@@ -129,10 +129,17 @@ private fun PaymentMethodItem(card: PaymentMethod) {
         ) {
             val typeLabel = when (card.type) {
                 PaymentMethodType.VISA -> "VISA"
-                PaymentMethodType.PAYPAL -> "Paypal"
-                PaymentMethodType.MASTERCARD -> "Master"
+                PaymentMethodType.PAYPAL -> "PAYPAL"
+                PaymentMethodType.MASTERCARD -> "MC"
             }
-            Text(typeLabel.take(3), style = AberTypography.Caption.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp))
+            Text(
+                typeLabel,
+                style = AberTypography.Caption.copy(
+                    fontWeight = FontWeight.Black,
+                    fontSize = 10.sp,
+                    color = AberColor.Ink
+                )
+            )
         }
         
         Spacer(Modifier.width(16.dp))
@@ -145,7 +152,7 @@ private fun PaymentMethodItem(card: PaymentMethod) {
                     PaymentMethodType.PAYPAL -> "Paypal"
                     PaymentMethodType.MASTERCARD -> "Master Card"
                 },
-                style = AberTypography.Caption
+                style = AberTypography.Caption.copy(color = AberColor.BorderGray)
             )
         }
     }

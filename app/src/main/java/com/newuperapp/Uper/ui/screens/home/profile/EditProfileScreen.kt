@@ -70,9 +70,11 @@ fun EditProfileScreen(
                             value = "Martha",
                             onValueChange = {},
                             modifier = Modifier.fillMaxWidth(),
+                            textStyle = AberTypography.Subtitle.copy(fontSize = 18.sp),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
                                 unfocusedIndicatorColor = AberColor.SurfaceGray,
                                 focusedIndicatorColor = AberColor.Orange
                             )
@@ -82,10 +84,12 @@ fun EditProfileScreen(
                             value = "",
                             onValueChange = {},
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Last name", color = AberColor.BorderGray) },
+                            placeholder = { Text("Last name", color = AberColor.BorderGray, style = AberTypography.Subtitle.copy(fontSize = 18.sp)) },
+                            textStyle = AberTypography.Subtitle.copy(fontSize = 18.sp),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
                                 unfocusedIndicatorColor = AberColor.SurfaceGray,
                                 focusedIndicatorColor = AberColor.Orange
                             )

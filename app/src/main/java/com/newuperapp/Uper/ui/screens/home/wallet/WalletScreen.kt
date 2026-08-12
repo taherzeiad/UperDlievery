@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.home.wallet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -53,6 +54,8 @@ fun WalletScreen(
                     .fillMaxWidth()
                     .background(AberColor.Yellow)
                     .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .border(1.dp, AberColor.Ink, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
             ) {
                 TabButton("Cash", selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
                 TabButton("Discount", selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
@@ -66,8 +69,8 @@ fun WalletScreen(
                     .padding(vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("$325.00", style = AberTypography.ScreenTitle.copy(fontSize = 48.sp))
-                Text("TOTAL EARN", style = AberTypography.SectionLabel.copy(fontSize = 14.sp))
+                Text("$325.00", style = AberTypography.ScreenTitle.copy(fontSize = 44.sp, fontWeight = FontWeight.Bold))
+                Text("TOTAL EARN", style = AberTypography.SectionLabel.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.5f)))
             }
 
             // Payment Method Card
@@ -134,9 +137,7 @@ private fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Mo
     Surface(
         onClick = onClick,
         modifier = modifier.height(44.dp),
-        color = if (isSelected) AberColor.Ink else Color.Transparent,
-        shape = if (text == "Cash") RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp) else RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp),
-        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, AberColor.Ink) else null
+        color = if (isSelected) AberColor.Ink else Color.Transparent
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
