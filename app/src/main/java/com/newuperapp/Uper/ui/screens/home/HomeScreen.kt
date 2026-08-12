@@ -25,11 +25,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.domain.model.RidePaymentTag
 import com.newuperapp.Uper.domain.model.RideRequest
 import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
+import com.newuperapp.Uper.ui.components.AberDrawer
+import com.newuperapp.Uper.ui.components.DrawerMenuItem
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 import com.google.android.gms.maps.model.CameraPosition
@@ -47,8 +50,15 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
     onOpenMenu: () -> Unit,
     onNavigateToBookingDetails: (rideId: String) -> Unit,
+    onNavigateToHistory: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    onNavigateToInviteFriends: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToWallet: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -58,14 +68,37 @@ fun HomeRoute(
         }
     }
 
-    HomeScreen(
-        uiState = uiState,
-        onToggleOnline = viewModel::onToggleOnline,
-        onMenuClick = onOpenMenu,
-        onRequestCardClick = viewModel::onRequestCardClick,
-        onAcceptClick = viewModel::onAcceptRide,
-        onIgnoreClick = viewModel::onIgnoreRide
-    )
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            uiState.driverProfile?.let { profile ->
+                AberDrawer(
+                    profile = profile,
+                    onMenuItemClick = { item ->
+                        scope.launch { drawerState.close() }
+                        when (item) {
+                            DrawerMenuItem.Home -> {}
+                            DrawerMenuItem.History -> onNavigateToHistory()
+                            DrawerMenuItem.Notifications -> onNavigateToNotifications()
+                            DrawerMenuItem.InviteFriends -> onNavigateToInviteFriends()
+                            DrawerMenuItem.Settings -> onNavigateToSettings()
+                            DrawerMenuItem.Wallet -> onNavigateToWallet()
+                            DrawerMenuItem.Logout -> { /* Handle logout */ }
+                        }
+                    }
+                )
+            }
+        }
+    ) {
+        HomeScreen(
+            uiState = uiState,
+            onToggleOnline = viewModel::onToggleOnline,
+            onMenuClick = { scope.launch { drawerState.open() } },
+            onRequestCardClick = viewModel::onRequestCardClick,
+            onAcceptClick = viewModel::onAcceptRide,
+            onIgnoreClick = viewModel::onIgnoreRide
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -124,7 +124,6 @@ fun BookingDetailsScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
             ) {
-
                 // ---- Rider summary ----
                 Row(
                     modifier = Modifier
