@@ -7,9 +7,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.newuperapp.Uper.data.repository.AuthRepositoryImpl
 import com.newuperapp.Uper.data.repository.RideRequestRepositoryImpl
 import com.newuperapp.Uper.data.onboarding.OnboardingRepositoryImpl
+import com.newuperapp.Uper.data.repository.DriverRepositoryImpl
 import com.newuperapp.Uper.domain.repository.AuthRepository
 import com.newuperapp.Uper.domain.repository.RideRequestRepository
 import com.newuperapp.Uper.domain.onboarding.OnboardingRepository
+import com.newuperapp.Uper.domain.repository.DriverRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -52,4 +54,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         impl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDriverRepository(
+        impl: DriverRepositoryImpl
+    ): DriverRepository
 }

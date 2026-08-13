@@ -10,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -26,7 +29,6 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 /**
  * App Settings screen allowing drivers to manage their vehicle, documents, and preferences.
  *
- * @param profile Driver profile data for the header.
  * @param onBackClick Navigation callback.
  * @param onVehicleManagementClick Navigation to vehicle management.
  * @param onDocumentManagementClick Navigation to document management.
@@ -35,12 +37,14 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    profile: DriverProfile?,
     onBackClick: () -> Unit,
     onVehicleManagementClick: () -> Unit,
     onDocumentManagementClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val profile by viewModel.profile.collectAsState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

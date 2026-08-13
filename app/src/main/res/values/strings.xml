@@ -153,4 +153,23 @@
     <string name="auth_verify_now_cta">Verify now</string>
     <string name="auth_resend_code_cta">Resend code</string>
     <string name="auth_resending">Resending&#8230;</string>
+    <string name="home_online">Online</string>
+    <string name="home_offline">Offline</string>
+    <string name="home_offline_banner_title">You are offline !</string>
+    <string name="home_offline_banner_subtitle">Go online to start accepting jobs.</string>
+    <string name="home_stat_hours">HOURS ONLINE</string>
+    <string name="home_stat_distance">TOTAL DISTANCE</string>
+    <string name="home_stat_jobs">TOTAL JOBS</string>
+    <string name="home_marker_you">You</string>
+    <string name="auth_email_placeholder">name@example.com</string>
+    <string name="drawer_home">Home</string>
+    <string name="drawer_wallet">My Wallet</string>
+    <string name="drawer_history">History</string>
+    <string name="drawer_notifications">Notifications</string>
+    <string name="drawer_invite">Invite Friends</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="drawer_stat_hours">Hours online</string>
+    <string name="drawer_stat_distance">Total Distance</string>
+    <string name="drawer_stat_jobs">Total Jobs</string>
 </resources>

@@ -11,6 +11,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import androidx.compose.ui.res.stringResource
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.ui.components.AberDrawer
 import com.newuperapp.Uper.ui.components.DrawerMenuItem
@@ -149,7 +151,7 @@ fun HomeScreen(
                     state = MarkerState(
                         position = LatLng(profile?.currentLat ?: 60.1699, profile?.currentLng ?: 24.9384)
                     ), 
-                    title = "You"
+                    title = stringResource(R.string.home_marker_you)
                 )
                 if (hasRequests) {
                     uiState.pendingRequests.forEach { request ->

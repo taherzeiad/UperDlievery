@@ -1,176 +1,164 @@
 package com.newuperapp.Uper.data.repository
 
-import com.newuperapp.Uper.domain.model.BookingDetails
-import com.newuperapp.Uper.domain.model.DriverProfile
-import com.newuperapp.Uper.domain.model.FareLine
-import com.newuperapp.Uper.domain.model.LatLngPoint
-import com.newuperapp.Uper.domain.model.NavigationStep
-import com.newuperapp.Uper.domain.model.PickupNavigationState
-import com.newuperapp.Uper.domain.model.RidePaymentTag
-import com.newuperapp.Uper.domain.model.RideRequest
-import com.newuperapp.Uper.domain.model.TurnManeuver
+import com.newuperapp.Uper.data.remote.ApiService
+import com.newuperapp.Uper.data.remote.dto.LatLngDto
+import com.newuperapp.Uper.data.remote.dto.NavigationStepDto
+import com.newuperapp.Uper.data.remote.dto.RideRequestDto
+import com.newuperapp.Uper.domain.model.*
 import com.newuperapp.Uper.domain.repository.RideRequestRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Simulated real-time source. Replace with a Firestore/WebSocket-backed implementation
- * once the live dispatch backend is wired up — the [RideRequestRepository] contract
- * (Flow-based) is designed to make that swap a one-file change.
- */
 @Singleton
-class RideRequestRepositoryImpl @Inject constructor() : RideRequestRepository {
+class RideRequestRepositoryImpl @Inject constructor(
+    private val apiService: ApiService
+) : RideRequestRepository {
 
-    private val onlineState = MutableStateFlow(false)
+    private val _onlineState = MutableStateFlow(false)
+    private val _pendingRequests = MutableStateFlow<List<RideRequest>>(emptyList())
 
-    private val driverProfile = MutableStateFlow(
-        DriverProfile(
-            id = "drv_001",
-            name = "Jeremiah Curtis",
-            level = "Basic level",
-            avatarUrl = null,
-            totalEarned = 325.0,
-            hoursOnline = 10.2,
-            totalDistanceKm = 30.0,
-            totalJobs = 20,
-            currentLat = 60.1699,
-            currentLng = 24.9384
-        )
-    )
-
-    private val pendingRequests = MutableStateFlow<List<RideRequest>>(emptyList())
-
-    override fun observeDriverProfile() = driverProfile.asStateFlow()
-
-    override fun observeOnlineState() = onlineState.asStateFlow()
-
-    override suspend fun setOnline(isOnline: Boolean) {
-        onlineState.value = isOnline
-        pendingRequests.value = if (isOnline) DEMO_QUEUE else emptyList()
+    // Polling simulation for real-time updates from backend
+    private val pollingFlow = flow {
+        while (true) {
+            if (_onlineState.value) {
+                try {
+                    val dtos = apiService.getIncomingRides()
+                    val domainModels = dtos.map { it.toDomain() }
+                    _pendingRequests.value = domainModels
+                    emit(domainModels)
+                } catch (e: Exception) {
+                    // Log error
+                }
+            }
+            delay(5000) // Poll every 5 seconds
+        }
     }
 
-    override fun observeIncomingRideRequest() = flow {
-        emit(pendingRequests.value.firstOrNull())
+    override fun observeDriverProfile(): Flow<DriverProfile> = flow {
+        try {
+            val dto = apiService.getProfile()
+            emit(dto.toDomain())
+        } catch (e: Exception) {
+            // Fallback or error handling
+        }
     }
 
-    override fun observePendingRequests() = pendingRequests.asStateFlow()
+    override fun observeOnlineState() = _onlineState.asStateFlow()
+
+    override suspend fun setOnline(isOnline: Boolean) = withContext(Dispatchers.IO) {
+        try {
+            apiService.setOnline(isOnline)
+            _onlineState.value = isOnline
+            if (!isOnline) _pendingRequests.value = emptyList()
+        } catch (e: Exception) {
+            // Handle failure
+        }
+    }
+
+    override fun observeIncomingRideRequest(): Flow<RideRequest?> = pollingFlow.map { it.firstOrNull() }
+
+    override fun observePendingRequests(): Flow<List<RideRequest>> = _pendingRequests.asStateFlow()
 
     override suspend fun acceptRide(rideId: String) {
-        // TODO: call backend "accept" endpoint. Demo: leave the queue as-is so
-        // BookingDetailsScreen can still look it up by id.
+        withContext(Dispatchers.IO) {
+            apiService.acceptRide(rideId)
+        }
     }
 
     override suspend fun ignoreRide(rideId: String) {
-        pendingRequests.value = pendingRequests.value.filterNot { it.id == rideId }
+        withContext(Dispatchers.IO) {
+            apiService.ignoreRide(rideId)
+            _pendingRequests.value = _pendingRequests.value.filterNot { it.id == rideId }
+        }
     }
 
-    override suspend fun getBookingDetails(rideId: String): BookingDetails {
-        delay(300)
-        val request = pendingRequests.value.firstOrNull { it.id == rideId } ?: DEMO_QUEUE.first()
-        return BookingDetails(
-            bookingId = "123456",
-            request = request,
-            riderPhone = "+1 555 010 2244",
-            note = "Lorem ipsum dolor sit amet, consectetur adipisc elit. Nullam ac vestibulum erat. " +
-                "Cras vulputate auctor lectus at consequat.",
-            fareBreakdown = listOf(
-                FareLine("Apple Pay", 15.0),
-                FareLine("Discount", 10.0)
-            ),
-            paidAmount = request.price
+    override suspend fun getBookingDetails(rideId: String): BookingDetails = withContext(Dispatchers.IO) {
+        val dto = apiService.getBookingDetails(rideId)
+        BookingDetails(
+            bookingId = dto.bookingId,
+            request = dto.ride.toDomain(),
+            riderPhone = dto.riderPhone,
+            note = dto.note ?: "",
+            fareBreakdown = dto.fareBreakdown.map { FareLine(it.label, it.amount) },
+            paidAmount = dto.paidAmount
         )
     }
 
     override suspend fun cancelBooking(rideId: String) {
-        pendingRequests.value = pendingRequests.value.filterNot { it.id == rideId }
+        withContext(Dispatchers.IO) {
+            apiService.cancelBooking(rideId)
+            _pendingRequests.value = _pendingRequests.value.filterNot { it.id == rideId }
+        }
     }
 
-    override fun observePickupNavigation(rideId: String) = flow {
-        emit(
-            PickupNavigationState(
-                rideId = rideId,
-                pickupAddress = "7958 Swift Village",
-                etaMinutes = 5,
-                distanceKm = 2.2,
-                fare = 25.0,
-                currentBanner = NavigationStep(
-                    maneuver = TurnManeuver.TURN_RIGHT,
-                    instruction = "Turn right at 105 William St, Chicago, US",
-                    distanceText = "250m",
-                    isActive = true
-                ),
-                steps = listOf(
-                    NavigationStep(TurnManeuver.STRAIGHT, "Head southwest on Madison St", "18 miles"),
-                    NavigationStep(TurnManeuver.TURN_LEFT, "Turn left onto 4th Ave", "12 miles"),
-                    NavigationStep(
-                        TurnManeuver.TURN_RIGHT, "Turn right at 105th N Link Rd", "40 miles",
-                        subtext = "Pass by Executive Hotel Pacific (on the left)"
-                    ),
-                    NavigationStep(
-                        TurnManeuver.TURN_RIGHT, "Turn right at 105 William St, Chicago, US", "250 miles",
-                        isActive = true
-                    ),
-                    NavigationStep(
-                        TurnManeuver.STRAIGHT, "Continue straight to stay on Vancouver", "24 miles",
-                        subtext = "Entering California"
-                    ),
-                    NavigationStep(TurnManeuver.TURN_LEFT, "Keep left, follow signs for SF Intl Airport", "")
-                ),
-                routePolyline = listOf(
-                    LatLngPoint(60.1699, 24.9384),
-                    LatLngPoint(60.1719, 24.9350)
-                ),
-                driverLocation = LatLngPoint(60.1699, 24.9384)
-            )
-        )
+    override fun observePickupNavigation(rideId: String): Flow<PickupNavigationState> = flow {
+        while (true) {
+            try {
+                val dto = apiService.getNavigationState(rideId)
+                emit(
+                    PickupNavigationState(
+                        rideId = dto.rideId,
+                        pickupAddress = dto.pickupAddress,
+                        etaMinutes = dto.etaMinutes,
+                        distanceKm = dto.distanceKm,
+                        fare = dto.fare,
+                        currentBanner = dto.currentStep.toDomain(),
+                        steps = dto.allSteps.map { it.toDomain() },
+                        routePolyline = dto.polylinePoints.map { LatLngPoint(it.lat, it.lng) },
+                        driverLocation = LatLngPoint(dto.driverLat, dto.driverLng)
+                    )
+                )
+            } catch (e: Exception) {
+                // Handle error
+            }
+            delay(3000) // Update navigation every 3 seconds
+        }
     }
 
     override suspend fun markArrivedAtPickup(rideId: String) {
-        // TODO: call backend "arrived"/"start trip" endpoint, then navigate to Drop-off nav.
+        withContext(Dispatchers.IO) {
+            apiService.markArrived(rideId)
+        }
     }
 
-    companion object {
-        private val DEMO_QUEUE = listOf(
-            RideRequest(
-                id = "ride_demo_1",
-                riderName = "Esther Berry",
-                riderAvatarUrl = null,
-                price = 25.0,
-                distanceKm = 2.2,
-                tags = listOf(RidePaymentTag.APPLE_PAY, RidePaymentTag.DISCOUNT),
-                pickupAddress = "7958 Swift Village",
-                pickupLocation = LatLngPoint(60.1719, 24.9350),
-                dropoffAddress = "105 William St, Chicago, US",
-                dropoffLocation = LatLngPoint(60.1750, 24.9410)
-            ),
-            RideRequest(
-                id = "ride_demo_2",
-                riderName = "Callie Greer",
-                riderAvatarUrl = null,
-                price = 20.0,
-                distanceKm = 1.5,
-                tags = listOf(RidePaymentTag.APPLE_PAY, RidePaymentTag.DISCOUNT),
-                pickupAddress = "62 Kobe Trafficway",
-                pickupLocation = LatLngPoint(60.1705, 24.9360),
-                dropoffAddress = "280 Icie Park Suite 496",
-                dropoffLocation = LatLngPoint(60.1740, 24.9400)
-            ),
-            RideRequest(
-                id = "ride_demo_3",
-                riderName = "Earl Guerrero",
-                riderAvatarUrl = null,
-                price = 10.0,
-                distanceKm = 0.5,
-                tags = listOf(RidePaymentTag.APPLE_PAY),
-                pickupAddress = "9965 Soledad Ports",
-                pickupLocation = LatLngPoint(60.1701, 24.9370),
-                dropoffAddress = "12 Marion Ridges",
-                dropoffLocation = LatLngPoint(60.1730, 24.9390)
-            )
-        )
-    }
+    // --- Mappers ---
+
+    private fun RideRequestDto.toDomain() = RideRequest(
+        id = id,
+        riderName = riderName,
+        riderAvatarUrl = riderAvatarUrl,
+        price = price,
+        distanceKm = distanceKm,
+        tags = tags.map { RidePaymentTag.valueOf(it) },
+        pickupAddress = pickupAddress,
+        pickupLocation = LatLngPoint(pickupLat, pickupLng),
+        dropoffAddress = dropoffAddress,
+        dropoffLocation = LatLngPoint(dropoffLat, dropoffLng)
+    )
+
+    private fun com.newuperapp.Uper.data.remote.dto.DriverProfileDto.toDomain() = DriverProfile(
+        id = id,
+        name = name,
+        level = level,
+        avatarUrl = avatarUrl,
+        totalEarned = totalEarned,
+        hoursOnline = hoursOnline,
+        totalDistanceKm = totalDistanceKm,
+        totalJobs = totalJobs,
+        currentLat = currentLat,
+        currentLng = currentLng,
+        currencySymbol = currencySymbol
+    )
+
+    private fun NavigationStepDto.toDomain() = NavigationStep(
+        maneuver = TurnManeuver.valueOf(maneuver),
+        instruction = instruction,
+        distanceText = distanceText,
+        subtext = subtext,
+        isActive = isActive
+    )
 }
