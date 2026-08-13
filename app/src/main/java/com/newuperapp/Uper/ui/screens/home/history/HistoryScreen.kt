@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
+import com.newuperapp.Uper.domain.model.HistoryItem
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 
@@ -36,8 +40,11 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: HistoryViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -80,14 +87,14 @@ fun HistoryScreen(
                     SummaryCard(
                         modifier = Modifier.weight(1f),
                         icon = Icons.Default.MonetizationOn,
-                        value = "$250.00",
+                        value = "$${uiState.totalEarned}",
                         label = stringResource(R.string.history_total_earned),
                         color = Color(0xFF3858F6)
                     )
                     SummaryCard(
                         modifier = Modifier.weight(1f),
                         icon = Icons.Default.History,
-                        value = "12",
+                        value = uiState.totalJobs.toString(),
                         label = stringResource(R.string.history_total_jobs),
                         color = AberColor.Orange
                     )
@@ -102,9 +109,17 @@ fun HistoryScreen(
                 )
             }
 
-            items(5) {
-                HistoryItemCard()
-                Spacer(Modifier.height(12.dp))
+            if (uiState.isLoading) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = AberColor.Yellow)
+                    }
+                }
+            } else {
+                items(uiState.trips.size) { index ->
+                    HistoryItemCard(uiState.trips[index])
+                    Spacer(Modifier.height(12.dp))
+                }
             }
         }
     }
@@ -159,7 +174,7 @@ private fun SummaryCard(
  * List item representing a single completed trip.
  */
 @Composable
-private fun HistoryItemCard() {
+private fun HistoryItemCard(item: HistoryItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -172,12 +187,12 @@ private fun HistoryItemCard() {
                 Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(AberColor.SurfaceGray))
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = "Steve Bowen", style = AberTypography.CardTitle.copy(fontSize = 16.sp))
-                    Text(text = "Apple Pay", style = AberTypography.Caption)
+                    Text(text = item.riderName, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+                    Text(text = item.date, style = AberTypography.Caption)
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "$25.00", style = AberTypography.PriceTag.copy(fontSize = 16.sp))
-                    Text(text = "2.2 km", style = AberTypography.Caption)
+                    Text(text = "${item.currencySymbol}${"%.2f".format(item.price)}", style = AberTypography.PriceTag.copy(fontSize = 16.sp))
+                    Text(text = "${item.distanceKm} km", style = AberTypography.Caption)
                 }
             }
             
@@ -185,9 +200,9 @@ private fun HistoryItemCard() {
             HorizontalDivider(color = AberColor.SurfaceGray)
             Spacer(Modifier.height(16.dp))
             
-            AddressBlock(stringResource(R.string.booking_pick_up_label), "7958 Swift Village")
+            AddressBlock(stringResource(R.string.booking_pick_up_label), item.pickupAddress)
             Spacer(Modifier.height(12.dp))
-            AddressBlock(stringResource(R.string.booking_drop_off_label), "105 William St, Chicago, US")
+            AddressBlock(stringResource(R.string.booking_drop_off_label), item.dropoffAddress)
         }
     }
 }

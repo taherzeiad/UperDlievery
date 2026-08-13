@@ -217,7 +217,6 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
     // Account & Settings
     composable(AberDestination.Settings.route) {
         SettingsScreen(
-            profile = null,
             onBackClick = { navController.popBackStack() },
             onVehicleManagementClick = { navController.navigate(AberDestination.VehicleManagement.route) },
             onDocumentManagementClick = { navController.navigate(AberDestination.DocumentManagement.route) },
@@ -227,7 +226,6 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
 
     composable(AberDestination.Profile.route) {
         ProfileScreen(
-            profile = null,
             onBackClick = { navController.popBackStack() },
             onEditClick = { navController.navigate(AberDestination.EditProfile.route) }
         )

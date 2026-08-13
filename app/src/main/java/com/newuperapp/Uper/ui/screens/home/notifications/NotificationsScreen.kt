@@ -10,6 +10,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
+import com.newuperapp.Uper.domain.model.Notification
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
-
-data class Notification(val id: String, val title: String, val description: String, val time: String)
 
 /**
  * Screen displaying a list of push notifications and system messages for the driver.
@@ -31,13 +33,10 @@ data class Notification(val id: String, val title: String, val description: Stri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: NotificationsViewModel = hiltViewModel()
 ) {
-    val notifications = listOf(
-        Notification("1", "System Update", "Your app has been updated to the latest version.", "2 hours ago"),
-        Notification("2", "Promotion", "Earn double points this weekend!", "5 hours ago"),
-        Notification("3", "Ride Feedback", "A passenger gave you a 5-star rating!", "1 day ago")
-    )
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -67,9 +66,17 @@ fun NotificationsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            items(notifications) { notification ->
-                NotificationItem(notification)
-                HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
+            if (uiState.isLoading) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = AberColor.Yellow)
+                    }
+                }
+            } else {
+                items(uiState.notifications) { notification ->
+                    NotificationItem(notification)
+                    HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
+                }
             }
         }
     }
@@ -99,9 +106,9 @@ private fun NotificationItem(notification: Notification) {
         Column(modifier = Modifier.weight(1f)) {
             Text(text = notification.title, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
             Spacer(Modifier.height(4.dp))
-            Text(text = notification.description, style = AberTypography.Subtitle.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.7f)))
+            Text(text = notification.message, style = AberTypography.Subtitle.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.7f)))
             Spacer(Modifier.height(8.dp))
-            Text(text = notification.time, style = AberTypography.Caption)
+            Text(text = notification.timestamp, style = AberTypography.Caption)
         }
     }
 }

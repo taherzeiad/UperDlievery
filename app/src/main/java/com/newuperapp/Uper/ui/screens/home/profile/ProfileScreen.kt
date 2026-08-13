@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,25 +18,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
+import com.newuperapp.Uper.ui.screens.home.settings.SettingsViewModel
 
 /**
  * Screen displaying the driver's profile details.
  *
- * @param profile The [DriverProfile] to display.
  * @param onBackClick Callback for the back navigation action.
  * @param onEditClick Callback to navigate to the profile editing screen.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    profile: DriverProfile?,
     onBackClick: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val profile by viewModel.profile.collectAsState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

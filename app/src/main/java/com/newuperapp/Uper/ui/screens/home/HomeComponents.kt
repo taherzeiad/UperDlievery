@@ -48,7 +48,7 @@ fun HomeTopBar(isOnline: Boolean, onToggle: (Boolean) -> Unit, onMenuClick: () -
             Icon(Icons.Default.Menu, contentDescription = "Menu", tint = AberColor.Ink)
         }
         Text(
-            text = if (isOnline) "Online" else "Offline",
+            text = if (isOnline) stringResource(R.string.home_online) else stringResource(R.string.home_offline),
             style = AberTypography.ScreenTitle.copy(fontSize = 20.sp),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center
@@ -89,9 +89,9 @@ fun OfflineBanner(modifier: Modifier = Modifier) {
             )
         }
         Column {
-            Text("You are offline !", style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+            Text(stringResource(R.string.home_offline_banner_title), style = AberTypography.CardTitle.copy(fontSize = 16.sp))
             Text(
-                "Go online to start accepting jobs.",
+                stringResource(R.string.home_offline_banner_subtitle),
                 style = AberTypography.Caption.copy(color = AberColor.Ink.copy(alpha = 0.7f))
             )
         }
@@ -190,15 +190,15 @@ fun DriverStatsSheetContent(profile: DriverProfile) {
                 StatItem(
                     icon = Icons.Default.AccessTime,
                     value = "${profile.hoursOnline}",
-                    label = "HOURS ONLINE"
+                    label = stringResource(R.string.home_stat_hours)
                 )
                 StatItem(
                     icon = Icons.Default.Speed,
                     value = "${profile.totalDistanceKm.toInt()} KM",
-                    label = "TOTAL DISTANCE"
+                    label = stringResource(R.string.home_stat_distance)
                 )
                 StatItem(
-                    icon = Icons.Default.Route, value = "${profile.totalJobs}", label = "TOTAL JOBS"
+                    icon = Icons.Default.Route, value = "${profile.totalJobs}", label = stringResource(R.string.home_stat_jobs)
                 )
             }
         }

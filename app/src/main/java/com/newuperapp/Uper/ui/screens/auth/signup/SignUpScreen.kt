@@ -104,7 +104,7 @@ fun SignUpScreen(
                 AberTextField(
                     value = uiState.email,
                     onValueChange = onEmailChange,
-                    placeholder = "name@example.com",
+                    placeholder = stringResource(R.string.auth_email_placeholder),
                     keyboardType = KeyboardType.Email
                 )
                 AberPhoneField(

@@ -1,40 +1,87 @@
 package com.newuperapp.Uper.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.newuperapp.Uper.data.remote.ApiService
+import com.newuperapp.Uper.data.remote.dto.OtpRequestDto
+import com.newuperapp.Uper.data.remote.dto.SignUpRequestDto
+import com.newuperapp.Uper.data.remote.dto.VerifyOtpRequestDto
 import com.newuperapp.Uper.domain.repository.AuthRepository
 import com.newuperapp.Uper.domain.repository.AuthResult
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Stub implementation — swap the `delay(...)` calls for real Retrofit/Firebase Auth
- * calls once the backend contract is available. Kept behind the [AuthRepository]
- * interface so ViewModels never need to change.
- */
 @Singleton
-class AuthRepositoryImpl @Inject constructor() : AuthRepository {
+class AuthRepositoryImpl @Inject constructor(
+    private val apiService: ApiService,
+    private val dataStore: DataStore<Preferences>
+) : AuthRepository {
 
-    override suspend fun signUp(email: String, fullPhoneNumber: String): AuthResult {
-        delay(700)
-        if (!email.contains("@")) return AuthResult.Error("Enter a valid email address")
-        if (fullPhoneNumber.length < 8) return AuthResult.Error("Enter a valid phone number")
-        return AuthResult.Success
+    companion object {
+        private val AUTH_TOKEN_KEY = stringPreferencesKey("auth_token")
     }
 
-    override suspend fun requestOtp(fullPhoneNumber: String): AuthResult {
-        delay(600)
-        if (fullPhoneNumber.length < 8) return AuthResult.Error("Enter a valid phone number")
-        return AuthResult.Success
+    override suspend fun signUp(email: String, fullPhoneNumber: String): AuthResult = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.signUp(SignUpRequestDto(email, fullPhoneNumber))
+            if (response.status == "success") {
+                response.token?.let { saveToken(it) }
+                AuthResult.Success
+            } else {
+                AuthResult.Error(response.message ?: "Registration failed")
+            }
+        } catch (e: Exception) {
+            AuthResult.Error(e.localizedMessage ?: "Network error occurred")
+        }
     }
 
-    override suspend fun verifyOtp(fullPhoneNumber: String, code: String): AuthResult {
-        delay(600)
-        return if (code.length == 4) AuthResult.Success
-        else AuthResult.Error("Invalid verification code")
+    override suspend fun requestOtp(fullPhoneNumber: String): AuthResult = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.requestOtp(OtpRequestDto(fullPhoneNumber))
+            if (response.status == "success") {
+                AuthResult.Success
+            } else {
+                AuthResult.Error(response.message ?: "Failed to request OTP")
+            }
+        } catch (e: Exception) {
+            AuthResult.Error(e.localizedMessage ?: "Network error occurred")
+        }
     }
 
-    override suspend fun resendOtp(fullPhoneNumber: String): AuthResult {
-        delay(500)
-        return AuthResult.Success
+    override suspend fun verifyOtp(fullPhoneNumber: String, code: String): AuthResult = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.verifyOtp(VerifyOtpRequestDto(fullPhoneNumber, code))
+            if (response.status == "success") {
+                response.token?.let { saveToken(it) }
+                AuthResult.Success
+            } else {
+                AuthResult.Error(response.message ?: "Invalid OTP")
+            }
+        } catch (e: Exception) {
+            AuthResult.Error(e.localizedMessage ?: "Network error occurred")
+        }
+    }
+
+    override suspend fun resendOtp(fullPhoneNumber: String): AuthResult = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.requestOtp(OtpRequestDto(fullPhoneNumber))
+            if (response.status == "success") {
+                AuthResult.Success
+            } else {
+                AuthResult.Error(response.message ?: "Failed to resend OTP")
+            }
+        } catch (e: Exception) {
+            AuthResult.Error(e.localizedMessage ?: "Network error occurred")
+        }
+    }
+
+    private suspend fun saveToken(token: String) {
+        dataStore.edit { preferences ->
+            preferences[AUTH_TOKEN_KEY] = token
+        }
     }
 }

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">عبر للسائق</string>
+
+    <string name="onboarding_skip">تخطي</string>
+    <string name="onboarding_get_started">ابدأ الآن</string>
+
+    <string name="onboarding_page1_title">قبول رحلة</string>
+    <string name="onboarding_page1_description">اقبل طلبات التوصيل بسهولة وابدأ في جني الأرباح فوراً.</string>
+
+    <string name="onboarding_page2_title">تتبع مباشر</string>
+    <string name="onboarding_page2_description">تتبع موقع الراكب ومسار الرحلة بدقة عالية في الوقت الفعلي.</string>
+
+    <string name="onboarding_page3_title">اربح المال</string>
+    <string name="onboarding_page3_description">حقق دخلًا إضافيًا من خلال قيادة سيارتك في الأوقات التي تناسبك.</string>
+
+    <string name="location_title">تفعيل الموقع</string>
+    <string name="location_description">يرجى تفعيل الموقع للعثور على طلبات التوصيل القريبة منك.</string>
+    <string name="location_use_my_location">استخدام موقعي</string>
+    <string name="location_skip">تخطي الآن</string>
+
+    <string name="home_new_requests_banner">لديك %1$d طلبات جديدة.</string>
+    <string name="home_ignore">تجاهل</string>
+    <string name="home_accept">قبول</string>
+
+    <string name="booking_pick_up_label">نقطة الانطلاق</string>
+    <string name="booking_drop_off_label">نقطة الوصول</string>
+    <string name="booking_noted_label">ملاحظات</string>
+    <string name="booking_trip_fare_label">تعرفة الرحلة</string>
+    <string name="booking_paid_amount">المبلغ المدفوع</string>
+    <string name="booking_call">اتصال</string>
+    <string name="booking_message">رسالة</string>
+    <string name="booking_cancel">إلغاء</string>
+    <string name="booking_go_to_pick_up">التوجه للراكب</string>
+
+    <string name="navigation_pick_up_title">استلام الراكب</string>
+    <string name="navigation_pick_up_at">الاستلام من</string>
+    <string name="navigation_est">الوقت المتوقع</string>
+    <string name="navigation_distance">المسافة</string>
+    <string name="navigation_fare">الأجرة</string>
+    <string name="navigation_drop_off_cta">إنزال الراكب</string>
+
+    <!-- Navigation Screen -->
+    <string name="nav_pickup_title">استلام الراكب</string>
+    <string name="nav_pickup_at">الاستلام من</string>
+    <string name="nav_est_label">المتوقع</string>
+    <string name="nav_distance_label">المسافة</string>
+    <string name="nav_fare_label">الأجرة</string>
+    <string name="nav_drop_off_cta">إنزال الراكب</string>
+    <string name="nav_back_content_desc">رجوع</string>
+
+    <!-- History Screen -->
+    <string name="history_title">السجل</string>
+    <string name="history_total_earned">إجمالي الأرباح</string>
+    <string name="history_total_jobs">إجمالي الرحلات</string>
+    <string name="history_trips">الرحلات</string>
+    <string name="history_earned">الأرباح</string>
+
+    <!-- Notifications Screen -->
+    <string name="notifications_title">الإشعارات</string>
+
+    <!-- Invite Friends Screen -->
+    <string name="invite_friends_title">دعوة الأصدقاء</string>
+    <string name="invite_next_cta">التالي</string>
+    <string name="invite_earn_title">اربح حتى $150 يومياً</string>
+    <string name="invite_share_code_label">شارك كود الدعوة الخاص بك</string>
+    <string name="invite_search_placeholder">بحث</string>
+    <string name="invite_mutual_friends">%1$d أصدقاء مشتركين</string>
+
+    <!-- Chat Screen -->
+    <string name="chat_type_message_placeholder">اكتب رسالة…</string>
+
+    <!-- Profile -->
+    <string name="profile_edit">تعديل</string>
+    <string name="profile_informations_label">المعلومات</string>
+    <string name="profile_username">اسم المستخدم</string>
+    <string name="profile_phone_number">رقم الهاتف</string>
+    <string name="profile_email">البريد الإلكتروني</string>
+    <string name="profile_gender">الجنس</string>
+    <string name="profile_birthday">تاريخ الميلاد</string>
+    <string name="profile_edit_photo">تعديل الصورة</string>
+    <string name="profile_cancel">إلغاء</string>
+    <string name="profile_done">تم</string>
+    <string name="profile_last_name_placeholder">الاسم الأخير</string>
+
+    <!-- Wallet -->
+    <string name="wallet_title">محفظتي</string>
+    <string name="wallet_total_earn">إجمالي الربح</string>
+    <string name="wallet_payment_method">طريقة الدفع</string>
+    <string name="wallet_payment_history">سجل المدفوعات</string>
+    <string name="wallet_cash">نقداً</string>
+    <string name="wallet_discount">خصم</string>
+
+    <!-- Payment -->
+    <string name="payment_method_title">طريقة الدفع</string>
+    <string name="payment_add_new_card">إضافة بطاقة جديدة</string>
+    <string name="payment_credit_cards_label">البطاقات الائتمانية</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_vehicle_management">إدارة المركبات</string>
+    <string name="settings_document_management">إدارة المستندات</string>
+    <string name="settings_reviews">التقييمات</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_terms_privacy">الشروط وسياسة الخصوصية</string>
+    <string name="settings_contact_us">اتصل بنا</string>
+
+    <!-- Vehicle -->
+    <string name="vehicle_management_title">إدارة المركبات</string>
+    <string name="vehicle_add_new_title">إضافة مركبة جديدة</string>
+    <string name="vehicle_brand_label">علامة المركبة</string>
+    <string name="vehicle_model_label">الموديل</string>
+    <string name="vehicle_year_label">السنة</string>
+    <string name="vehicle_license_plate_label">رقم اللوحة</string>
+    <string name="vehicle_color_label">اللون</string>
+    <string name="vehicle_booking_type_label">نوع الحجز</string>
+    <string name="vehicle_complete_cta">إكمال</string>
+
+    <!-- Documents -->
+    <string name="document_management_title">إدارة المستندات</string>
+    <string name="document_driving_license_title">رخصة القيادة</string>
+    <string name="document_id_cards_title">بطاقات الهوية</string>
+    <string name="document_update_photo">تحديث الصورة</string>
+    <string name="document_card_number_label">رقم البطاقة</string>
+    <string name="document_expiration_date_label">تاريخ الانتهاء</string>
+    <string name="document_take_picture">التقاط صورة</string>
+    <string name="document_choose_picture">اختيار صورة</string>
+    <string name="document_cancel">إلغاء</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">مرحباً بك</string>
+    <string name="welcome_subtitle">ابدأ بجني المال بسيارتك اليوم!</string>
+    <string name="welcome_sign_up_cta">إنشاء حساب</string>
+    <string name="welcome_already_have_account">لديك حساب بالفعل؟ تسجيل الدخول</string>
+
+    <!-- Auth -->
+    <string name="auth_login_title">تسجيل الدخول</string>
+    <string name="auth_login_subtitle">بواسطة رقم الهاتف</string>
+    <string name="auth_sign_up_title">إنشاء حساب</string>
+    <string name="auth_sign_up_subtitle">بواسطة البريد الإلكتروني ورقم الهاتف</string>
+    <string name="auth_next_cta">التالي</string>
+    <string name="auth_sign_in_cta">تسجيل الدخول</string>
+    <string name="auth_sign_up_cta">إنشاء حساب</string>
+    <string name="auth_no_account">ليس لديك حساب؟ </string>
+    <string name="auth_already_account">لديك حساب بالفعل؟ </string>
+    <string name="auth_phone_verification_title">التحقق من الهاتف</string>
+    <string name="auth_otp_description">أدخل رمز التحقق (OTP) هنا</string>
+    <string name="auth_verify_now_cta">تحقق الآن</string>
+    <string name="auth_resend_code_cta">إعادة إرسال الرمز</string>
+    <string name="auth_resending">جاري إعادة الإرسال…</string>
+    <string name="home_online">متصل</string>
+    <string name="home_offline">غير متصل</string>
+    <string name="home_offline_banner_title">أنت غير متصل!</string>
+    <string name="home_offline_banner_subtitle">فعل الاتصال للبدء في استقبال الطلبات.</string>
+    <string name="home_stat_hours">ساعات العمل</string>
+    <string name="home_stat_distance">إجمالي المسافة</string>
+    <string name="home_stat_jobs">إجمالي الرحلات</string>
+    <string name="home_marker_you">أنت هنا</string>
+    <string name="auth_email_placeholder">البريد الإلكتروني</string>
+    <string name="drawer_home">الرئيسية</string>
+    <string name="drawer_wallet">محفظتي</string>
+    <string name="drawer_history">السجل</string>
+    <string name="drawer_notifications">الإشعارات</string>
+    <string name="drawer_invite">دعوة أصدقاء</string>
+    <string name="drawer_settings">الإعدادات</string>
+    <string name="drawer_logout">تسجيل الخروج</string>
+    <string name="drawer_stat_hours">ساعات الاتصال</string>
+    <string name="drawer_stat_distance">إجمالي المسافة</string>
+    <string name="drawer_stat_jobs">إجمالي الرحلات</string>
+</resources>

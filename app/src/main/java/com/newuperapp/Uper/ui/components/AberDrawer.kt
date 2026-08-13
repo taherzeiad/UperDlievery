@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
@@ -91,17 +93,17 @@ fun AberDrawer(
                 StatItem(
                     icon = Icons.Default.AccessTime,
                     value = profile.hoursOnline.toString(),
-                    label = "Hours online"
+                    label = stringResource(R.string.drawer_stat_hours)
                 )
                 StatItem(
                     icon = Icons.Default.Speed,
                     value = "${profile.totalDistanceKm.toInt()} KM",
-                    label = "Total Distance"
+                    label = stringResource(R.string.drawer_stat_distance)
                 )
                 StatItem(
                     icon = Icons.Default.Route,
                     value = profile.totalJobs.toString(),
-                    label = "Total Jobs"
+                    label = stringResource(R.string.drawer_stat_jobs)
                 )
             }
         }
@@ -110,37 +112,37 @@ fun AberDrawer(
         Column(modifier = Modifier.padding(vertical = 20.dp)) {
             DrawerItem(
                 icon = Icons.Default.Home,
-                label = "Home",
+                label = stringResource(R.string.drawer_home),
                 onClick = { onMenuItemClick(DrawerMenuItem.Home) }
             )
             DrawerItem(
                 icon = Icons.Outlined.AccountBalanceWallet,
-                label = "My Wallet",
+                label = stringResource(R.string.drawer_wallet),
                 onClick = { onMenuItemClick(DrawerMenuItem.Wallet) }
             )
             DrawerItem(
                 icon = Icons.Default.History,
-                label = "History",
+                label = stringResource(R.string.drawer_history),
                 onClick = { onMenuItemClick(DrawerMenuItem.History) }
             )
             DrawerItem(
                 icon = Icons.Outlined.Notifications,
-                label = "Notifications",
+                label = stringResource(R.string.drawer_notifications),
                 onClick = { onMenuItemClick(DrawerMenuItem.Notifications) }
             )
             DrawerItem(
                 icon = Icons.Default.CardGiftcard,
-                label = "Invite Friends",
+                label = stringResource(R.string.drawer_invite),
                 onClick = { onMenuItemClick(DrawerMenuItem.InviteFriends) }
             )
             DrawerItem(
                 icon = Icons.Default.Settings,
-                label = "Settings",
+                label = stringResource(R.string.drawer_settings),
                 onClick = { onMenuItemClick(DrawerMenuItem.Settings) }
             )
             DrawerItem(
                 icon = Icons.Default.Logout,
-                label = "Logout",
+                label = stringResource(R.string.drawer_logout),
                 onClick = { onMenuItemClick(DrawerMenuItem.Logout) }
             )
         }

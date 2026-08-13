@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.WalletTransaction
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -36,8 +37,10 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 @Composable
 fun WalletScreen(
     onBackClick: () -> Unit,
-    onPaymentMethodClick: () -> Unit
+    onPaymentMethodClick: () -> Unit,
+    viewModel: WalletViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
@@ -81,7 +84,10 @@ fun WalletScreen(
                     .padding(vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("$325.00", style = AberTypography.ScreenTitle.copy(fontSize = 44.sp, fontWeight = FontWeight.Bold))
+                Text(
+                    text = if (uiState.isLoading) "..." else "$${uiState.balance}",
+                    style = AberTypography.ScreenTitle.copy(fontSize = 44.sp, fontWeight = FontWeight.Bold)
+                )
                 Text(
                     text = stringResource(R.string.wallet_total_earn),
                     style = AberTypography.SectionLabel.copy(fontSize = 14.sp, color = AberColor.Ink.copy(alpha = 0.5f))
@@ -127,14 +133,6 @@ fun WalletScreen(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
 
-            val transactions = listOf(
-                WalletTransaction("1", "Elva Barnett", "#740136", 25.0),
-                WalletTransaction("2", "Isaiah Francis", "#539642", 12.0),
-                WalletTransaction("3", "Lula Briggs", "#123146", 34.0),
-                WalletTransaction("4", "Ray Young", "#521936", 33.0),
-                WalletTransaction("5", "Betty Palmer", "#129936", 15.0)
-            )
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -142,9 +140,17 @@ fun WalletScreen(
                     .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                     .background(Color.White)
             ) {
-                items(transactions) { transaction ->
-                    TransactionItem(transaction)
-                    HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
+                if (uiState.isLoading) {
+                    item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = AberColor.Yellow)
+                        }
+                    }
+                } else {
+                    items(uiState.transactions) { transaction ->
+                        TransactionItem(transaction)
+                        HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(horizontal = 20.dp))
+                    }
                 }
             }
         }
