@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.WalletTransaction
@@ -43,6 +44,87 @@ fun WalletScreen(
     val uiState by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
 
+    WalletScreen(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onPaymentMethodClick = onPaymentMethodClick,
+        selectedTab = selectedTab,
+        onTabClick = { selectedTab = it }
+    )
+}
+
+
+/**
+ * Styled tab button for the wallet sub-navigation.
+ */
+@Composable
+private fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.height(44.dp),
+        color = if (isSelected) AberColor.Ink else Color.Transparent
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = text,
+                style = AberTypography.Subtitle.copy(
+                    color = if (isSelected) AberColor.Yellow else AberColor.Ink,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+/**
+ * List item representing a single transaction in the wallet history.
+ */
+@Composable
+private fun TransactionItem(transaction: WalletTransaction) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(AberColor.SurfaceGray))
+        Spacer(Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(transaction.name, style = AberTypography.CardTitle.copy(fontSize = 17.sp))
+            Text(transaction.transactionNumber, style = AberTypography.Caption)
+        }
+        Text("${transaction.currencySymbol}${"%.2f".format(transaction.amount)}", style = AberTypography.PriceTag.copy(fontSize = 17.sp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun WalletScreenPreview() {
+    WalletScreen(
+        uiState = WalletUiState(
+            balance = 325.0,
+            transactions = listOf(
+                WalletTransaction("1", "Ali Ahmed", "#740136", 25.0),
+                WalletTransaction("2", "Sarah Khaled", "#539642", 12.0)
+            ),
+            isLoading = false
+        ),
+        onBackClick = {},
+        onPaymentMethodClick = {},
+        selectedTab = 0,
+        onTabClick = {}
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WalletScreen(
+    uiState: WalletUiState,
+    onBackClick: () -> Unit,
+    onPaymentMethodClick: () -> Unit,
+    selectedTab: Int,
+    onTabClick: (Int) -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -72,8 +154,8 @@ fun WalletScreen(
                     .border(1.dp, AberColor.Ink, RoundedCornerShape(8.dp))
                     .clip(RoundedCornerShape(8.dp))
             ) {
-                TabButton(stringResource(R.string.wallet_cash), selectedTab == 0, modifier = Modifier.weight(1f)) { selectedTab = 0 }
-                TabButton(stringResource(R.string.wallet_discount), selectedTab == 1, modifier = Modifier.weight(1f)) { selectedTab = 1 }
+                TabButton(stringResource(R.string.wallet_cash), selectedTab == 0, modifier = Modifier.weight(1f)) { onTabClick(0) }
+                TabButton(stringResource(R.string.wallet_discount), selectedTab == 1, modifier = Modifier.weight(1f)) { onTabClick(1) }
             }
 
             // Earnings Summary
@@ -157,45 +239,3 @@ fun WalletScreen(
     }
 }
 
-/**
- * Styled tab button for the wallet sub-navigation.
- */
-@Composable
-private fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.height(44.dp),
-        color = if (isSelected) AberColor.Ink else Color.Transparent
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = text,
-                style = AberTypography.Subtitle.copy(
-                    color = if (isSelected) AberColor.Yellow else AberColor.Ink,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-        }
-    }
-}
-
-/**
- * List item representing a single transaction in the wallet history.
- */
-@Composable
-private fun TransactionItem(transaction: WalletTransaction) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(AberColor.SurfaceGray))
-        Spacer(Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(transaction.name, style = AberTypography.CardTitle.copy(fontSize = 17.sp))
-            Text(transaction.transactionNumber, style = AberTypography.Caption)
-        }
-        Text("${transaction.currencySymbol}${"%.2f".format(transaction.amount)}", style = AberTypography.PriceTag.copy(fontSize = 17.sp))
-    }
-}

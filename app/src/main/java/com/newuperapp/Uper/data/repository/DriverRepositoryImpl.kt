@@ -27,9 +27,10 @@ class DriverRepositoryImpl @Inject constructor(
         apiService.getWallet().balance
     }
 
-    override suspend fun getWalletTransactions(): List<WalletTransaction> = withContext(Dispatchers.IO) {
-        apiService.getWallet().transactions.map { it.toDomain() }
-    }
+    override suspend fun getWalletTransactions(): List<WalletTransaction> =
+        withContext(Dispatchers.IO) {
+            apiService.getWallet().transactions.map { it.toDomain() }
+        }
 
     override fun observeNotifications(): Flow<List<Notification>> = flow {
         while (true) {
@@ -60,7 +61,7 @@ class DriverRepositoryImpl @Inject constructor(
         pickupAddress = pickupAddress,
         dropoffAddress = dropoffAddress,
         date = date,
-        paymentTags = paymentTags.map { RidePaymentTag.valueOf(it) }
+        paymentTags = paymentTags.mapNotNull { RidePaymentTag.fromString(it) }
     )
 
     private fun TransactionDto.toDomain() = WalletTransaction(

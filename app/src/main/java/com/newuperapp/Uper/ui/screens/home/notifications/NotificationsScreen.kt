@@ -38,6 +38,18 @@ fun NotificationsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    NotificationsScreen(
+        uiState = uiState,
+        onBackClick = onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotificationsScreen(
+    uiState: NotificationsUiState,
+    onBackClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -82,6 +94,7 @@ fun NotificationsScreen(
     }
 }
 
+
 /**
  * Single notification entry row.
  */
@@ -116,5 +129,14 @@ private fun NotificationItem(notification: Notification) {
 @Preview(showBackground = true)
 @Composable
 private fun NotificationsScreenPreview() {
-    NotificationsScreen(onBackClick = {})
+    NotificationsScreen(
+        uiState = NotificationsUiState(
+            notifications = listOf(
+                Notification("1", com.newuperapp.Uper.domain.model.NotificationType.SYSTEM, "Welcome", "Welcome to the app!", "2 hours ago")
+            ),
+            isLoading = false
+        ),
+        onBackClick = {}
+    )
 }
+

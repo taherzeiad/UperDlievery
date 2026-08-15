@@ -10,5 +10,5 @@ data class HistoryItem(
     val pickupAddress: String,
     val dropoffAddress: String,
     val date: String,
-    val paymentTags: List<RidePaymentTag> = emptyList()
+    val paymentTags: List<RidePaymentTag> = emptyList(),
 )

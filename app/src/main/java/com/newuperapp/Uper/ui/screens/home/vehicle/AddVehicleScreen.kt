@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
@@ -106,3 +107,10 @@ private fun VehicleField(label: String, value: String) {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun AddVehicleScreenPreview() {
+    AddVehicleScreen(onBackClick = {}, onCompleteClick = {})
+}
+

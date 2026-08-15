@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.home.booking
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,12 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.BookingDetails
 import com.newuperapp.Uper.domain.model.FareLine
@@ -39,23 +45,32 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 /**
  * Detailed view of a confirmed booking, providing rider contact and navigation actions.
  */
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import coil3.compose.AsyncImage
+
 @Composable
 fun BookingDetailsRoute(
-    viewModel: BookingDetailsViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onNavigateToPickup: (rideId: String) -> Unit
+    onNavigateToPickup: (rideId: String) -> Unit,
+    viewModel: BookingDetailsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is BookingDetailsEvent.NavigateToPickupNavigation -> onNavigateToPickup(event.rideId)
-                BookingDetailsEvent.NavigateBackAfterCancel -> onBackClick()
-                is BookingDetailsEvent.LaunchDialer -> { /* Dialer logic */
-                }
+    LaunchedEffect(viewModel.events, lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is BookingDetailsEvent.NavigateToPickupNavigation -> onNavigateToPickup(event.rideId)
+                    BookingDetailsEvent.NavigateBackAfterCancel -> onBackClick()
+                    is BookingDetailsEvent.LaunchDialer -> { /* تنفيذ Intent الاتصال الهاتفي */
+                    }
 
-                is BookingDetailsEvent.LaunchMessenger -> { /* Messenger logic */
+                    is BookingDetailsEvent.LaunchMessenger -> { /* تنفيذ Intent تطبيق الرسائل */
+                    }
                 }
             }
         }
@@ -102,7 +117,7 @@ fun BookingDetailsScreen(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = AberColor.Yellow,
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 }
                 Text(
@@ -135,11 +150,9 @@ fun BookingDetailsScreen(
                         .padding(horizontal = 20.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(CircleShape)
-                            .background(AberColor.BorderGray.copy(alpha = 0.4f))
+                    RiderAvatar(
+                        avatarUrl = details.request.riderAvatarUrl,
+                        riderName = details.request.riderName
                     )
                     Spacer(Modifier.width(14.dp))
                     Column(modifier = Modifier.weight(1f)) {
@@ -154,7 +167,10 @@ fun BookingDetailsScreen(
                             "${details.request.currencySymbol}${"%.2f".format(details.request.price)}",
                             style = AberTypography.PriceTag
                         )
-                        Text("${details.request.distanceKm} km", style = AberTypography.Caption)
+                        Text(
+                            "${details.request.distanceKm} km",
+                            style = AberTypography.Caption.copy(color = AberColor.Ink.copy(alpha = 0.7f))
+                        )
                     }
                 }
 
@@ -175,10 +191,14 @@ fun BookingDetailsScreen(
                 ) {
                     Text(
                         stringResource(R.string.booking_noted_label),
-                        style = AberTypography.SectionLabel
+                        style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
                     )
                     Spacer(Modifier.height(8.dp))
-                    Text(details.note, style = AberTypography.semibody17())
+                    Text(
+                        details.note,
+                        style = AberTypography.semibody17(),
+                        modifier = Modifier.widthIn(max = 600.dp)
+                    )
                 }
 
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f), thickness = 1.dp)
@@ -191,7 +211,7 @@ fun BookingDetailsScreen(
                 ) {
                     Text(
                         stringResource(R.string.booking_trip_fare_label),
-                        style = AberTypography.SectionLabel
+                        style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
                     )
                     Spacer(Modifier.height(10.dp))
                     details.fareBreakdown.forEach { line ->
@@ -218,6 +238,7 @@ fun BookingDetailsScreen(
                         label = stringResource(R.string.booking_call),
                         icon = Icons.Default.Call,
                         background = Color(0xFF3DD9A6),
+                        contentColor = AberColor.Ink,
                         onClick = onCallClick,
                         modifier = Modifier.weight(1f)
                     )
@@ -225,6 +246,7 @@ fun BookingDetailsScreen(
                         label = stringResource(R.string.booking_message),
                         icon = Icons.AutoMirrored.Filled.Message,
                         background = Color(0xFF4C5FF0),
+                        contentColor = Color.White,
                         onClick = onMessageClick,
                         modifier = Modifier.weight(1f)
                     )
@@ -232,6 +254,7 @@ fun BookingDetailsScreen(
                         label = stringResource(R.string.booking_cancel),
                         icon = Icons.Default.DeleteOutline,
                         background = AberColor.BorderGray,
+                        contentColor = AberColor.Ink,
                         onClick = onCancelClick,
                         modifier = Modifier.weight(1f),
                         isLoading = uiState.isCancelling
@@ -244,14 +267,42 @@ fun BookingDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AberColor.Yellow)
-                    .padding(20.dp)
+                    .padding(20.dp),
+                contentAlignment = Alignment.Center
             ) {
                 AberButton(
                     text = stringResource(R.string.booking_go_to_pick_up),
                     onClick = onGoToPickupClick,
-                    style = AberButtonStyle.Primary
+                    style = AberButtonStyle.Primary,
+                    modifier = Modifier.widthIn(max = 320.dp)
                 )
             }
+        }
+    }
+}
+
+/**
+ * Rider avatar circle. Loads the real photo when a URL is available (per design),
+ * falling back to a neutral placeholder circle otherwise.
+ */
+@Composable
+private fun RiderAvatar(avatarUrl: String?, riderName: String) {
+    Box(
+        modifier = Modifier
+            .size(52.dp)
+            .clip(CircleShape)
+            .background(AberColor.BorderGray)
+            .border(1.dp, AberColor.Ink.copy(alpha = 0.1f), CircleShape)
+    ) {
+        if (!avatarUrl.isNullOrBlank()) {
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = riderName,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }
@@ -264,16 +315,18 @@ private fun TagPill(tag: RidePaymentTag) {
         RidePaymentTag.CASH -> "Cash"
         RidePaymentTag.CARD -> "Card"
     }
+    // Design shows a solid yellow pill with dark ink text — previously the Box used
+    // TagBackground while the Text style separately (and redundantly/incorrectly)
+    // set its own background, which fought with the Box color instead of matching it.
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(AberColor.TagBackground)
+            .background(AberColor.Yellow)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
             label, style = AberTypography.Caption.copy(
-                color = AberColor.Ink,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+                color = AberColor.Ink, fontWeight = FontWeight.SemiBold
             )
         )
     }
@@ -287,7 +340,10 @@ private fun AddressBlock(label: String, address: String) {
             .background(AberColor.White)
             .padding(horizontal = 20.dp, vertical = 14.dp)
     ) {
-        Text(label.uppercase(), style = AberTypography.SectionLabel)
+        Text(
+            label.uppercase(),
+            style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
+        )
         Spacer(Modifier.height(6.dp))
         Text(address, style = AberTypography.semibody17())
     }
@@ -309,27 +365,32 @@ private fun ActionTile(
     label: String,
     icon: ImageVector,
     background: Color,
+    contentColor: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false
 ) {
     Column(
         modifier = modifier
+            .widthIn(max = 120.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(background)
+            .semantics { role = Role.Button }
             .clickable(enabled = !isLoading, onClick = onClick)
-            .padding(vertical = 16.dp),
+            .padding(vertical = 12.dp, horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = Color.White, modifier = Modifier.size(22.dp), strokeWidth = 2.dp
+                color = contentColor, modifier = Modifier.size(22.dp), strokeWidth = 2.dp
             )
         } else {
-            Icon(icon, contentDescription = label, tint = Color.White)
+            Icon(icon, contentDescription = label, tint = contentColor)
         }
         Spacer(Modifier.height(6.dp))
-        Text(label, style = AberTypography.semibody17(Color.White))
+        Text(
+            text = label, style = AberTypography.semibody17(), color = contentColor
+        )
     }
 }
 
@@ -339,11 +400,11 @@ private fun BookingDetailsScreenPreview() {
     BookingDetailsScreen(
         uiState = BookingDetailsUiState(
             details = BookingDetails(
-                bookingId = "6857",
+                bookingId = "123456",
                 request = RideRequest(
                     id = "ride_1",
                     riderName = "Esther Berry",
-                    riderAvatarUrl = null,
+                    riderAvatarUrl = "https://i.pravatar.cc/150?img=47",
                     price = 25.0,
                     distanceKm = 2.2,
                     tags = listOf(RidePaymentTag.APPLE_PAY, RidePaymentTag.DISCOUNT),
@@ -353,11 +414,10 @@ private fun BookingDetailsScreenPreview() {
                     dropoffLocation = LatLngPoint(60.1750, 24.9410),
                 ),
                 riderPhone = "+1 234 567 890",
-                note = "Please wait for 5 minutes, I'm coming down.",
+                note = "Lorem ipsum dolor sit amet, consectetur adipisc elit. Nullam ac vestibulum erat. Cras vulputate auctor lectus at consequat.",
                 fareBreakdown = listOf(
-                    FareLine("Trip fare", 20.0),
-                    FareLine("Service fee", 3.0),
-                    FareLine("Tax", 2.0),
+                    FareLine("Apple Pay", 15.0),
+                    FareLine("Discount", 10.0),
                 ),
                 paidAmount = 25.0,
             ),

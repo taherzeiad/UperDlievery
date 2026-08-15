@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
@@ -163,3 +164,10 @@ private fun EditInfoItem(label: String, value: String) {
         Text(value, style = AberTypography.Subtitle.copy(color = AberColor.BorderGray, fontSize = 18.sp))
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun EditProfileScreenPreview() {
+    EditProfileScreen(onCancelClick = {}, onDoneClick = {})
+}
+

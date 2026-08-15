@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.PaymentMethod
 import com.newuperapp.Uper.domain.model.PaymentMethodType
@@ -174,4 +175,10 @@ private fun PaymentMethodItem(card: PaymentMethod) {
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PaymentMethodScreenPreview() {
+    PaymentMethodScreen(onBackClick = {})
 }

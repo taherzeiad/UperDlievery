@@ -40,6 +40,7 @@ fun HomeTopBar(isOnline: Boolean, onToggle: (Boolean) -> Unit, onMenuClick: () -
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .background(AberColor.White)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -89,10 +90,13 @@ fun OfflineBanner(modifier: Modifier = Modifier) {
             )
         }
         Column {
-            Text(stringResource(R.string.home_offline_banner_title), style = AberTypography.CardTitle.copy(fontSize = 16.sp))
+            Text(
+                stringResource(R.string.home_offline_banner_title),
+                style = AberTypography.CardTitle
+            )
             Text(
                 stringResource(R.string.home_offline_banner_subtitle),
-                style = AberTypography.Caption.copy(color = AberColor.Ink.copy(alpha = 0.7f))
+                style = AberTypography.Caption.copy(color = AberColor.Ink)
             )
         }
     }
@@ -165,7 +169,7 @@ fun DriverStatsSheetContent(profile: DriverProfile) {
             Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(profile.name, style = AberTypography.CardTitle)
-                Text(profile.level, style = AberTypography.Caption)
+                Text(profile.level, style = AberTypography.Caption.copy(color = AberColor.Ink))
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
@@ -198,7 +202,9 @@ fun DriverStatsSheetContent(profile: DriverProfile) {
                     label = stringResource(R.string.home_stat_distance)
                 )
                 StatItem(
-                    icon = Icons.Default.Route, value = "${profile.totalJobs}", label = stringResource(R.string.home_stat_jobs)
+                    icon = Icons.Default.Route,
+                    value = "${profile.totalJobs}",
+                    label = stringResource(R.string.home_stat_jobs)
                 )
             }
         }
@@ -213,7 +219,7 @@ fun StatItem(
         Icon(icon, contentDescription = null, tint = AberColor.Ink)
         Spacer(Modifier.height(6.dp))
         Text(value, style = AberTypography.StatValue)
-        Text(label, style = AberTypography.StatLabel)
+        Text(label, style = AberTypography.StatLabel.copy(color = AberColor.Ink))
     }
 }
 
@@ -288,9 +294,15 @@ fun RequestQueueCard(
         }
 
         Column(modifier = Modifier.background(AberColor.White)) {
-            AddressBlock(label = stringResource(R.string.booking_pick_up_label), address = request.pickupAddress)
+            AddressBlock(
+                label = stringResource(R.string.booking_pick_up_label),
+                address = request.pickupAddress
+            )
             HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f))
-            AddressBlock(label = stringResource(R.string.booking_drop_off_label), address = request.dropoffAddress)
+            AddressBlock(
+                label = stringResource(R.string.booking_drop_off_label),
+                address = request.dropoffAddress
+            )
 
             if (isExpanded) {
                 HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f))
@@ -300,7 +312,9 @@ fun RequestQueueCard(
                         .padding(horizontal = 20.dp, vertical = 14.dp)
                 ) {
                     AberButton(
-                        text = stringResource(R.string.home_accept), onClick = onAcceptClick, style = AberButtonStyle.Primary
+                        text = stringResource(R.string.home_accept),
+                        onClick = onAcceptClick,
+                        style = AberButtonStyle.Primary
                     )
                 }
             }
@@ -324,8 +338,7 @@ fun RequestTagPill(tag: RidePaymentTag) {
     ) {
         Text(
             label, style = AberTypography.Caption.copy(
-                color = AberColor.Ink,
-                fontWeight = FontWeight.SemiBold
+                color = AberColor.Ink, fontWeight = FontWeight.SemiBold
             )
         )
     }
