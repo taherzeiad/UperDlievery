@@ -1,8 +1,21 @@
-# Tasks - Self-Contained Demo Mode
+# Tasks - Add UI Previews for All Screens
 
-- `[x]` Implementation
-    - `[x]` Create `MockInterceptor.kt` with full API simulation
-    - `[x]` Update `NetworkModule.kt` to inject the interceptor
+- `[x]` Add Previews to Auth Screens
+    - `[x]` `PhoneVerifyScreen.kt`
+    - `[x]` `SignInScreen.kt`
+    - `[x]` `SignUpScreen.kt`
+- `[x]` Add Previews to Home & Profile Screens
+    - `[x]` `WalletScreen.kt`
+    - `[x]` `PaymentMethodScreen.kt`
+    - `[x]` `ProfileScreen.kt`
+    - `[x]` `EditProfileScreen.kt`
+    - `[x]` `SettingsScreen.kt`
+- `[x]` Add Previews to Management Screens
+    - `[x]` `DrivingLicenseScreen.kt`
+    - `[x]` `DocumentManagementScreen.kt`
+    - `[x]` `AddVehicleScreen.kt`
+    - `[x]` `VehicleManagementScreen.kt`
+- `[x]` Add Previews to Navigation Screen
+    - `[x]` `PickupNavigationScreen.kt`
 - `[x]` Verification
     - `[x]` Run Gradle build
-    - `[x]` Manual test of the entire flow (Auth -> Home -> History)

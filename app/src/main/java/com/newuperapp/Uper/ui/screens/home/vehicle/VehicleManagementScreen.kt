@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.Vehicle
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -128,4 +129,10 @@ private fun VehicleItem(vehicle: Vehicle) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VehicleManagementScreenPreview() {
+    VehicleManagementScreen(onBackClick = {}, onAddVehicleClick = {})
 }

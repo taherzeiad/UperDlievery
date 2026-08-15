@@ -45,6 +45,18 @@ fun HistoryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    HistoryScreen(
+        uiState = uiState,
+        onBackClick = onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoryScreen(
+    uiState: HistoryUiState,
+    onBackClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -124,6 +136,7 @@ fun HistoryScreen(
         }
     }
 }
+
 
 /**
  * Filter header for selecting the history date range.
@@ -222,5 +235,16 @@ private fun AddressBlock(label: String, address: String) {
 @Preview(showBackground = true)
 @Composable
 private fun HistoryScreenPreview() {
-    HistoryScreen(onBackClick = {})
+    HistoryScreen(
+        uiState = HistoryUiState(
+            trips = listOf(
+                HistoryItem("1", "Sarah Ahmed", null, 25.0, "$", 2.2, "Point A", "Point B", "2026-08-12")
+            ),
+            totalEarned = 25.0,
+            totalJobs = 1,
+            isLoading = false
+        ),
+        onBackClick = {}
+    )
 }
+

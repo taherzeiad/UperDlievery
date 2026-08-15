@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.domain.model.DriverProfile
@@ -40,6 +41,58 @@ fun ProfileScreen(
 ) {
     val profile by viewModel.profile.collectAsState()
 
+    ProfileScreen(
+        profile = profile,
+        onBackClick = onBackClick,
+        onEditClick = onEditClick
+    )
+}
+
+
+/**
+ * Reusable row item for displaying a label and its corresponding profile value.
+ */
+@Composable
+private fun ProfileInfoItem(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, style = AberTypography.Subtitle.copy(fontSize = 18.sp), modifier = Modifier.weight(1f))
+        Text(value, style = AberTypography.Subtitle.copy(color = AberColor.BorderGray, fontSize = 18.sp))
+        Spacer(Modifier.width(8.dp))
+        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray, modifier = Modifier.size(20.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileScreenPreview() {
+    ProfileScreen(
+        profile = DriverProfile(
+            id = "1",
+            name = "Martha Banks",
+            level = "Gold Member",
+            avatarUrl = null,
+            totalEarned = 1200.0,
+            hoursOnline = 30.0,
+            totalDistanceKm = 150.0,
+            totalJobs = 45,
+            currentLat = 0.0,
+            currentLng = 0.0
+        ),
+        onBackClick = {},
+        onEditClick = {}
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(
+    profile: DriverProfile?,
+    onBackClick: () -> Unit,
+    onEditClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -107,18 +160,3 @@ fun ProfileScreen(
     }
 }
 
-/**
- * Reusable row item for displaying a label and its corresponding profile value.
- */
-@Composable
-private fun ProfileInfoItem(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label, style = AberTypography.Subtitle.copy(fontSize = 18.sp), modifier = Modifier.weight(1f))
-        Text(value, style = AberTypography.Subtitle.copy(color = AberColor.BorderGray, fontSize = 18.sp))
-        Spacer(Modifier.width(8.dp))
-        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray, modifier = Modifier.size(20.dp))
-    }
-}

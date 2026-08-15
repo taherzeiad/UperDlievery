@@ -7,6 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.semantics.paneTitle
+import androidx.compose.ui.semantics.semantics
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,12 +59,10 @@ fun HomeRoute(
     }
 
     ModalNavigationDrawer(
-        drawerState = drawerState, 
-        drawerContent = {
+        drawerState = drawerState, drawerContent = {
             uiState.driverProfile?.let { profile ->
                 AberDrawer(
-                    profile = profile, 
-                    onMenuItemClick = { item ->
+                    profile = profile, onMenuItemClick = { item ->
                         scope.launch { drawerState.close() }
                         when (item) {
                             DrawerMenuItem.Home -> {}
@@ -71,13 +72,12 @@ fun HomeRoute(
                             DrawerMenuItem.Settings -> onNavigateToSettings()
                             DrawerMenuItem.Wallet -> onNavigateToWallet()
                             DrawerMenuItem.Profile -> onNavigateToProfile()
-                            DrawerMenuItem.Logout -> { /* Handle logout */ }
+                            DrawerMenuItem.Logout -> { /* Handle logout */
+                            }
                         }
-                    }
-                )
+                    })
             }
-        }
-    ) {
+        }) {
         HomeScreen(
             uiState = uiState,
             onToggleOnline = viewModel::onToggleOnline,
@@ -115,6 +115,7 @@ fun HomeScreen(
     val sheetState = rememberBottomSheetScaffoldState()
 
     BottomSheetScaffold(
+        modifier = Modifier.semantics { paneTitle = "Home Screen" },
         scaffoldState = sheetState,
         sheetPeekHeight = if (hasRequests) 420.dp else 260.dp,
         sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
@@ -138,29 +139,51 @@ fun HomeScreen(
                 DriverStatsSheetContent(profile = profile)
             }
         }) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = false),
-                uiSettings = MapUiSettings(
-                    zoomControlsEnabled = false, myLocationButtonEnabled = false
-                )
-            ) {
-                Marker(
-                    state = MarkerState(
-                        position = LatLng(profile?.currentLat ?: 60.1699, profile?.currentLng ?: 24.9384)
-                    ), 
-                    title = stringResource(R.string.home_marker_you)
-                )
-                if (hasRequests) {
-                    uiState.pendingRequests.forEach { request ->
-                        Marker(
-                            state = MarkerState(
-                                position = LatLng(request.pickupLocation.lat, request.pickupLocation.lng)
-                            ), 
-                            title = request.riderName
-                        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            if (LocalInspectionMode.current) {
+                // Placeholder for GoogleMap in Preview to avoid rendering issues
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Map View Placeholder",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    properties = MapProperties(isMyLocationEnabled = false),
+                    uiSettings = MapUiSettings(
+                        zoomControlsEnabled = false, myLocationButtonEnabled = false
+                    )
+                ) {
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(
+                                profile?.currentLat ?: 60.1699, profile?.currentLng ?: 24.9384
+                            )
+                        ), title = stringResource(R.string.home_marker_you)
+                    )
+                    if (hasRequests) {
+                        uiState.pendingRequests.forEach { request ->
+                            Marker(
+                                state = MarkerState(
+                                    position = LatLng(
+                                        request.pickupLocation.lat, request.pickupLocation.lng
+                                    )
+                                ), title = request.riderName
+                            )
+                        }
                     }
                 }
             }
@@ -180,8 +203,9 @@ fun HomeScreen(
                         cameraPositionState.position =
                             CameraPosition.fromLatLngZoom(LatLng(it.currentLat, it.currentLng), 15f)
                     }
-                }, 
-                modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp)
+                }, modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(20.dp)
             )
         }
     }
@@ -192,8 +216,7 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(
-            isOnline = false, 
-            driverProfile = DriverProfile(
+            isOnline = false, driverProfile = DriverProfile(
                 "1", "Taher", "Pro", null, 100.0, "$", 5.0, 20.0, 10, 60.1699, 24.9384
             )
         ),
@@ -201,6 +224,5 @@ private fun HomeScreenPreview() {
         onMenuClick = {},
         onRequestCardClick = {},
         onAcceptClick = {},
-        onIgnoreClick = {}
-    )
+        onIgnoreClick = {})
 }

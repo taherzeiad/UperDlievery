@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
@@ -129,3 +130,17 @@ fun PhoneVerifyScreen(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun PhoneVerifyScreenPreview() {
+    PhoneVerifyScreen(
+        uiState = PhoneVerifyUiState(code = "123", isVerifying = false),
+        onBackClick = {},
+        onDigitPressed = {},
+        onBackspace = {},
+        onVerifyClick = {},
+        onResendClick = {}
+    )
+}
+

@@ -15,6 +15,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -138,6 +139,19 @@ fun SignInScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SignInScreenPreview() {
+    SignInScreen(
+        uiState = SignInUiState(phoneNumber = "905070017"),
+        onDigitPressed = {},
+        onBackspace = {},
+        onClearClick = {},
+        onNextClick = {},
+        onSignUpClick = {}
+    )
 }
 
 private fun TextStyle.toSpanStyle() = SpanStyle(

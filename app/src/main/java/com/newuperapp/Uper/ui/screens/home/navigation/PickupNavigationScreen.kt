@@ -23,11 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
-import com.newuperapp.Uper.domain.model.NavigationStep
-import com.newuperapp.Uper.domain.model.PickupNavigationState
-import com.newuperapp.Uper.domain.model.TurnManeuver
+import com.newuperapp.Uper.domain.model.*
 import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.theme.AberColor
@@ -288,4 +287,27 @@ private fun TurnManeuver.toIcon(): ImageVector = when (this) {
     TurnManeuver.TURN_RIGHT -> Icons.Default.TurnRight
     TurnManeuver.SLIGHT_LEFT -> Icons.Default.TurnLeft
     TurnManeuver.SLIGHT_RIGHT -> Icons.AutoMirrored.Filled.ArrowForward
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PickupNavigationScreenPreview() {
+    PickupNavigationScreen(
+        state = PickupNavigationState(
+            rideId = "1",
+            pickupAddress = "7958 Swift Village",
+            etaMinutes = 5,
+            distanceKm = 2.2,
+            fare = 25.0,
+            currentBanner = NavigationStep(TurnManeuver.TURN_RIGHT, "Turn right at 105 William St", "250m", isActive = true),
+            steps = listOf(
+                NavigationStep(TurnManeuver.STRAIGHT, "Head southwest", "1km"),
+                NavigationStep(TurnManeuver.TURN_RIGHT, "Turn right at 105 William St", "250m", isActive = true)
+            ),
+            routePolyline = listOf(LatLngPoint(0.0, 0.0), LatLngPoint(0.001, 0.001)),
+            driverLocation = LatLngPoint(0.0, 0.0)
+        ),
+        onBackClick = {},
+        onArrivedClick = {}
+    )
 }

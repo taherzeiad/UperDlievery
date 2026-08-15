@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
@@ -113,4 +114,10 @@ private fun DocumentItem(title: String, iconColor: Color, onClick: () -> Unit) {
             Text(title, style = AberTypography.CardTitle.copy(fontSize = 20.sp))
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DocumentManagementScreenPreview() {
+    DocumentManagementScreen(onBackClick = {}, onDrivingLicenseClick = {})
 }

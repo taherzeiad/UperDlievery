@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.Uper.R
@@ -149,6 +150,18 @@ fun SignUpScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SignUpScreenPreview() {
+    SignUpScreen(
+        uiState = SignUpUiState(email = "test@example.com", phoneNumber = "905070017"),
+        onEmailChange = {},
+        onPhoneChange = {},
+        onSignUpClick = {},
+        onSignInClick = {}
+    )
 }
 
 private fun TextStyle.toSpanStyle() = SpanStyle(

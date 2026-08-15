@@ -7,11 +7,11 @@ import com.newuperapp.Uper.domain.model.BookingDetails
 import com.newuperapp.Uper.domain.repository.RideRequestRepository
 import com.newuperapp.Uper.navigation.AberDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,45 +35,61 @@ class BookingDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // التأكد من مسمى المعامل داخل SavedStateHandle
     private val rideId: String = savedStateHandle.get<String>(AberDestination.ARG_RIDE_ID).orEmpty()
 
     private val _uiState = MutableStateFlow(BookingDetailsUiState(rideId = rideId))
     val uiState: StateFlow<BookingDetailsUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<BookingDetailsEvent>()
-    val events: SharedFlow<BookingDetailsEvent> = _events
+    // 💡 استخدام Channel يضمن إيصال الحدث مرة واحدة بالضبط دون ضياعه
+    private val _events = Channel<BookingDetailsEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     init {
+        loadBookingDetails()
+    }
+
+    private fun loadBookingDetails() {
+        if (rideId.isEmpty()) return
+
         viewModelScope.launch {
-            val details = rideRequestRepository.getBookingDetails(rideId)
-            _uiState.value = _uiState.value.copy(details = details, isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            try {
+                val details = rideRequestRepository.getBookingDetails(rideId)
+                _uiState.value = _uiState.value.copy(details = details, isLoading = false)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
         }
     }
 
     fun onCallClick() {
         _uiState.value.details?.let {
-            viewModelScope.launch { _events.emit(BookingDetailsEvent.LaunchDialer(it.riderPhone)) }
+            viewModelScope.launch { _events.send(BookingDetailsEvent.LaunchDialer(it.riderPhone)) }
         }
     }
 
     fun onMessageClick() {
         _uiState.value.details?.let {
-            viewModelScope.launch { _events.emit(BookingDetailsEvent.LaunchMessenger(it.riderPhone)) }
+            viewModelScope.launch { _events.send(BookingDetailsEvent.LaunchMessenger(it.riderPhone)) }
         }
     }
 
     fun onCancelClick() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isCancelling = true)
-            rideRequestRepository.cancelBooking(rideId)
-            _uiState.value = _uiState.value.copy(isCancelling = false)
-            _events.emit(BookingDetailsEvent.NavigateBackAfterCancel)
+            try {
+                rideRequestRepository.cancelBooking(rideId)
+                _events.send(BookingDetailsEvent.NavigateBackAfterCancel)
+            } finally {
+                _uiState.value = _uiState.value.copy(isCancelling = false)
+            }
         }
     }
 
     fun onGoToPickupClick() {
         viewModelScope.launch {
-            _events.emit(BookingDetailsEvent.NavigateToPickupNavigation(rideId))
+            _events.send(BookingDetailsEvent.NavigateToPickupNavigation(rideId))
         }
     }
 }
