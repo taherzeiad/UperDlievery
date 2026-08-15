@@ -1,7 +1,11 @@
 package com.newuperapp.Uper.domain.model
 
 enum class NotificationType {
-    SYSTEM, PROMOTION, WALLET, CANCELLED
+    BOOKING_SUCCESS,
+    BOOKING_CANCELLED,
+    PROMOTION,
+    PAYMENT,
+    SYSTEM
 }
 
 data class Notification(

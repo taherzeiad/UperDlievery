@@ -1,5 +1,6 @@
 package com.newuperapp.Uper.ui.screens.home.payment
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,21 +43,24 @@ fun PaymentMethodScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        text = stringResource(R.string.payment_method_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
-                    ) 
-                },
+                title = {
+                Text(
+                    text = stringResource(R.string.payment_method_title),
+                    style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
+                )
+            },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = AberColor.Yellow
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
             )
-        },
-        containerColor = AberColor.SurfaceGrayAlt
+        }, containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -67,20 +74,22 @@ fun PaymentMethodScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    onClick = { /* Implement add card action */ }
-                ) {
+                    onClick = { /* Implement add card action */ }) {
                     Row(
                         modifier = Modifier.padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(48.dp)
+                                .size(49.dp)
                                 .clip(CircleShape)
-                                .background(AberColor.Yellow),
-                            contentAlignment = Alignment.Center
+                                .background(AberColor.Yellow), contentAlignment = Alignment.Center
                         ) {
-                            Icon(Icons.Default.CreditCard, contentDescription = null, tint = Color.White)
+                            Image(
+                                painter = painterResource(R.drawable.card),
+                                contentDescription = "card",
+                                Modifier.size(30.dp)
+                            )
                         }
                         Spacer(Modifier.width(16.dp))
                         Text(
@@ -88,7 +97,11 @@ fun PaymentMethodScreen(
                             style = AberTypography.CardTitle.copy(fontSize = 18.sp),
                             modifier = Modifier.weight(1f)
                         )
-                        Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray)
+                        Icon(
+                            Icons.Default.ChevronRight,
+                            contentDescription = null,
+                            tint = AberColor.BorderGray
+                        )
                     }
                 }
             }
@@ -96,7 +109,9 @@ fun PaymentMethodScreen(
             item {
                 Text(
                     text = stringResource(R.string.payment_credit_cards_label),
-                    style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray, fontSize = 14.sp),
+                    style = AberTypography.SectionLabel.copy(
+                        color = AberColor.BorderGray, fontSize = 14.sp
+                    ),
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -117,7 +132,10 @@ fun PaymentMethodScreen(
                         cards.forEachIndexed { index, card ->
                             PaymentMethodItem(card)
                             if (index < cards.size - 1) {
-                                HorizontalDivider(color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 80.dp))
+                                HorizontalDivider(
+                                    color = AberColor.SurfaceGray,
+                                    modifier = Modifier.padding(start = 80.dp)
+                                )
                             }
                         }
                     }
@@ -141,28 +159,28 @@ private fun PaymentMethodItem(card: PaymentMethod) {
         // Mock brand icon placeholder
         Box(
             modifier = Modifier
-                .size(44.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(49.dp)
+                .clip(CircleShape)
                 .background(AberColor.SurfaceGray),
             contentAlignment = Alignment.Center
         ) {
-            val typeLabel = when (card.type) {
-                PaymentMethodType.VISA -> "VISA"
-                PaymentMethodType.PAYPAL -> "PAYPAL"
-                PaymentMethodType.MASTERCARD -> "MC"
+            val logoDrawableRes = when (card.type) {
+                PaymentMethodType.VISA -> R.drawable.visa
+                PaymentMethodType.PAYPAL -> R.drawable.paypal
+                PaymentMethodType.MASTERCARD -> R.drawable.mastercard
             }
-            Text(
-                text = typeLabel,
-                style = AberTypography.Caption.copy(
-                    fontWeight = FontWeight.Black,
-                    fontSize = 10.sp,
-                    color = AberColor.Ink
-                )
+
+            Image(
+                painter = painterResource(id = logoDrawableRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(23.33.dp)
+                    .width(30.dp)
             )
         }
-        
+
         Spacer(Modifier.width(16.dp))
-        
+
         Column {
             Text(card.details, style = AberTypography.CardTitle.copy(fontSize = 16.sp))
             Text(
@@ -170,8 +188,7 @@ private fun PaymentMethodItem(card: PaymentMethod) {
                     PaymentMethodType.VISA -> "VISA"
                     PaymentMethodType.PAYPAL -> "Paypal"
                     PaymentMethodType.MASTERCARD -> "Master Card"
-                },
-                style = AberTypography.Caption.copy(color = AberColor.BorderGray)
+                }, style = AberTypography.Caption.copy(color = AberColor.BorderGray)
             )
         }
     }

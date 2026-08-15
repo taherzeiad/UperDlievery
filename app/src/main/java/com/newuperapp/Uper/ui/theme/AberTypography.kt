@@ -16,7 +16,7 @@ object AberTypography {
     )
 
     val CardTitle = TextStyle(
-        color = AberColor.Ink, fontSize = 18.sp, fontWeight = FontWeight.Bold
+        color = AberColor.Ink, fontSize = 20.sp, fontWeight = FontWeight.Bold
     )
 
     val ScreenTitle = TextStyle(
@@ -40,7 +40,7 @@ object AberTypography {
     )
 
     val Caption = TextStyle(
-        color = AberColor.BorderGray, fontSize = 13.sp, fontWeight = FontWeight.Normal
+        color = AberColor.BorderGray, fontSize = 15.sp, fontWeight = FontWeight.Normal
     )
 
     val SectionLabel = TextStyle(
