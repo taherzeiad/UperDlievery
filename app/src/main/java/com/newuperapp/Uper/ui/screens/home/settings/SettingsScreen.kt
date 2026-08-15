@@ -70,7 +70,7 @@ private fun ProfileHeader(profile: DriverProfile?, onClick: () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                .size(70.dp)
+                .size(60.dp)
                 .clip(CircleShape)
                 .background(AberColor.SurfaceGray)
         )
@@ -80,7 +80,9 @@ private fun ProfileHeader(profile: DriverProfile?, onClick: () -> Unit) {
                 profile?.name ?: "Martha Banks",
                 style = AberTypography.CardTitle.copy(fontSize = 20.sp)
             )
-            Text(profile?.level ?: "Gold Member", style = AberTypography.Caption)
+            Text(
+                profile?.level ?: "Gold Member", style = AberTypography.Caption
+            )
         }
         Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray)
     }
@@ -102,7 +104,7 @@ private fun SettingsItem(
     ) {
         Box(
             modifier = Modifier
-                .size(36.dp)
+                .size(29.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(iconBgColor),
             contentAlignment = Alignment.Center
@@ -111,7 +113,7 @@ private fun SettingsItem(
                 icon,
                 contentDescription = null,
                 tint = AberColor.White,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(23.dp)
             )
         }
         Spacer(Modifier.width(16.dp))
@@ -125,22 +127,21 @@ private fun SettingsItem(
 private fun SettingsScreenPreview() {
     SettingsScreen(
         profile = DriverProfile(
-            id = "1",
-            name = "Martha Banks",
-            level = "Gold Member",
-            avatarUrl = null,
-            totalEarned = 1200.0,
-            hoursOnline = 30.0,
-            totalDistanceKm = 150.0,
-            totalJobs = 45,
-            currentLat = 0.0,
-            currentLng = 0.0
-        ),
+        id = "1",
+        name = "Martha Banks",
+        level = "Gold Member",
+        avatarUrl = null,
+        totalEarned = 1200.0,
+        hoursOnline = 30.0,
+        totalDistanceKm = 150.0,
+        totalJobs = 45,
+        currentLat = 0.0,
+        currentLng = 0.0
+    ),
         onBackClick = {},
         onVehicleManagementClick = {},
         onDocumentManagementClick = {},
-        onProfileClick = {}
-    )
+        onProfileClick = {})
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,14 +154,15 @@ fun SettingsScreen(
     onProfileClick: () -> Unit
 ) {
     Scaffold(
+
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
-                    )
-                },
+                Text(
+                    text = stringResource(R.string.settings_title),
+                    style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
+                )
+            },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -172,11 +174,14 @@ fun SettingsScreen(
             )
         }, containerColor = AberColor.White
     ) { padding ->
+
         LazyColumn(modifier = Modifier.padding(padding)) {
             item {
+                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 20.dp)
+
                 ProfileHeader(profile, onClick = onProfileClick)
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 8.dp)
+                Spacer(Modifier.height(5.dp))
+                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 20.dp)
             }
 
             item {
@@ -213,7 +218,7 @@ fun SettingsScreen(
                     onClick = {})
 
                 Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 8.dp)
+                HorizontalDivider(color = AberColor.SurfaceGray, thickness = 20.dp)
             }
 
             item {
