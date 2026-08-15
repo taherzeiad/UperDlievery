@@ -220,7 +220,7 @@ fun WalletScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(80.dp)) // Extra padding for overlay card
+                Spacer(modifier = Modifier.height(90.dp)) // Extra padding for overlay card
             }
 
             // Main Content Area with Overlay Card
