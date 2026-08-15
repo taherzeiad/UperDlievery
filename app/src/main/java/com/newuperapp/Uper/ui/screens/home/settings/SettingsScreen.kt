@@ -127,17 +127,17 @@ private fun SettingsItem(
 private fun SettingsScreenPreview() {
     SettingsScreen(
         profile = DriverProfile(
-        id = "1",
-        name = "Martha Banks",
-        level = "Gold Member",
-        avatarUrl = null,
-        totalEarned = 1200.0,
-        hoursOnline = 30.0,
-        totalDistanceKm = 150.0,
-        totalJobs = 45,
-        currentLat = 0.0,
-        currentLng = 0.0
-    ),
+            id = "1",
+            name = "Martha Banks",
+            level = "Gold Member",
+            avatarUrl = null,
+            totalEarned = 1200.0,
+            hoursOnline = 30.0,
+            totalDistanceKm = 150.0,
+            totalJobs = 45,
+            currentLat = 0.0,
+            currentLng = 0.0
+        ),
         onBackClick = {},
         onVehicleManagementClick = {},
         onDocumentManagementClick = {},
@@ -158,11 +158,11 @@ fun SettingsScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                Text(
-                    text = stringResource(R.string.settings_title),
-                    style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                )
-            },
+                    Text(
+                        text = stringResource(R.string.settings_title),
+                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(

@@ -33,15 +33,19 @@ fun AddVehicleScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { 
+                title = {
                     Text(
                         text = stringResource(R.string.vehicle_add_new_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
-                    ) 
+                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = AberColor.Yellow
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
@@ -52,7 +56,7 @@ fun AddVehicleScreen(
                 onClick = onCompleteClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .height(88.dp),
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AberColor.Yellow,
@@ -77,9 +81,19 @@ fun AddVehicleScreen(
             item { VehicleField(stringResource(R.string.vehicle_brand_label), "Toyota") }
             item { VehicleField(stringResource(R.string.vehicle_model_label), "Camry") }
             item { VehicleField(stringResource(R.string.vehicle_year_label), "2018") }
-            item { VehicleField(stringResource(R.string.vehicle_license_plate_label), "43A 364.82") }
+            item {
+                VehicleField(
+                    stringResource(R.string.vehicle_license_plate_label),
+                    "43A 364.82"
+                )
+            }
             item { VehicleField(stringResource(R.string.vehicle_color_label), "Black") }
-            item { VehicleField(stringResource(R.string.vehicle_booking_type_label), "Taxi 7 Seat") }
+            item {
+                VehicleField(
+                    stringResource(R.string.vehicle_booking_type_label),
+                    "Taxi 7 Seat"
+                )
+            }
         }
     }
 }
@@ -96,7 +110,13 @@ private fun VehicleField(label: String, value: String) {
             value = value,
             onValueChange = {},
             modifier = Modifier.fillMaxWidth(),
-            trailingIcon = { Icon(Icons.Default.ChevronRight, contentDescription = null, tint = AberColor.BorderGray) },
+            trailingIcon = {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = AberColor.BorderGray
+                )
+            },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
