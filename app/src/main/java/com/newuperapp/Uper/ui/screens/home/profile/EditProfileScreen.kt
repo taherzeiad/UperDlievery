@@ -1,6 +1,7 @@
 package com.newuperapp.Uper.ui.screens.home.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -70,19 +71,41 @@ fun EditProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top // محاذاة من الأعلى ليكون شكل الصورة والـ Fields متناسقاً
                 ) {
-                    // Editable Photo Area
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(AberColor.SurfaceGray),
-                        contentAlignment = Alignment.Center
+                    // قسم الصورة والزر أسفلها مباشرة
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(Icons.Default.CameraAlt, contentDescription = null, tint = AberColor.Yellow, modifier = Modifier.size(40.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .background(AberColor.SurfaceGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CameraAlt,
+                                contentDescription = null,
+                                tint = AberColor.Yellow,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.height(8.dp))
+
+                        // نص التعديل أسفل الصورة مباشرة
+                        Text(
+                            text = stringResource(R.string.profile_edit_photo),
+                            color = AberColor.Orange,
+                            style = AberTypography.Subtitle,
+                            modifier = Modifier.clickable { /* تنفيذ إجراء التعديل */ }
+                        )
                     }
+
                     Spacer(Modifier.width(20.dp))
+
+                    // قسم حقول الأسماء
                     Column(modifier = Modifier.weight(1f)) {
                         TextField(
                             value = "Martha",
@@ -102,12 +125,12 @@ fun EditProfileScreen(
                             value = "",
                             onValueChange = {},
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { 
+                            placeholder = {
                                 Text(
                                     text = stringResource(R.string.profile_last_name_placeholder),
                                     color = AberColor.BorderGray,
                                     style = AberTypography.Subtitle.copy(fontSize = 18.sp)
-                                ) 
+                                )
                             },
                             textStyle = AberTypography.Subtitle.copy(fontSize = 18.sp),
                             colors = TextFieldDefaults.colors(
@@ -120,18 +143,7 @@ fun EditProfileScreen(
                         )
                     }
                 }
-                
-                TextButton(
-                    onClick = {},
-                    modifier = Modifier.padding(start = 20.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_edit_photo),
-                        color = AberColor.Orange,
-                        style = AberTypography.Subtitle
-                    )
-                }
-                
+
                 Spacer(Modifier.height(20.dp))
                 HorizontalDivider(color = AberColor.SurfaceGray, thickness = 1.dp)
             }
@@ -170,4 +182,3 @@ private fun EditInfoItem(label: String, value: String) {
 private fun EditProfileScreenPreview() {
     EditProfileScreen(onCancelClick = {}, onDoneClick = {})
 }
-

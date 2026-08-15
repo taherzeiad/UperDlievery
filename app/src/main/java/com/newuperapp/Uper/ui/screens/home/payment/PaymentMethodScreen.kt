@@ -44,11 +44,11 @@ fun PaymentMethodScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.payment_method_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                    )
-                },
+                Text(
+                    text = stringResource(R.string.payment_method_title),
+                    style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
+                )
+            },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
