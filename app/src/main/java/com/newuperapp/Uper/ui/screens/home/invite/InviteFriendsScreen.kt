@@ -134,6 +134,7 @@ fun InviteFriendsScreen(
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
             )
+            Spacer(Modifier.height(20.dp))
 
             Surface(
                 modifier = Modifier
