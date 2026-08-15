@@ -2,7 +2,23 @@ package com.newuperapp.Uper.domain.model
 
 data class LatLngPoint(val lat: Double, val lng: Double)
 
-enum class RidePaymentTag { APPLE_PAY, DISCOUNT, CASH, CARD }
+enum class RidePaymentTag {
+    APPLE_PAY, DISCOUNT, CASH, CARD;
+
+    companion object {
+        fun fromString(value: String): RidePaymentTag? {
+            return entries.find { it.name.equals(value, ignoreCase = true) }
+        }
+    }
+
+    val label: String
+        get() = when (this) {
+            APPLE_PAY -> "ApplePay"
+            DISCOUNT -> "Discount"
+            CASH -> "Cash"
+            CARD -> "Card"
+        }
+}
 
 data class RideRequest(
     val id: String,
