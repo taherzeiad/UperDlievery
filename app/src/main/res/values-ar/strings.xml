@@ -66,6 +66,11 @@
     <string name="invite_share_code_label">شارك كود الدعوة الخاص بك</string>
     <string name="invite_search_placeholder">بحث</string>
     <string name="invite_mutual_friends">%1$d أصدقاء مشتركين</string>
+    <string name="invite_earn_up_to_prefix">اربح حتى</string>
+    <string name="invite_earn_amount">$150</string>
+    <string name="invite_earn_up_to_suffix">يوميًا</string>
+    <string name="invite_description">عند تسجيل صديقك باستخدام كود \n الدعوة الخاص بك، يمكنك الحصول على حتى $150 \n يوميًا.</string>
+    <string name="invite_cta">دعوة</string>
 
     <!-- Chat Screen -->
     <string name="chat_type_message_placeholder">اكتب رسالة…</string>

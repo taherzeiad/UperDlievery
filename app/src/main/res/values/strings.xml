@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   انسخي هاي الـ entries جوا res/values/strings.xml الأساسي عندك
   (لو app_name موجود أصلاً بس تجاهليه من هون).
 -->
@@ -70,6 +69,13 @@
     <string name="invite_share_code_label">SHARE YOUR INVITE CODE</string>
     <string name="invite_search_placeholder">Search</string>
     <string name="invite_mutual_friends">%1$d mutual friends</string>
+    <string name="invite_earn_up_to_prefix">Earn up to</string>
+    <string name="invite_earn_amount">$150</string>
+    <string name="invite_earn_up_to_suffix">a day</string>
+    <string name="invite_description">When your friend sign up with your \n referral code, you can receive up to \n $150 a day.</string>
+    <string name="invite_cta">INVITE</string>
+
+
 
     <!-- Chat Screen -->
     <string name="chat_type_message_placeholder">Type a message&#8230;</string>
