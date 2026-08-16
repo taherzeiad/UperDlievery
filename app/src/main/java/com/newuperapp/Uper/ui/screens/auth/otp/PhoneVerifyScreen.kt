@@ -151,4 +151,3 @@ private fun PhoneVerifyScreenPreview() {
         onVerifyClick = {},
         onResendClick = {})
 }
-

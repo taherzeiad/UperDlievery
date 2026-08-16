@@ -1,5 +1,7 @@
 package com.newuperapp.Uper.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -36,13 +38,13 @@ import com.newuperapp.Uper.ui.screens.splash.SplashRoute
  * Central navigation graph for the entire application.
  * Defines all routes and transitions between them.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AberNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
-        navController = navController,
-        startDestination = AberDestination.Splash.route
+        navController = navController, startDestination = AberDestination.PhoneVerify.route
     ) {
         addAppStartFlow(navController)
         addAuthFlow(navController)
@@ -55,18 +57,15 @@ fun AberNavGraph(
  */
 private fun NavGraphBuilder.addAppStartFlow(navController: NavHostController) {
     composable(AberDestination.Splash.route) {
-        SplashRoute(
-            onNavigateToOnboarding = {
-                navController.navigate(AberDestination.Onboarding.route) {
-                    popUpTo(AberDestination.Splash.route) { inclusive = true }
-                }
-            },
-            onNavigateToHome = {
-                navController.navigate(AberDestination.Home.route) {
-                    popUpTo(AberDestination.Splash.route) { inclusive = true }
-                }
+        SplashRoute(onNavigateToOnboarding = {
+            navController.navigate(AberDestination.Onboarding.route) {
+                popUpTo(AberDestination.Splash.route) { inclusive = true }
             }
-        )
+        }, onNavigateToHome = {
+            navController.navigate(AberDestination.Home.route) {
+                popUpTo(AberDestination.Splash.route) { inclusive = true }
+            }
+        })
     }
 
     composable(AberDestination.Onboarding.route) {
@@ -75,8 +74,7 @@ private fun NavGraphBuilder.addAppStartFlow(navController: NavHostController) {
                 navController.navigate(AberDestination.Welcome.route) {
                     popUpTo(AberDestination.Onboarding.route) { inclusive = true }
                 }
-            }
-        )
+            })
     }
 
     composable(AberDestination.EnableLocation.route) {
@@ -85,8 +83,7 @@ private fun NavGraphBuilder.addAppStartFlow(navController: NavHostController) {
                 navController.navigate(AberDestination.Home.route) {
                     popUpTo(AberDestination.EnableLocation.route) { inclusive = true }
                 }
-            }
-        )
+            })
     }
 }
 
@@ -97,8 +94,7 @@ private fun NavGraphBuilder.addAuthFlow(navController: NavHostController) {
     composable(AberDestination.Welcome.route) {
         WelcomeScreen(
             onNavigateToSignUp = { navController.navigate(AberDestination.SignUp.route) },
-            onNavigateToSignIn = { navController.navigate(AberDestination.SignIn.route) }
-        )
+            onNavigateToSignIn = { navController.navigate(AberDestination.SignIn.route) })
     }
 
     composable(AberDestination.SignUp.route) {
@@ -113,34 +109,29 @@ private fun NavGraphBuilder.addAuthFlow(navController: NavHostController) {
     }
 
     composable(AberDestination.SignIn.route) {
-        SignInRoute(
-            onNavigateToOtp = { phone ->
-                navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
-            },
-            onNavigateToSignUp = {
-                navController.navigate(AberDestination.SignUp.route)
-            }
-        )
+        SignInRoute(onNavigateToOtp = { phone ->
+            navController.navigate(AberDestination.PhoneVerify.createRoute(phone))
+        }, onNavigateToSignUp = {
+            navController.navigate(AberDestination.SignUp.route)
+        })
     }
 
     composable(
         route = AberDestination.PhoneVerify.route,
         arguments = listOf(navArgument(AberDestination.ARG_PHONE) { type = NavType.StringType })
     ) {
-        PhoneVerifyRoute(
-            onBackClick = { navController.popBackStack() },
-            onNavigateToHome = {
-                navController.navigate(AberDestination.EnableLocation.route) {
-                    popUpTo(0) { inclusive = true }
-                }
+        PhoneVerifyRoute(onBackClick = { navController.popBackStack() }, onNavigateToHome = {
+            navController.navigate(AberDestination.EnableLocation.route) {
+                popUpTo(0) { inclusive = true }
             }
-        )
+        })
     }
 }
 
 /**
  * Main application dashboard and management flows.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
     composable(AberDestination.Home.route) {
         HomeRoute(
@@ -153,8 +144,7 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onNavigateToInviteFriends = { navController.navigate(AberDestination.InviteFriends.route) },
             onNavigateToSettings = { navController.navigate(AberDestination.Settings.route) },
             onNavigateToWallet = { navController.navigate(AberDestination.Wallet.route) },
-            onNavigateToProfile = { navController.navigate(AberDestination.Profile.route) }
-        )
+            onNavigateToProfile = { navController.navigate(AberDestination.Profile.route) })
     }
 
     // Ride Details & Active Navigation
@@ -166,8 +156,7 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onBackClick = { navController.popBackStack() },
             onNavigateToPickup = { rideId ->
                 navController.navigate(AberDestination.PickupNavigation.createRoute(rideId))
-            }
-        )
+            })
     }
 
     composable(
@@ -178,8 +167,7 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onBackClick = { navController.popBackStack() },
             onNavigateToDropoffFlow = {
                 navController.popBackStack(AberDestination.Home.route, inclusive = false)
-            }
-        )
+            })
     }
 
     // Side Drawer Features
@@ -198,8 +186,7 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
     composable(AberDestination.Wallet.route) {
         WalletScreen(
             onBackClick = { navController.popBackStack() },
-            onPaymentMethodClick = { navController.navigate(AberDestination.PaymentMethod.route) }
-        )
+            onPaymentMethodClick = { navController.navigate(AberDestination.PaymentMethod.route) })
     }
 
     composable(AberDestination.PaymentMethod.route) {
@@ -220,49 +207,42 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onBackClick = { navController.popBackStack() },
             onVehicleManagementClick = { navController.navigate(AberDestination.VehicleManagement.route) },
             onDocumentManagementClick = { navController.navigate(AberDestination.DocumentManagement.route) },
-            onProfileClick = { navController.navigate(AberDestination.Profile.route) }
-        )
+            onProfileClick = { navController.navigate(AberDestination.Profile.route) })
     }
 
     composable(AberDestination.Profile.route) {
         ProfileScreen(
             onBackClick = { navController.popBackStack() },
-            onEditClick = { navController.navigate(AberDestination.EditProfile.route) }
-        )
+            onEditClick = { navController.navigate(AberDestination.EditProfile.route) })
     }
 
     composable(AberDestination.EditProfile.route) {
         EditProfileScreen(
             onCancelClick = { navController.popBackStack() },
-            onDoneClick = { navController.popBackStack() }
-        )
+            onDoneClick = { navController.popBackStack() })
     }
 
     composable(AberDestination.VehicleManagement.route) {
         VehicleManagementScreen(
             onBackClick = { navController.popBackStack() },
-            onAddVehicleClick = { navController.navigate(AberDestination.AddVehicle.route) }
-        )
+            onAddVehicleClick = { navController.navigate(AberDestination.AddVehicle.route) })
     }
 
     composable(AberDestination.AddVehicle.route) {
         AddVehicleScreen(
             onBackClick = { navController.popBackStack() },
-            onCompleteClick = { navController.popBackStack() }
-        )
+            onCompleteClick = { navController.popBackStack() })
     }
 
     composable(AberDestination.DocumentManagement.route) {
         DocumentManagementScreen(
             onBackClick = { navController.popBackStack() },
-            onDrivingLicenseClick = { navController.navigate(AberDestination.DrivingLicense.route) }
-        )
+            onDrivingLicenseClick = { navController.navigate(AberDestination.DrivingLicense.route) })
     }
 
     composable(AberDestination.DrivingLicense.route) {
         DrivingLicenseScreen(
             onBackClick = { navController.popBackStack() },
-            onCompleteClick = { navController.popBackStack() }
-        )
+            onCompleteClick = { navController.popBackStack() })
     }
 }
