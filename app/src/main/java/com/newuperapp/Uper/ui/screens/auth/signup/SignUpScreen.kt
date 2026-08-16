@@ -11,8 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,12 +37,12 @@ import com.joelkanyi.jcomposecountrycodepicker.component.rememberKomposeCountryC
 fun SignUpRoute(
     viewModel: SignUpViewModel = hiltViewModel(),
     onNavigateToOtp: (fullPhoneNumber: String) -> Unit,
-    onNavigateToSignIn: () -> Unit
+    onNavigateToSignIn: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val ccpState = rememberKomposeCountryCodePickerState()
 
-    var showCountryPicker by remember { mutableStateOf(false) }
+    var showCountryPicker by remember { mutableStateOf(value = false) }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
