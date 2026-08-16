@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.domain.model
+package com.newuperapp.uper.domain.model
 
 enum class TurnManeuver { STRAIGHT, TURN_LEFT, TURN_RIGHT, SLIGHT_LEFT, SLIGHT_RIGHT }
 

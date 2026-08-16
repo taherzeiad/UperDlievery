@@ -1,10 +1,10 @@
-package com.newuperapp.Uper.data.onboarding
+package com.newuperapp.uper.data.onboarding
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.newuperapp.Uper.domain.onboarding.OnboardingRepository
+import com.newuperapp.uper.domain.onboarding.OnboardingRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

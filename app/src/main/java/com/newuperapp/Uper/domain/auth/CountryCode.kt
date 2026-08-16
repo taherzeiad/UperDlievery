@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.domain.auth
+package com.newuperapp.uper.domain.auth
 
 data class CountryCode(
     val code: String,

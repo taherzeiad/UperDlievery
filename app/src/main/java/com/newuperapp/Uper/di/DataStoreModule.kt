@@ -1,17 +1,17 @@
-package com.newuperapp.Uper.di
+package com.newuperapp.uper.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.newuperapp.Uper.data.repository.AuthRepositoryImpl
-import com.newuperapp.Uper.data.repository.RideRequestRepositoryImpl
-import com.newuperapp.Uper.data.onboarding.OnboardingRepositoryImpl
-import com.newuperapp.Uper.data.repository.DriverRepositoryImpl
-import com.newuperapp.Uper.domain.repository.AuthRepository
-import com.newuperapp.Uper.domain.repository.RideRequestRepository
-import com.newuperapp.Uper.domain.onboarding.OnboardingRepository
-import com.newuperapp.Uper.domain.repository.DriverRepository
+import com.newuperapp.uper.data.repository.AuthRepositoryImpl
+import com.newuperapp.uper.data.repository.RideRequestRepositoryImpl
+import com.newuperapp.uper.data.onboarding.OnboardingRepositoryImpl
+import com.newuperapp.uper.data.repository.DriverRepositoryImpl
+import com.newuperapp.uper.domain.repository.AuthRepository
+import com.newuperapp.uper.domain.repository.RideRequestRepository
+import com.newuperapp.uper.domain.onboarding.OnboardingRepository
+import com.newuperapp.uper.domain.repository.DriverRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

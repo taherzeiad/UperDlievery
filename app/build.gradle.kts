@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.newuperapp.Uper"
+    namespace = "com.newuperapp.uper"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.newuperapp.Uper"
+        applicationId = "com.newuperapp.uper"
         minSdk = 23
         targetSdk = 35
         versionCode = 1
@@ -83,4 +83,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
     implementation(libs.komposeCountryPicker)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }

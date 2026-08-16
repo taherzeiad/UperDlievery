@@ -1,9 +1,9 @@
-package com.newuperapp.Uper.domain.repository
+package com.newuperapp.uper.domain.repository
 
-import com.newuperapp.Uper.domain.model.BookingDetails
-import com.newuperapp.Uper.domain.model.DriverProfile
-import com.newuperapp.Uper.domain.model.PickupNavigationState
-import com.newuperapp.Uper.domain.model.RideRequest
+import com.newuperapp.uper.domain.model.BookingDetails
+import com.newuperapp.uper.domain.model.DriverProfile
+import com.newuperapp.uper.domain.model.PickupNavigationState
+import com.newuperapp.uper.domain.model.RideRequest
 import kotlinx.coroutines.flow.Flow
 
 interface RideRequestRepository {

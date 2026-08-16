@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.domain.repository
+package com.newuperapp.uper.domain.repository
 
 /** Thin result wrapper so ViewModels don't leak network/Firebase exceptions into UI state. */
 sealed interface AuthResult {

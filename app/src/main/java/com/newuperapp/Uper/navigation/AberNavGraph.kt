@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.navigation
+package com.newuperapp.uper.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.newuperapp.Uper.navigation.AberDestination
 import com.newuperapp.Uper.ui.screens.auth.WelcomeScreen
 import com.newuperapp.Uper.ui.screens.auth.otp.PhoneVerifyRoute
 import com.newuperapp.Uper.ui.screens.auth.signin.SignInRoute
@@ -44,7 +45,7 @@ fun AberNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
-        navController = navController, startDestination = AberDestination.PhoneVerify.route
+        navController = navController, startDestination = AberDestination.SignIn.route
     ) {
         addAppStartFlow(navController)
         addAuthFlow(navController)

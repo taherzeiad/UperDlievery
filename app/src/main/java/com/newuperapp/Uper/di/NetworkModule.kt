@@ -1,7 +1,7 @@
-package com.newuperapp.Uper.di
+package com.newuperapp.uper.di
 
-import com.newuperapp.Uper.data.remote.ApiService
-import com.newuperapp.Uper.data.remote.MockInterceptor
+import com.newuperapp.uper.data.remote.ApiService
+import com.newuperapp.uper.data.remote.MockInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

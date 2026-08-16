@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.data.remote.dto
+package com.newuperapp.uper.data.remote.dto
 
 import kotlinx.serialization.Serializable
 

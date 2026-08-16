@@ -1,11 +1,11 @@
-package com.newuperapp.Uper.data.repository
+package com.newuperapp.uper.data.repository
 
-import com.newuperapp.Uper.data.remote.ApiService
-import com.newuperapp.Uper.data.remote.dto.LatLngDto
-import com.newuperapp.Uper.data.remote.dto.NavigationStepDto
-import com.newuperapp.Uper.data.remote.dto.RideRequestDto
-import com.newuperapp.Uper.domain.model.*
-import com.newuperapp.Uper.domain.repository.RideRequestRepository
+import com.newuperapp.uper.data.remote.ApiService
+import com.newuperapp.uper.data.remote.dto.LatLngDto
+import com.newuperapp.uper.data.remote.dto.NavigationStepDto
+import com.newuperapp.uper.data.remote.dto.RideRequestDto
+import com.newuperapp.uper.domain.model.*
+import com.newuperapp.uper.domain.repository.RideRequestRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -140,7 +140,7 @@ class RideRequestRepositoryImpl @Inject constructor(
         dropoffLocation = LatLngPoint(dropoffLat, dropoffLng)
     )
 
-    private fun com.newuperapp.Uper.data.remote.dto.DriverProfileDto.toDomain() = DriverProfile(
+    private fun com.newuperapp.uper.data.remote.dto.DriverProfileDto.toDomain() = DriverProfile(
         id = id,
         name = name,
         level = level,

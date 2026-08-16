@@ -1,6 +1,6 @@
-package com.newuperapp.Uper.data.remote
+package com.newuperapp.uper.data.remote
 
-import com.newuperapp.Uper.data.remote.dto.*
+import com.newuperapp.uper.data.remote.dto.*
 import retrofit2.http.*
 
 /**

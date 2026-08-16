@@ -1,11 +1,11 @@
-package com.newuperapp.Uper.data.repository
+package com.newuperapp.uper.data.repository
 
-import com.newuperapp.Uper.data.remote.ApiService
-import com.newuperapp.Uper.data.remote.dto.HistoryItemDto
-import com.newuperapp.Uper.data.remote.dto.NotificationDto
-import com.newuperapp.Uper.data.remote.dto.TransactionDto
-import com.newuperapp.Uper.domain.model.*
-import com.newuperapp.Uper.domain.repository.DriverRepository
+import com.newuperapp.uper.data.remote.ApiService
+import com.newuperapp.uper.data.remote.dto.HistoryItemDto
+import com.newuperapp.uper.data.remote.dto.NotificationDto
+import com.newuperapp.uper.data.remote.dto.TransactionDto
+import com.newuperapp.uper.domain.model.*
+import com.newuperapp.uper.domain.repository.DriverRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
