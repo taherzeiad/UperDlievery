@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.ui.theme
+package com.newuperapp.uper.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

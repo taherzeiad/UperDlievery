@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.data.remote
+package com.newuperapp.uper.data.remote
 
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType

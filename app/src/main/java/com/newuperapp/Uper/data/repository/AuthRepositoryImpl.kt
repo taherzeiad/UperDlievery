@@ -1,15 +1,15 @@
-package com.newuperapp.Uper.data.repository
+package com.newuperapp.uper.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.newuperapp.Uper.data.remote.ApiService
-import com.newuperapp.Uper.data.remote.dto.OtpRequestDto
-import com.newuperapp.Uper.data.remote.dto.SignUpRequestDto
-import com.newuperapp.Uper.data.remote.dto.VerifyOtpRequestDto
-import com.newuperapp.Uper.domain.repository.AuthRepository
-import com.newuperapp.Uper.domain.repository.AuthResult
+import com.newuperapp.uper.data.remote.ApiService
+import com.newuperapp.uper.data.remote.dto.OtpRequestDto
+import com.newuperapp.uper.data.remote.dto.SignUpRequestDto
+import com.newuperapp.uper.data.remote.dto.VerifyOtpRequestDto
+import com.newuperapp.uper.domain.repository.AuthRepository
+import com.newuperapp.uper.domain.repository.AuthResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

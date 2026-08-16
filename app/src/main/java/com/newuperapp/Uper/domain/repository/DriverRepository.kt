@@ -1,8 +1,8 @@
-package com.newuperapp.Uper.domain.repository
+package com.newuperapp.uper.domain.repository
 
-import com.newuperapp.Uper.domain.model.HistoryItem
-import com.newuperapp.Uper.domain.model.Notification
-import com.newuperapp.Uper.domain.model.WalletTransaction
+import com.newuperapp.uper.domain.model.HistoryItem
+import com.newuperapp.uper.domain.model.Notification
+import com.newuperapp.uper.domain.model.WalletTransaction
 import kotlinx.coroutines.flow.Flow
 
 interface DriverRepository {

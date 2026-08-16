@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.domain.onboarding
+package com.newuperapp.uper.domain.onboarding
 
 import kotlinx.coroutines.flow.Flow
 

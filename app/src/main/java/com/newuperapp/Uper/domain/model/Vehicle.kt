@@ -1,4 +1,4 @@
-package com.newuperapp.Uper.domain.model
+package com.newuperapp.uper.domain.model
 
 data class Vehicle(
     val id: String,
