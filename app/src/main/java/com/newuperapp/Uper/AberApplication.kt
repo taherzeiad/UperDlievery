@@ -1,4 +1,4 @@
-package com.newuperapp.Uper
+package com.newuperapp.uper
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
