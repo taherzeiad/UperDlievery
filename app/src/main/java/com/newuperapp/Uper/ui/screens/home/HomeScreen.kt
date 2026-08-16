@@ -140,16 +140,12 @@ fun HomeScreen(
             }
         }) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier = Modifier.fillMaxSize().padding(innerPadding)
         ) {
             if (LocalInspectionMode.current) {
                 // Placeholder for GoogleMap in Preview to avoid rendering issues
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -203,9 +199,7 @@ fun HomeScreen(
                         cameraPositionState.position =
                             CameraPosition.fromLatLngZoom(LatLng(it.currentLat, it.currentLng), 15f)
                     }
-                }, modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(20.dp)
+                }, modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp)
             )
         }
     }
@@ -216,10 +210,10 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(
-            isOnline = false, driverProfile = DriverProfile(
-                "1", "Taher", "Pro", null, 100.0, "$", 5.0, 20.0, 10, 60.1699, 24.9384
-            )
-        ),
+        isOnline = false, driverProfile = DriverProfile(
+            "1", "Taher", "Pro", null, 100.0, "$", 5.0, 20.0, 10, 60.1699, 24.9384
+        )
+    ),
         onToggleOnline = {},
         onMenuClick = {},
         onRequestCardClick = {},
