@@ -31,9 +31,10 @@ fun AberPhoneField(
     dialCode: String,
     value: String,
     onValueChange: (String) -> Unit,
+    onCountryClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    PhoneFieldShell(countryFlagEmoji, dialCode, modifier) {
+    PhoneFieldShell(countryFlagEmoji, dialCode, onCountryClick, modifier) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
@@ -59,9 +60,10 @@ fun AberPhoneDisplayField(
     dialCode: String,
     value: String,
     onClearClick: () -> Unit,
+    onCountryClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    PhoneFieldShell(countryFlagEmoji, dialCode, modifier, trailing = {
+    PhoneFieldShell(countryFlagEmoji, dialCode, onCountryClick, modifier, trailing = {
         if (value.isNotEmpty()) {
             IconButton(onClick = onClearClick) {
                 Box(
@@ -85,6 +87,7 @@ fun AberPhoneDisplayField(
 private fun PhoneFieldShell(
     countryFlagEmoji: String,
     dialCode: String,
+    onCountryClick: () -> Unit,
     modifier: Modifier = Modifier,
     trailing: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
@@ -99,7 +102,7 @@ private fun PhoneFieldShell(
     ) {
         Row(
             modifier = Modifier
-                .clickable { /* open country picker */ }
+                .clickable(onClick = onCountryClick)
                 .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)

@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 data class SignInUiState(
     val dialCode: String = "+84",
+    val countryFlag: String = "🇻🇳",
     val phoneNumber: String = "905070017",
     val isSubmitting: Boolean = false,
     val errorMessage: String? = null
@@ -53,6 +54,10 @@ class SignInViewModel @Inject constructor(
 
     fun onClearClick() {
         _uiState.value = _uiState.value.copy(phoneNumber = "")
+    }
+
+    fun onCountrySelected(dialCode: String, flag: String) {
+        _uiState.value = _uiState.value.copy(dialCode = dialCode, countryFlag = flag)
     }
 
     fun onNextClick() {

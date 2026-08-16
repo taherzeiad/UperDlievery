@@ -17,6 +17,7 @@ data class SignUpUiState(
     val email: String = "",
     val phoneNumber: String = "",
     val dialCode: String = "+84",
+    val countryFlag: String = "🇻🇳",
     val isSubmitting: Boolean = false,
     val errorMessage: String? = null
 ) {
@@ -45,6 +46,10 @@ class SignUpViewModel @Inject constructor(
 
     fun onPhoneChange(value: String) {
         _uiState.value = _uiState.value.copy(phoneNumber = value, errorMessage = null)
+    }
+
+    fun onCountrySelected(dialCode: String, flag: String) {
+        _uiState.value = _uiState.value.copy(dialCode = dialCode, countryFlag = flag)
     }
 
     fun onSignUpClick() {
