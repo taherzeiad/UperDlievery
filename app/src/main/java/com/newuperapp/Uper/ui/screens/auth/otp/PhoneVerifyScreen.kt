@@ -1,6 +1,5 @@
 package com.newuperapp.Uper.ui.screens.auth.otp
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.Uper.R
@@ -59,6 +57,8 @@ fun PhoneVerifyScreen(
     onDigitPressed: (String) -> Unit,
     onBackspace: () -> Unit,
     onVerifyClick: () -> Unit,
+    // Kept in the signature so the resend flow can come back without touching callers —
+    // see the note below on why it isn't rendered right now.
     onResendClick: () -> Unit
 ) {
     Scaffold(containerColor = AberColor.SurfaceGrayAlt) { padding ->
@@ -114,20 +114,12 @@ fun PhoneVerifyScreen(
                     isLoading = uiState.isVerifying
                 )
 
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    text = if (uiState.isResending) {
-                        stringResource(R.string.auth_resending)
-                    } else {
-                        stringResource(R.string.auth_resend_code_cta)
-                    },
-                    style = AberTypography.semibody17(AberColor.Orange)
-                        .copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                        .clickable(enabled = !uiState.isResending, onClick = onResendClick)
-                )
+                // NOTE: the reference screenshot has no "Resend code" link in this space at
+                // all (checked pixel-by-pixel — the area below the button is plain background
+                // up to the keypad). Removed the always-visible Text that used to sit here so
+                // the screen matches; re-add it (e.g. gated behind a resend-cooldown state)
+                // if the product actually wants it, using `onResendClick` and
+                // `uiState.isResending` above.
             }
 
             Spacer(Modifier.weight(1f))
