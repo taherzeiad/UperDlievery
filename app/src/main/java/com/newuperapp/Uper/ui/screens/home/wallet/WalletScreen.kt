@@ -46,8 +46,7 @@ fun WalletScreen(
         onBackClick = onBackClick,
         onPaymentMethodClick = onPaymentMethodClick,
         selectedTab = selectedTab,
-        onTabClick = { selectedTab = it }
-    )
+        onTabClick = { selectedTab = it })
 }
 
 /**
@@ -55,21 +54,16 @@ fun WalletScreen(
  */
 @Composable
 private fun TabButton(
-    text: String,
-    isSelected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxHeight()
             .background(if (isSelected) AberColor.Ink else Color.Transparent)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+            .clickable(onClick = onClick), contentAlignment = Alignment.Center
     ) {
         Text(
-            text = text,
-            style = AberTypography.Subtitle.copy(
+            text = text, style = AberTypography.Subtitle.copy(
                 color = if (isSelected) AberColor.Yellow else AberColor.Ink,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp
@@ -103,19 +97,14 @@ private fun TransactionItem(transaction: WalletTransaction) {
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = transaction.name,
-                style = AberTypography.CardTitle.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AberColor.Ink
+                text = transaction.name, style = AberTypography.CardTitle.copy(
+                    fontSize = 16.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
                 )
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = transaction.transactionNumber,
-                style = AberTypography.Caption.copy(
-                    fontSize = 14.sp,
-                    color = Color.LightGray
+                text = transaction.transactionNumber, style = AberTypography.Caption.copy(
+                    fontSize = 14.sp, color = Color.LightGray
                 )
             )
         }
@@ -123,9 +112,7 @@ private fun TransactionItem(transaction: WalletTransaction) {
         Text(
             text = "${transaction.currencySymbol}${"%.2f".format(transaction.amount)}",
             style = AberTypography.PriceTag.copy(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = AberColor.Ink
+                fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
             )
         )
     }
@@ -147,18 +134,14 @@ fun WalletScreen(
                     Text(
                         text = stringResource(R.string.wallet_title),
                         style = AberTypography.ScreenTitle.copy(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = AberColor.Ink
+                            fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
                         )
                     )
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = AberColor.Yellow
                 )
             )
-        },
-        containerColor = AberColor.SurfaceGrayAlt
+        }, containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         Column(
             modifier = Modifier
@@ -170,8 +153,7 @@ fun WalletScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AberColor.Yellow)
-                    .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 20.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -187,14 +169,12 @@ fun WalletScreen(
                         text = stringResource(R.string.wallet_cash),
                         isSelected = selectedTab == 0,
                         modifier = Modifier.weight(1f),
-                        onClick = { onTabClick(0) }
-                    )
+                        onClick = { onTabClick(0) })
                     TabButton(
                         text = stringResource(R.string.wallet_discount),
                         isSelected = selectedTab == 1,
                         modifier = Modifier.weight(1f),
-                        onClick = { onTabClick(1) }
-                    )
+                        onClick = { onTabClick(1) })
                 }
 
                 Spacer(modifier = Modifier.height(28.dp))
@@ -203,9 +183,7 @@ fun WalletScreen(
                 Text(
                     text = if (uiState.isLoading) "..." else "$${"%.2f".format(uiState.balance)}",
                     style = AberTypography.ScreenTitle.copy(
-                        fontSize = 42.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = AberColor.Ink
+                        fontSize = 42.sp, fontWeight = FontWeight.ExtraBold, color = AberColor.Ink
                     )
                 )
 
@@ -214,9 +192,7 @@ fun WalletScreen(
                 Text(
                     text = stringResource(R.string.wallet_total_earn).uppercase(),
                     style = AberTypography.SectionLabel.copy(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AberColor.Ink
+                        fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
                     )
                 )
 
@@ -247,8 +223,7 @@ fun WalletScreen(
                             modifier = Modifier
                                 .size(52.dp)
                                 .clip(CircleShape)
-                                .background(AberColor.Yellow),
-                            contentAlignment = Alignment.Center
+                                .background(AberColor.Yellow), contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.MonetizationOn,
@@ -285,9 +260,7 @@ fun WalletScreen(
                 Text(
                     text = stringResource(R.string.wallet_payment_history).uppercase(),
                     style = AberTypography.SectionLabel.copy(
-                        color = Color.LightGray,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
                 )
@@ -303,8 +276,7 @@ fun WalletScreen(
                 ) {
                     if (uiState.isLoading) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(color = AberColor.Yellow)
                         }
@@ -336,19 +308,12 @@ fun WalletScreen(
 private fun WalletScreenPreview() {
     WalletScreen(
         uiState = WalletUiState(
-            balance = 325.0,
-            transactions = listOf(
-                WalletTransaction("1", "Elva Barnett", "#740136", 25.0),
-                WalletTransaction("2", "Isaiah Francis", "#539642", 12.0),
-                WalletTransaction("3", "Lula Briggs", "#123146", 34.0),
-                WalletTransaction("4", "Ray Young", "#521936", 33.0),
-                WalletTransaction("5", "Betty Palmer", "#129936", 15.0)
-            ),
-            isLoading = false
-        ),
-        onBackClick = {},
-        onPaymentMethodClick = {},
-        selectedTab = 0,
-        onTabClick = {}
-    )
+        balance = 325.0, transactions = listOf(
+            WalletTransaction("1", "Elva Barnett", "#740136", 25.0),
+            WalletTransaction("2", "Isaiah Francis", "#539642", 12.0),
+            WalletTransaction("3", "Lula Briggs", "#123146", 34.0),
+            WalletTransaction("4", "Ray Young", "#521936", 33.0),
+            WalletTransaction("5", "Betty Palmer", "#129936", 15.0)
+        ), isLoading = false
+    ), onBackClick = {}, onPaymentMethodClick = {}, selectedTab = 0, onTabClick = {})
 }

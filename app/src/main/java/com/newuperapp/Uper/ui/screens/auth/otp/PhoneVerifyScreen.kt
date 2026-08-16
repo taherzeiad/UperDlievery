@@ -62,9 +62,15 @@ fun PhoneVerifyScreen(
     onResendClick: () -> Unit
 ) {
     Scaffold(containerColor = AberColor.SurfaceGrayAlt) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
 
-            IconButton(onClick = onBackClick, modifier = Modifier.padding(start = 12.dp, top = 8.dp)) {
+            IconButton(
+                onClick = onBackClick, modifier = Modifier.padding(start = 12.dp, top = 8.dp)
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
@@ -74,7 +80,10 @@ fun PhoneVerifyScreen(
             }
 
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp).padding(top = 24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 28.dp)
+                    .padding(top = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
@@ -113,7 +122,8 @@ fun PhoneVerifyScreen(
                     } else {
                         stringResource(R.string.auth_resend_code_cta)
                     },
-                    style = AberTypography.semibody17(AberColor.Orange).copy(fontWeight = FontWeight.Bold),
+                    style = AberTypography.semibody17(AberColor.Orange)
+                        .copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .clickable(enabled = !uiState.isResending, onClick = onResendClick)
@@ -125,8 +135,7 @@ fun PhoneVerifyScreen(
             AberNumericKeypad(
                 onDigit = onDigitPressed,
                 onBackspace = onBackspace,
-                onMicClick = { /* voice input placeholder */ }
-            )
+                onMicClick = { /* voice input placeholder */ })
         }
     }
 }
@@ -140,7 +149,6 @@ private fun PhoneVerifyScreenPreview() {
         onDigitPressed = {},
         onBackspace = {},
         onVerifyClick = {},
-        onResendClick = {}
-    )
+        onResendClick = {})
 }
 
