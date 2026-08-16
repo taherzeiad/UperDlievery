@@ -44,7 +44,7 @@ fun AberNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
-        navController = navController, startDestination = AberDestination.PhoneVerify.route
+        navController = navController, startDestination = AberDestination.SignIn.route
     ) {
         addAppStartFlow(navController)
         addAuthFlow(navController)
