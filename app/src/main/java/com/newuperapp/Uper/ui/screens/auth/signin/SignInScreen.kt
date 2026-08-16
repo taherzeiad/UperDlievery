@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,8 +23,11 @@ import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
 import com.newuperapp.Uper.ui.components.AberPhoneDisplayField
+import com.newuperapp.Uper.ui.utils.CountryUtils
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
+import com.joelkanyi.jcomposecountrycodepicker.component.CountrySelectionDialog
+import com.joelkanyi.jcomposecountrycodepicker.component.rememberKomposeCountryCodePickerState
 
 /**
  * Sign In screen handling phone number input using a custom numeric keypad.
@@ -37,6 +39,9 @@ fun SignInRoute(
     onNavigateToSignUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val ccpState = rememberKomposeCountryCodePickerState()
+
+    var showCountryPicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -46,15 +51,31 @@ fun SignInRoute(
         }
     }
 
+    if (showCountryPicker) {
+        CountrySelectionDialog(
+            countryList = ccpState.countryList,
+            onDismissRequest = { showCountryPicker = false },
+            onSelect = { country ->
+                viewModel.onCountrySelected(
+                    country.phoneNoCode, CountryUtils.getFlagEmoji(country.code)
+                )
+                showCountryPicker = false
+            },
+            containerColor = AberColor.White,
+            contentColor = AberColor.Ink
+        )
+    }
+
     SignInScreen(
         uiState = uiState,
         onDigitPressed = viewModel::onDigitPressed,
         onBackspace = viewModel::onBackspace,
         onClearClick = viewModel::onClearClick,
         onNextClick = viewModel::onNextClick,
-        onSignUpClick = onNavigateToSignUp
-    )
+        onSignUpClick = onNavigateToSignUp,
+        onCountryClick = { showCountryPicker = true })
 }
+
 
 @Composable
 fun SignInScreen(
@@ -63,10 +84,15 @@ fun SignInScreen(
     onBackspace: () -> Unit,
     onClearClick: () -> Unit,
     onNextClick: () -> Unit,
-    onSignUpClick: () -> Unit
+    onSignUpClick: () -> Unit,
+    onCountryClick: () -> Unit
 ) {
     Scaffold(containerColor = AberColor.Yellow) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.height(200.dp))
@@ -75,27 +101,30 @@ fun SignInScreen(
                     modifier = Modifier
                         .padding(top = 200.dp)
                         .fillMaxWidth()
-                        .background(AberColor.White, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                        .background(
+                            AberColor.White, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                        )
                         .padding(horizontal = 28.dp, vertical = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) { 
-                                append(stringResource(R.string.auth_login_title)) 
+                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) {
+                                append(stringResource(R.string.auth_login_title))
                             }
-                            withStyle(AberTypography.HeroTitle.toSpanStyle()) { 
-                                append(stringResource(R.string.auth_login_subtitle)) 
+                            withStyle(AberTypography.HeroTitle.toSpanStyle()) {
+                                append(stringResource(R.string.auth_login_subtitle))
                             }
                         },
                         style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
                     )
 
                     AberPhoneDisplayField(
-                        countryFlagEmoji = "🇻🇳",
+                        countryFlagEmoji = uiState.countryFlag,
                         dialCode = uiState.dialCode,
                         value = uiState.phoneNumber,
-                        onClearClick = onClearClick
+                        onClearClick = onClearClick,
+                        onCountryClick = onCountryClick
                     )
 
                     uiState.errorMessage?.let {
@@ -112,13 +141,13 @@ fun SignInScreen(
 
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(AberTypography.Subtitle.toSpanStyle()) { 
-                                append(stringResource(R.string.auth_no_account)) 
+                            withStyle(AberTypography.Subtitle.toSpanStyle()) {
+                                append(stringResource(R.string.auth_no_account))
                             }
                             withStyle(
                                 SpanStyle(fontWeight = FontWeight.Bold, color = AberColor.Orange)
-                            ) { 
-                                append(stringResource(R.string.auth_sign_up_cta)) 
+                            ) {
+                                append(stringResource(R.string.auth_sign_up_cta))
                             }
                         },
                         modifier = Modifier
@@ -135,8 +164,7 @@ fun SignInScreen(
             AberNumericKeypad(
                 onDigit = onDigitPressed,
                 onBackspace = onBackspace,
-                onMicClick = { /* voice input placeholder */ }
-            )
+                onMicClick = { /* voice input placeholder */ })
         }
     }
 }
@@ -150,10 +178,7 @@ private fun SignInScreenPreview() {
         onBackspace = {},
         onClearClick = {},
         onNextClick = {},
-        onSignUpClick = {}
-    )
+        onSignUpClick = {},
+        onCountryClick = {})
 }
 
-private fun TextStyle.toSpanStyle() = SpanStyle(
-    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
-)

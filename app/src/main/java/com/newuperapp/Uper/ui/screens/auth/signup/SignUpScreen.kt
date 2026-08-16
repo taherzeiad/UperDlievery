@@ -11,8 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,8 +24,11 @@ import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberPhoneField
 import com.newuperapp.Uper.ui.components.AberTextField
+import com.newuperapp.Uper.ui.utils.CountryUtils
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
+import com.joelkanyi.jcomposecountrycodepicker.component.CountrySelectionDialog
+import com.joelkanyi.jcomposecountrycodepicker.component.rememberKomposeCountryCodePickerState
 
 /**
  * Sign Up screen allowing new drivers to register using email and phone number.
@@ -36,9 +37,12 @@ import com.newuperapp.Uper.ui.theme.AberTypography
 fun SignUpRoute(
     viewModel: SignUpViewModel = hiltViewModel(),
     onNavigateToOtp: (fullPhoneNumber: String) -> Unit,
-    onNavigateToSignIn: () -> Unit
+    onNavigateToSignIn: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val ccpState = rememberKomposeCountryCodePickerState()
+
+    var showCountryPicker by remember { mutableStateOf(value = false) }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -48,12 +52,26 @@ fun SignUpRoute(
         }
     }
 
+    if (showCountryPicker) {
+        CountrySelectionDialog(
+            countryList = ccpState.countryList,
+            onDismissRequest = { showCountryPicker = false },
+            onSelect = { country ->
+                viewModel.onCountrySelected(country.phoneNoCode, CountryUtils.getFlagEmoji(country.code))
+                showCountryPicker = false
+            },
+            containerColor = AberColor.White,
+            contentColor = AberColor.Ink
+        )
+    }
+
     SignUpScreen(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPhoneChange = viewModel::onPhoneChange,
         onSignUpClick = viewModel::onSignUpClick,
-        onSignInClick = onNavigateToSignIn
+        onSignInClick = onNavigateToSignIn,
+        onCountryClick = { showCountryPicker = true }
     )
 }
 
@@ -63,7 +81,8 @@ fun SignUpScreen(
     onEmailChange: (String) -> Unit,
     onPhoneChange: (String) -> Unit,
     onSignUpClick: () -> Unit,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
+    onCountryClick: () -> Unit
 ) {
     Scaffold(containerColor = AberColor.SurfaceGrayAlt) { padding ->
         Column(
@@ -109,10 +128,11 @@ fun SignUpScreen(
                     keyboardType = KeyboardType.Email
                 )
                 AberPhoneField(
-                    countryFlagEmoji = "🇻🇳",
+                    countryFlagEmoji = uiState.countryFlag,
                     dialCode = uiState.dialCode,
                     value = uiState.phoneNumber,
-                    onValueChange = onPhoneChange
+                    onValueChange = onPhoneChange,
+                    onCountryClick = onCountryClick
                 )
 
                 uiState.errorMessage?.let {
@@ -160,10 +180,8 @@ private fun SignUpScreenPreview() {
         onEmailChange = {},
         onPhoneChange = {},
         onSignUpClick = {},
-        onSignInClick = {}
+        onSignInClick = {},
+        onCountryClick = {}
     )
 }
 
-private fun TextStyle.toSpanStyle() = SpanStyle(
-    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
-)
