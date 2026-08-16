@@ -24,6 +24,7 @@ import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberNumericKeypad
 import com.newuperapp.Uper.ui.components.AberPhoneDisplayField
+import com.newuperapp.Uper.ui.utils.CountryUtils
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 import com.joelkanyi.jcomposecountrycodepicker.component.CountrySelectionDialog
@@ -56,7 +57,9 @@ fun SignInRoute(
             countryList = ccpState.countryList,
             onDismissRequest = { showCountryPicker = false },
             onSelect = { country ->
-                viewModel.onCountrySelected(country.phoneNoCode, getFlagEmoji(country.code))
+                viewModel.onCountrySelected(
+                    country.phoneNoCode, CountryUtils.getFlagEmoji(country.code)
+                )
                 showCountryPicker = false
             },
             containerColor = AberColor.White,
@@ -72,13 +75,6 @@ fun SignInRoute(
         onNextClick = viewModel::onNextClick,
         onSignUpClick = onNavigateToSignUp,
         onCountryClick = { showCountryPicker = true })
-}
-
-fun getFlagEmoji(countryCode: String): String {
-    if (countryCode.length != 2) return "🏳️"
-    val firstLetter = Character.codePointAt(countryCode.uppercase(), 0) - 0x41 + 0x1F1E6
-    val secondLetter = Character.codePointAt(countryCode.uppercase(), 1) - 0x41 + 0x1F1E6
-    return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
 }
 
 
@@ -187,6 +183,3 @@ private fun SignInScreenPreview() {
         onCountryClick = {})
 }
 
-private fun TextStyle.toSpanStyle() = SpanStyle(
-    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
-)

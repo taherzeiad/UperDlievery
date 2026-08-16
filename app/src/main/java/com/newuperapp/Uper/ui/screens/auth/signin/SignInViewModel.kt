@@ -57,7 +57,8 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onCountrySelected(dialCode: String, flag: String) {
-        _uiState.value = _uiState.value.copy(dialCode = dialCode, countryFlag = flag)
+        val formattedDialCode = if (dialCode.startsWith("+")) dialCode else "+$dialCode"
+        _uiState.value = _uiState.value.copy(dialCode = formattedDialCode, countryFlag = flag)
     }
 
     fun onNextClick() {

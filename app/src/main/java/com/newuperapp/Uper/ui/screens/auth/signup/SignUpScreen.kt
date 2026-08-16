@@ -26,7 +26,7 @@ import com.newuperapp.Uper.ui.components.AberButton
 import com.newuperapp.Uper.ui.components.AberButtonStyle
 import com.newuperapp.Uper.ui.components.AberPhoneField
 import com.newuperapp.Uper.ui.components.AberTextField
-import com.newuperapp.Uper.ui.screens.auth.signin.getFlagEmoji
+import com.newuperapp.Uper.ui.utils.CountryUtils
 import com.newuperapp.Uper.ui.theme.AberColor
 import com.newuperapp.Uper.ui.theme.AberTypography
 import com.joelkanyi.jcomposecountrycodepicker.component.CountrySelectionDialog
@@ -59,7 +59,7 @@ fun SignUpRoute(
             countryList = ccpState.countryList,
             onDismissRequest = { showCountryPicker = false },
             onSelect = { country ->
-                viewModel.onCountrySelected(country.phoneNoCode, getFlagEmoji(country.code))
+                viewModel.onCountrySelected(country.phoneNoCode, CountryUtils.getFlagEmoji(country.code))
                 showCountryPicker = false
             },
             containerColor = AberColor.White,
@@ -187,6 +187,3 @@ private fun SignUpScreenPreview() {
     )
 }
 
-private fun TextStyle.toSpanStyle() = SpanStyle(
-    color = color, fontSize = fontSize, fontWeight = fontWeight, fontFamily = fontFamily
-)
