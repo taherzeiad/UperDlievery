@@ -48,8 +48,7 @@ fun EnableLocationRoute(
     EnableLocationScreen(
         onUseMyLocationClick = {
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }, 
-        onSkipClick = viewModel::onSkip
+        }, onSkipClick = viewModel::onSkip
     )
 }
 
@@ -60,18 +59,14 @@ fun EnableLocationScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(96.dp))
         Image(
             painter = painterResource(id = R.drawable.located),
             contentDescription = null,
-            modifier = Modifier
-                .width(263.dp)
-                .height(230.dp)
+            modifier = Modifier.width(263.dp).height(230.dp)
         )
         Spacer(modifier = Modifier.height(60.dp))
         Text(
@@ -96,8 +91,7 @@ fun EnableLocationScreen(
         )
         Spacer(modifier = Modifier.height(45.dp))
         AberTextLink(
-            text = stringResource(id = R.string.location_skip), 
-            onClick = onSkipClick
+            text = stringResource(id = R.string.location_skip), onClick = onSkipClick
         )
     }
 }
