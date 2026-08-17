@@ -23,9 +23,6 @@ import com.newuperapp.uper.ui.components.AberButton
 import com.newuperapp.uper.ui.components.AberTextLink
 import com.newuperapp.uper.ui.theme.AberColor
 
-/**
- * Screen requesting location permissions from the driver to enable trip matching and tracking.
- */
 @Composable
 fun EnableLocationRoute(
     onLocationResolved: () -> Unit,
@@ -59,14 +56,18 @@ fun EnableLocationScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(96.dp))
         Image(
             painter = painterResource(id = R.drawable.located),
             contentDescription = null,
-            modifier = Modifier.width(263.dp).height(230.dp)
+            modifier = Modifier
+                .width(263.dp)
+                .height(230.dp)
         )
         Spacer(modifier = Modifier.height(60.dp))
         Text(
