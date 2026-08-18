@@ -37,7 +37,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
-    onOpenMenu: () -> Unit,
     onNavigateToBookingDetails: (rideId: String) -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToNotifications: () -> Unit,
@@ -59,25 +58,28 @@ fun HomeRoute(
     }
 
     ModalNavigationDrawer(
-        drawerState = drawerState, drawerContent = {
+        drawerState = drawerState,
+        drawerContent = {
             uiState.driverProfile?.let { profile ->
                 AberDrawer(
-                    profile = profile, onMenuItemClick = { item ->
-                        scope.launch { drawerState.close() }
-                        when (item) {
-                            DrawerMenuItem.Home -> {}
-                            DrawerMenuItem.History -> onNavigateToHistory()
-                            DrawerMenuItem.Notifications -> onNavigateToNotifications()
-                            DrawerMenuItem.InviteFriends -> onNavigateToInviteFriends()
-                            DrawerMenuItem.Settings -> onNavigateToSettings()
-                            DrawerMenuItem.Wallet -> onNavigateToWallet()
-                            DrawerMenuItem.Profile -> onNavigateToProfile()
-                            DrawerMenuItem.Logout -> { /* Handle logout */
-                            }
+                    profile = profile,
+                ) { item ->
+                    scope.launch { drawerState.close() }
+                    when (item) {
+                        DrawerMenuItem.Home -> {}
+                        DrawerMenuItem.History -> onNavigateToHistory()
+                        DrawerMenuItem.Notifications -> onNavigateToNotifications()
+                        DrawerMenuItem.InviteFriends -> onNavigateToInviteFriends()
+                        DrawerMenuItem.Settings -> onNavigateToSettings()
+                        DrawerMenuItem.Wallet -> onNavigateToWallet()
+                        DrawerMenuItem.Profile -> onNavigateToProfile()
+                        DrawerMenuItem.Logout -> { /* Handle logout */
                         }
-                    })
+                    }
+                }
             }
-        }) {
+        },
+    ) {
         HomeScreen(
             uiState = uiState,
             onToggleOnline = viewModel::onToggleOnline,

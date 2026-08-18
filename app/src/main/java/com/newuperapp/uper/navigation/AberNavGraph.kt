@@ -44,7 +44,8 @@ fun AberNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
-        navController = navController, startDestination = AberDestination.SignIn.route
+        navController = navController,
+        startDestination = AberDestination.Splash.route,
     ) {
         addAppStartFlow(navController)
         addAuthFlow(navController)
@@ -57,15 +58,18 @@ fun AberNavGraph(
  */
 private fun NavGraphBuilder.addAppStartFlow(navController: NavHostController) {
     composable(AberDestination.Splash.route) {
-        SplashRoute(onNavigateToOnboarding = {
-            navController.navigate(AberDestination.Onboarding.route) {
-                popUpTo(AberDestination.Splash.route) { inclusive = true }
-            }
-        }, onNavigateToHome = {
-            navController.navigate(AberDestination.Home.route) {
-                popUpTo(AberDestination.Splash.route) { inclusive = true }
-            }
-        })
+        SplashRoute(
+            onNavigateToOnboarding = {
+                navController.navigate(AberDestination.Onboarding.route) {
+                    popUpTo(AberDestination.Splash.route) { inclusive = true }
+                }
+            },
+            onNavigateToHome = {
+                navController.navigate(AberDestination.Home.route) {
+                    popUpTo(AberDestination.Splash.route) { inclusive = true }
+                }
+            },
+        )
     }
 
     composable(AberDestination.Onboarding.route) {
@@ -94,7 +98,8 @@ private fun NavGraphBuilder.addAuthFlow(navController: NavHostController) {
     composable(AberDestination.Welcome.route) {
         WelcomeScreen(
             onNavigateToSignUp = { navController.navigate(AberDestination.SignUp.route) },
-            onNavigateToSignIn = { navController.navigate(AberDestination.SignIn.route) })
+            onNavigateToSignIn = { navController.navigate(AberDestination.SignIn.route) },
+        )
     }
 
     composable(AberDestination.SignUp.route) {
@@ -135,7 +140,6 @@ private fun NavGraphBuilder.addAuthFlow(navController: NavHostController) {
 private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
     composable(AberDestination.Home.route) {
         HomeRoute(
-            onOpenMenu = { /* Drawer handled in HomeRoute */ },
             onNavigateToBookingDetails = { rideId ->
                 navController.navigate(AberDestination.BookingDetails.createRoute(rideId))
             },
@@ -144,7 +148,8 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onNavigateToInviteFriends = { navController.navigate(AberDestination.InviteFriends.route) },
             onNavigateToSettings = { navController.navigate(AberDestination.Settings.route) },
             onNavigateToWallet = { navController.navigate(AberDestination.Wallet.route) },
-            onNavigateToProfile = { navController.navigate(AberDestination.Profile.route) })
+            onNavigateToProfile = { navController.navigate(AberDestination.Profile.route) },
+        )
     }
     // Ride Details & Active Navigation
     composable(

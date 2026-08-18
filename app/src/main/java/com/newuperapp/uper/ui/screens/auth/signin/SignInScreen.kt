@@ -93,78 +93,75 @@ fun SignInScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            Spacer(modifier = Modifier.height(180.dp))
 
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.height(200.dp))
-
-                Column(
-                    modifier = Modifier
-                        .padding(top = 200.dp)
-                        .fillMaxWidth()
-                        .background(
-                            AberColor.White, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
-                        )
-                        .padding(horizontal = 28.dp, vertical = 32.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(AberTypography.HeroTitleBold.toSpanStyle()) {
-                                append(stringResource(R.string.auth_login_title))
-                            }
-                            withStyle(AberTypography.HeroTitle.toSpanStyle()) {
-                                append(stringResource(R.string.auth_login_subtitle))
-                            }
-                        },
-                        style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(
+                        AberColor.White,
+                        RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
                     )
+                    .padding(horizontal = 28.dp, vertical = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(AberTypography.HeroTitleBold.toSpanStyle()) {
+                            append(stringResource(R.string.auth_login_title))
+                        }
+                        withStyle(AberTypography.HeroTitle.toSpanStyle()) {
+                            append(stringResource(R.string.auth_login_subtitle))
+                        }
+                    },
+                    style = AberTypography.HeroTitle.copy(fontSize = 28.sp, lineHeight = 36.sp)
+                )
 
-                    AberPhoneDisplayField(
-                        countryFlagEmoji = uiState.countryFlag,
-                        dialCode = uiState.dialCode,
-                        value = uiState.phoneNumber,
-                        onClearClick = onClearClick,
-                        onCountryClick = onCountryClick
-                    )
+                AberPhoneDisplayField(
+                    countryFlagEmoji = uiState.countryFlag,
+                    dialCode = uiState.dialCode,
+                    value = uiState.phoneNumber,
+                    onClearClick = onClearClick,
+                    onCountryClick = onCountryClick
+                )
 
-                    uiState.errorMessage?.let {
-                        Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange))
-                    }
-
-                    AberButton(
-                        text = stringResource(R.string.auth_next_cta),
-                        onClick = onNextClick,
-                        style = AberButtonStyle.Dark,
-                        enabled = uiState.isNextEnabled,
-                        isLoading = uiState.isSubmitting
-                    )
-
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(AberTypography.Subtitle.toSpanStyle()) {
-                                append(stringResource(R.string.auth_no_account))
-                            }
-                            withStyle(
-                                SpanStyle(fontWeight = FontWeight.Bold, color = AberColor.Orange)
-                            ) {
-                                append(stringResource(R.string.auth_sign_up_cta))
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(onClick = onSignUpClick)
-                            .padding(vertical = 8.dp),
-                        textAlign = TextAlign.Center
-                    )
+                uiState.errorMessage?.let {
+                    Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange))
                 }
-            }
 
-            Spacer(Modifier.weight(1f))
+                AberButton(
+                    text = stringResource(R.string.auth_next_cta),
+                    onClick = onNextClick,
+                    style = AberButtonStyle.Dark,
+                    enabled = uiState.isNextEnabled,
+                    isLoading = uiState.isSubmitting
+                )
+
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(AberTypography.Subtitle.toSpanStyle()) {
+                            append(stringResource(R.string.auth_no_account))
+                        }
+                        withStyle(
+                            SpanStyle(fontWeight = FontWeight.Bold, color = AberColor.Orange)
+                        ) {
+                            append(stringResource(R.string.auth_sign_up_cta))
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onSignUpClick)
+                        .padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
 
             AberNumericKeypad(
                 onDigit = onDigitPressed,
                 onBackspace = onBackspace,
-                onMicClick = { /* voice input placeholder */ })
+                onMicClick = { /* voice input placeholder */ }
+            )
         }
     }
 }
