@@ -86,8 +86,15 @@ class PhoneVerifyViewModel @Inject constructor(
         val state = _uiState.value
         if (state.isResending) return
         viewModelScope.launch {
-            _uiState.value = state.copy(isResending = true)
-            authRepository.resendOtp(state.fullPhoneNumber)
+            _uiState.value = state.copy(isResending = true, errorMessage = null)
+            when (val result = authRepository.resendOtp(state.fullPhoneNumber)) {
+                is AuthResult.Error -> {
+                    _uiState.value = _uiState.value.copy(errorMessage = result.message)
+                }
+                is AuthResult.Success -> {
+                    // Could show a "Code sent" toast/message if needed
+                }
+            }
             _uiState.value = _uiState.value.copy(isResending = false)
         }
     }

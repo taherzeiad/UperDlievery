@@ -1,7 +1,6 @@
 package com.newuperapp.uper.ui.screens.home.booking
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,9 +9,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Message
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,33 +19,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.newuperapp.uper.R
-import com.newuperapp.uper.domain.model.BookingDetails
-import com.newuperapp.uper.domain.model.FareLine
-import com.newuperapp.uper.domain.model.LatLngPoint
-import com.newuperapp.uper.domain.model.RidePaymentTag
-import com.newuperapp.uper.domain.model.RideRequest
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.newuperapp.uper.domain.model.*
 import com.newuperapp.uper.ui.components.AberButton
 import com.newuperapp.uper.ui.components.AberButtonStyle
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
-
-/**
- * Detailed view of a confirmed booking, providing rider contact and navigation actions.
- */
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil3.compose.AsyncImage
@@ -59,6 +44,7 @@ fun BookingDetailsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel.events, lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -68,9 +54,9 @@ fun BookingDetailsRoute(
                     BookingDetailsEvent.NavigateBackAfterCancel -> onBackClick()
                     is BookingDetailsEvent.LaunchDialer -> { /* تنفيذ Intent الاتصال الهاتفي */
                     }
-
                     is BookingDetailsEvent.LaunchMessenger -> { /* تنفيذ Intent تطبيق الرسائل */
                     }
+                    is BookingDetailsEvent.ShowError -> snackbarHostState.showSnackbar(event.message)
                 }
             }
         }
@@ -82,7 +68,8 @@ fun BookingDetailsRoute(
         onCallClick = viewModel::onCallClick,
         onMessageClick = viewModel::onMessageClick,
         onCancelClick = viewModel::onCancelClick,
-        onGoToPickupClick = viewModel::onGoToPickupClick
+        onGoToPickupClick = viewModel::onGoToPickupClick,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -93,11 +80,15 @@ fun BookingDetailsScreen(
     onCallClick: () -> Unit,
     onMessageClick: () -> Unit,
     onCancelClick: () -> Unit,
-    onGoToPickupClick: () -> Unit
+    onGoToPickupClick: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val details = uiState.details
 
-    Scaffold(containerColor = AberColor.SurfaceGrayAlt) { padding ->
+    Scaffold(
+        containerColor = AberColor.SurfaceGrayAlt,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -132,7 +123,11 @@ fun BookingDetailsScreen(
 
             if (details == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = AberColor.Yellow)
+                    if (uiState.errorMessage != null) {
+                        Text(uiState.errorMessage, color = AberColor.Orange)
+                    } else {
+                        CircularProgressIndicator(color = AberColor.Yellow)
+                    }
                 }
                 return@Column
             }
@@ -150,283 +145,240 @@ fun BookingDetailsScreen(
                         .padding(horizontal = 20.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    RiderAvatar(
-                        avatarUrl = details.request.riderAvatarUrl,
-                        riderName = details.request.riderName
+                    AsyncImage(
+                        model = details.request.riderAvatarUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(54.dp)
+                            .clip(CircleShape)
+                            .background(AberColor.SurfaceGrayAlt)
                     )
-                    Spacer(Modifier.width(14.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(details.request.riderName, style = AberTypography.CardTitle)
-                        Spacer(Modifier.height(6.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            details.request.tags.forEach { tag -> TagPill(tag) }
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = details.request.riderName,
+                            style = AberTypography.CardTitle.copy(fontSize = 18.sp)
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Info,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = "4.8 Rating", // Placeholder
+                                style = AberTypography.Caption
+                            )
                         }
                     }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            "${details.request.currencySymbol}${"%.2f".format(details.request.price)}",
-                            style = AberTypography.PriceTag
-                        )
-                        Text(
-                            "${details.request.distanceKm} km",
-                            style = AberTypography.Caption.copy(color = AberColor.Ink.copy(alpha = 0.7f))
-                        )
+
+                    // Call & Message Buttons
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        IconButton(
+                            onClick = onMessageClick,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(AberColor.White)
+                        ) {
+                            Icon(Icons.Default.Chat, contentDescription = "Chat", tint = Color.Black)
+                        }
+                        IconButton(
+                            onClick = onCallClick,
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(AberColor.Yellow)
+                        ) {
+                            Icon(Icons.Default.Phone, contentDescription = "Call", tint = Color.Black)
+                        }
                     }
                 }
 
-                AddressBlock(
-                    stringResource(R.string.booking_pick_up_label), details.request.pickupAddress
-                )
-                HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
-                AddressBlock(
-                    stringResource(R.string.booking_drop_off_label), details.request.dropoffAddress
-                )
-                HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
+                Spacer(Modifier.height(8.dp))
 
-                // Passenger Note
+                // Addresses
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 14.dp)
+                        .background(AberColor.White)
+                        .padding(20.dp)
                 ) {
-                    Text(
-                        stringResource(R.string.booking_noted_label),
-                        style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
+                    AddressItem(
+                        dotColor = AberColor.Yellow,
+                        address = details.request.pickupAddress,
+                        label = "PICKUP"
                     )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        details.note,
-                        style = AberTypography.semibody17(),
-                        modifier = Modifier.widthIn(max = 600.dp)
+                    Spacer(Modifier.height(16.dp))
+                    AddressItem(
+                        dotColor = AberColor.Orange,
+                        address = details.request.dropoffAddress,
+                        label = "DROP OFF"
                     )
                 }
 
-                HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f), thickness = 1.dp)
+                Spacer(Modifier.height(8.dp))
+
+                // Note
+                if (details.note.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(AberColor.White)
+                            .padding(20.dp)
+                    ) {
+                        Text(text = "NOTE", style = AberTypography.Caption, color = Color.Gray)
+                        Spacer(Modifier.height(4.dp))
+                        Text(text = details.note, style = AberTypography.Subtitle)
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
 
                 // Fare Breakdown
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 14.dp)
+                        .background(AberColor.White)
+                        .padding(20.dp)
                 ) {
                     Text(
-                        stringResource(R.string.booking_trip_fare_label),
-                        style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
+                        text = "FARE BREAKDOWN",
+                        style = AberTypography.Caption,
+                        color = Color.Gray
                     )
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(12.dp))
                     details.fareBreakdown.forEach { line ->
-                        FareRow(line.label, line.amount)
-                        Spacer(Modifier.height(10.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = line.label,
+                                style = AberTypography.Subtitle,
+                                color = Color.Gray,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "${details.request.currencySymbol}${line.amount}",
+                                style = AberTypography.Subtitle,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
                     }
-                    FareRow(
-                        stringResource(R.string.booking_paid_amount),
-                        details.paidAmount,
-                        emphasize = true
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = AberColor.BorderGray.copy(alpha = 0.3f)
                     )
-                }
-
-                HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f), thickness = 1.dp)
-
-                // Contact Actions
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    ActionTile(
-                        label = stringResource(R.string.booking_call),
-                        icon = Icons.Default.Call,
-                        background = Color(0xFF3DD9A6),
-                        contentColor = AberColor.Ink,
-                        onClick = onCallClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ActionTile(
-                        label = stringResource(R.string.booking_message),
-                        icon = Icons.AutoMirrored.Filled.Message,
-                        background = Color(0xFF4C5FF0),
-                        contentColor = Color.White,
-                        onClick = onMessageClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ActionTile(
-                        label = stringResource(R.string.booking_cancel),
-                        icon = Icons.Default.DeleteOutline,
-                        background = AberColor.BorderGray,
-                        contentColor = AberColor.Ink,
-                        onClick = onCancelClick,
-                        modifier = Modifier.weight(1f),
-                        isLoading = uiState.isCancelling
-                    )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "PAID AMOUNT",
+                            style = AberTypography.Subtitle,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = "${details.request.currencySymbol}${details.paidAmount}",
+                            style = AberTypography.HeroTitle.copy(
+                                fontSize = 18.sp,
+                                color = AberColor.Orange
+                            ),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
-            // Primary Navigation CTA
-            Box(
+            // Bottom Actions
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AberColor.Yellow)
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
+                    .background(AberColor.White)
+                    .padding(horizontal = 20.dp, vertical = 24.dp)
             ) {
                 AberButton(
-                    text = stringResource(R.string.booking_go_to_pick_up),
+                    text = "GO TO PICKUP",
                     onClick = onGoToPickupClick,
-                    style = AberButtonStyle.Primary,
-                    modifier = Modifier.widthIn(max = 320.dp)
+                    style = AberButtonStyle.Dark
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = "CANCEL BOOKING",
+                    style = AberTypography.Subtitle.copy(
+                        color = AberColor.Orange,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onCancelClick)
+                        .padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
-    }
-}
 
-/**
- * Rider avatar circle. Loads the real photo when a URL is available (per design),
- * falling back to a neutral placeholder circle otherwise.
- */
-@Composable
-private fun RiderAvatar(avatarUrl: String?, riderName: String) {
-    Box(
-        modifier = Modifier
-            .size(52.dp)
-            .clip(CircleShape)
-            .background(AberColor.BorderGray)
-            .border(1.dp, AberColor.Ink.copy(alpha = 0.1f), CircleShape)
-    ) {
-        if (!avatarUrl.isNullOrBlank()) {
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = riderName,
+        if (uiState.isCancelling) {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = AberColor.Yellow)
+            }
         }
     }
 }
 
 @Composable
-private fun TagPill(tag: RidePaymentTag) {
-    val label = when (tag) {
-        RidePaymentTag.APPLE_PAY -> "ApplePay"
-        RidePaymentTag.DISCOUNT -> "Discount"
-        RidePaymentTag.CASH -> "Cash"
-        RidePaymentTag.CARD -> "Card"
-    }
-    // Design shows a solid yellow pill with dark ink text — previously the Box used
-    // TagBackground while the Text style separately (and redundantly/incorrectly)
-    // set its own background, which fought with the Box color instead of matching it.
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(AberColor.Yellow)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-    ) {
-        Text(
-            label, style = AberTypography.Caption.copy(
-                color = AberColor.Ink, fontWeight = FontWeight.SemiBold
-            )
+private fun AddressItem(dotColor: Color, address: String, label: String) {
+    Row(verticalAlignment = Alignment.Top) {
+        Box(
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .size(10.dp)
+                .clip(CircleShape)
+                .background(dotColor)
         )
-    }
-}
-
-@Composable
-private fun AddressBlock(label: String, address: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(AberColor.White)
-            .padding(horizontal = 20.dp, vertical = 14.dp)
-    ) {
-        Text(
-            label.uppercase(),
-            style = AberTypography.SectionLabel.copy(color = AberColor.Ink)
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(address, style = AberTypography.semibody17())
-    }
-}
-
-@Composable
-private fun FareRow(label: String, amount: Double, emphasize: Boolean = false) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, style = AberTypography.semibody17())
-        Text(
-            "$${"%.2f".format(amount)}",
-            style = if (emphasize) AberTypography.PriceTag else AberTypography.semibody17()
-        )
-    }
-}
-
-@Composable
-private fun ActionTile(
-    label: String,
-    icon: ImageVector,
-    background: Color,
-    contentColor: Color,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isLoading: Boolean = false
-) {
-    Column(
-        modifier = modifier
-            .widthIn(max = 120.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(background)
-            .semantics { role = Role.Button }
-            .clickable(enabled = !isLoading, onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                color = contentColor, modifier = Modifier.size(22.dp), strokeWidth = 2.dp
-            )
-        } else {
-            Icon(icon, contentDescription = label, tint = contentColor)
+        Spacer(Modifier.width(16.dp))
+        Column {
+            Text(text = label, style = AberTypography.Caption, color = Color.Gray)
+            Text(text = address, style = AberTypography.Subtitle, fontWeight = FontWeight.Medium)
         }
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = label, style = AberTypography.semibody17(), color = contentColor
-        )
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun BookingDetailsScreenPreview() {
+private fun BookingDetailsPreview() {
     BookingDetailsScreen(
         uiState = BookingDetailsUiState(
             details = BookingDetails(
-                bookingId = "123456",
+                bookingId = "BK-9922",
                 request = RideRequest(
-                    id = "ride_1",
-                    riderName = "Esther Berry",
-                    riderAvatarUrl = "https://i.pravatar.cc/150?img=47",
-                    price = 25.0,
-                    distanceKm = 2.2,
-                    tags = listOf(RidePaymentTag.APPLE_PAY, RidePaymentTag.DISCOUNT),
-                    pickupAddress = "7958 Swift Village",
-                    pickupLocation = LatLngPoint(60.1719, 24.9350),
-                    dropoffAddress = "105 William St, Chicago, US",
-                    dropoffLocation = LatLngPoint(60.1750, 24.9410),
+                    id = "1",
+                    riderName = "Emma Watson",
+                    riderAvatarUrl = null,
+                    price = 45.0,
+                    currencySymbol = "$",
+                    distanceKm = 3.5,
+                    tags = listOf(RidePaymentTag.CASH),
+                    pickupAddress = "Green Garden Apt 4",
+                    pickupLocation = LatLngPoint(0.0, 0.0),
+                    dropoffAddress = "West Park Mall",
+                    dropoffLocation = LatLngPoint(0.0, 0.0)
                 ),
-                riderPhone = "+1 234 567 890",
-                note = "Lorem ipsum dolor sit amet, consectetur adipisc elit. Nullam ac vestibulum erat. Cras vulputate auctor lectus at consequat.",
-                fareBreakdown = listOf(
-                    FareLine("Apple Pay", 15.0),
-                    FareLine("Discount", 10.0),
-                ),
-                paidAmount = 25.0,
+                riderPhone = "+1 555 123 4567",
+                note = "Please call when you arrive.",
+                fareBreakdown = listOf(FareLine("Base Fare", 40.0), FareLine("Discount", -5.0)),
+                paidAmount = 45.0
             ),
-            isLoading = false,
+            isLoading = false
         ),
         onBackClick = {},
         onCallClick = {},
         onMessageClick = {},
         onCancelClick = {},
         onGoToPickupClick = {},
+        snackbarHostState = remember { SnackbarHostState() }
     )
 }

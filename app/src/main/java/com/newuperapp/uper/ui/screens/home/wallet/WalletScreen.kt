@@ -280,6 +280,12 @@ fun WalletScreen(
                         ) {
                             CircularProgressIndicator(color = AberColor.Yellow)
                         }
+                    } else if (uiState.errorMessage != null) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = uiState.errorMessage, color = AberColor.Orange)
+                        }
                     } else {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),

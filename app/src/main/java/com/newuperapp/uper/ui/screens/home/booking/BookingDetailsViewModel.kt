@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.newuperapp.uper.domain.model.BookingDetails
 import com.newuperapp.uper.domain.repository.RideRequestRepository
+import com.newuperapp.uper.domain.utils.Resource
 import com.newuperapp.uper.navigation.AberDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +20,8 @@ data class BookingDetailsUiState(
     val rideId: String = "",
     val details: BookingDetails? = null,
     val isLoading: Boolean = true,
-    val isCancelling: Boolean = false
+    val isCancelling: Boolean = false,
+    val errorMessage: String? = null
 )
 
 sealed interface BookingDetailsEvent {
@@ -27,6 +29,7 @@ sealed interface BookingDetailsEvent {
     data object NavigateBackAfterCancel : BookingDetailsEvent
     data class LaunchDialer(val phoneNumber: String) : BookingDetailsEvent
     data class LaunchMessenger(val phoneNumber: String) : BookingDetailsEvent
+    data class ShowError(val message: String) : BookingDetailsEvent
 }
 
 @HiltViewModel
@@ -35,13 +38,11 @@ class BookingDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // التأكد من مسمى المعامل داخل SavedStateHandle
     private val rideId: String = savedStateHandle.get<String>(AberDestination.ARG_RIDE_ID).orEmpty()
 
     private val _uiState = MutableStateFlow(BookingDetailsUiState(rideId = rideId))
     val uiState: StateFlow<BookingDetailsUiState> = _uiState.asStateFlow()
 
-    // 💡 استخدام Channel يضمن إيصال الحدث مرة واحدة بالضبط دون ضياعه
     private val _events = Channel<BookingDetailsEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
@@ -53,12 +54,16 @@ class BookingDetailsViewModel @Inject constructor(
         if (rideId.isEmpty()) return
 
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            try {
-                val details = rideRequestRepository.getBookingDetails(rideId)
-                _uiState.value = _uiState.value.copy(details = details, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+            when (val result = rideRequestRepository.getBookingDetails(rideId)) {
+                is Resource.Success -> {
+                    _uiState.value = _uiState.value.copy(details = result.data, isLoading = false)
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = result.message)
+                    _events.send(BookingDetailsEvent.ShowError(result.message))
+                }
+                else -> {}
             }
         }
     }
@@ -77,12 +82,18 @@ class BookingDetailsViewModel @Inject constructor(
 
     fun onCancelClick() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isCancelling = true)
-            try {
-                rideRequestRepository.cancelBooking(rideId)
-                _events.send(BookingDetailsEvent.NavigateBackAfterCancel)
-            } finally {
-                _uiState.value = _uiState.value.copy(isCancelling = false)
+            _uiState.value = _uiState.value.copy(isCancelling = true, errorMessage = null)
+            when (val result = rideRequestRepository.cancelBooking(rideId)) {
+                is Resource.Success -> {
+                    _events.send(BookingDetailsEvent.NavigateBackAfterCancel)
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(isCancelling = false, errorMessage = result.message)
+                    _events.send(BookingDetailsEvent.ShowError(result.message))
+                }
+                else -> {
+                    _uiState.value = _uiState.value.copy(isCancelling = false)
+                }
             }
         }
     }
