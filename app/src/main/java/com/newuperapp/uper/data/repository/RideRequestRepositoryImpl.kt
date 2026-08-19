@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton
 class RideRequestRepositoryImpl @Inject constructor(
@@ -39,7 +40,7 @@ class RideRequestRepositoryImpl @Inject constructor(
             } else {
                 _pendingRequests.value = Resource.Success(emptyList())
             }
-            delay(5000)
+            delay(5000.milliseconds)
         }
     }
 
