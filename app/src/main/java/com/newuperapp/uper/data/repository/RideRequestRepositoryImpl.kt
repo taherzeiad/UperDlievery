@@ -1,11 +1,13 @@
 package com.newuperapp.uper.data.repository
 
+import com.newuperapp.uper.data.local.dao.DriverDao
+import com.newuperapp.uper.data.local.entity.DriverProfileEntity
 import com.newuperapp.uper.data.remote.ApiService
-import com.newuperapp.uper.data.remote.dto.LatLngDto
 import com.newuperapp.uper.data.remote.dto.NavigationStepDto
 import com.newuperapp.uper.data.remote.dto.RideRequestDto
 import com.newuperapp.uper.domain.model.*
 import com.newuperapp.uper.domain.repository.RideRequestRepository
+import com.newuperapp.uper.domain.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -15,11 +17,11 @@ import javax.inject.Singleton
 
 @Singleton
 class RideRequestRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService, private val driverDao: DriverDao
 ) : RideRequestRepository {
 
     private val _onlineState = MutableStateFlow(false)
-    private val _pendingRequests = MutableStateFlow<List<RideRequest>>(emptyList())
+    private val _pendingRequests = MutableStateFlow<Resource<List<RideRequest>>>(Resource.Loading)
 
     // Polling simulation for real-time updates from backend
     private val pollingFlow = flow {
@@ -28,102 +30,154 @@ class RideRequestRepositoryImpl @Inject constructor(
                 try {
                     val dtos = apiService.getIncomingRides()
                     val domainModels = dtos.map { it.toDomain() }
-                    _pendingRequests.value = domainModels
+                    _pendingRequests.value = Resource.Success(domainModels)
                     emit(domainModels)
                 } catch (e: Exception) {
-                    // Log error
+                    _pendingRequests.value =
+                        Resource.Error(e.localizedMessage ?: "Failed to fetch rides")
                 }
+            } else {
+                _pendingRequests.value = Resource.Success(emptyList())
             }
-            delay(5000) // Poll every 5 seconds
+            delay(5000)
         }
     }
 
-    override fun observeDriverProfile(): Flow<DriverProfile> = flow {
+    override fun observeDriverProfile(): Flow<Resource<DriverProfile>> =
+        driverDao.getDriverProfile().map { entity ->
+            if (entity != null) Resource.Success(entity.toDomain()) else Resource.Loading
+        }.onStart {
+            fetchAndCacheProfile()
+        }.catch { e ->
+            emit(Resource.Error(e.localizedMessage ?: "Database error"))
+        }
+
+    private suspend fun fetchAndCacheProfile() {
         try {
             val dto = apiService.getProfile()
-            emit(dto.toDomain())
+            driverDao.insertDriverProfile(DriverProfileEntity.fromDomain(dto.toDomain()))
         } catch (e: Exception) {
-            // Fallback or error handling
+            // Background update failed, quiet fail as we have local data
         }
     }
 
     override fun observeOnlineState() = _onlineState.asStateFlow()
 
-    override suspend fun setOnline(isOnline: Boolean) = withContext(Dispatchers.IO) {
-        try {
-            apiService.setOnline(isOnline)
-            _onlineState.value = isOnline
-            if (!isOnline) _pendingRequests.value = emptyList()
-        } catch (e: Exception) {
-            // Handle failure
-        }
-    }
-
-    override fun observeIncomingRideRequest(): Flow<RideRequest?> = pollingFlow.map { it.firstOrNull() }
-
-    override fun observePendingRequests(): Flow<List<RideRequest>> = _pendingRequests.asStateFlow()
-
-    override suspend fun acceptRide(rideId: String) {
+    override suspend fun setOnline(isOnline: Boolean): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            apiService.acceptRide(rideId)
-        }
-    }
-
-    override suspend fun ignoreRide(rideId: String) {
-        withContext(Dispatchers.IO) {
-            apiService.ignoreRide(rideId)
-            _pendingRequests.value = _pendingRequests.value.filterNot { it.id == rideId }
-        }
-    }
-
-    override suspend fun getBookingDetails(rideId: String): BookingDetails = withContext(Dispatchers.IO) {
-        val dto = apiService.getBookingDetails(rideId)
-        BookingDetails(
-            bookingId = dto.bookingId,
-            request = dto.ride.toDomain(),
-            riderPhone = dto.riderPhone,
-            note = dto.note ?: "",
-            fareBreakdown = dto.fareBreakdown.map { FareLine(it.label, it.amount) },
-            paidAmount = dto.paidAmount
-        )
-    }
-
-    override suspend fun cancelBooking(rideId: String) {
-        withContext(Dispatchers.IO) {
-            apiService.cancelBooking(rideId)
-            _pendingRequests.value = _pendingRequests.value.filterNot { it.id == rideId }
-        }
-    }
-
-    override fun observePickupNavigation(rideId: String): Flow<PickupNavigationState> = flow {
-        while (true) {
             try {
-                val dto = apiService.getNavigationState(rideId)
-                emit(
-                    PickupNavigationState(
-                        rideId = dto.rideId,
-                        pickupAddress = dto.pickupAddress,
-                        etaMinutes = dto.etaMinutes,
-                        distanceKm = dto.distanceKm,
-                        fare = dto.fare,
-                        currentBanner = dto.currentStep.toDomain(),
-                        steps = dto.allSteps.map { it.toDomain() },
-                        routePolyline = dto.polylinePoints.map { LatLngPoint(it.lat, it.lng) },
-                        driverLocation = LatLngPoint(dto.driverLat, dto.driverLng)
-                    )
-                )
+                apiService.setOnline(isOnline)
+                _onlineState.value = isOnline
+                if (!isOnline) _pendingRequests.value = Resource.Success(emptyList())
+                Resource.Success(Unit)
             } catch (e: Exception) {
-                // Handle error
+                Resource.Error(e.localizedMessage ?: "Failed to change online status")
             }
-            delay(3000) // Update navigation every 3 seconds
+        }
+
+    override fun observeIncomingRideRequest(): Flow<Resource<RideRequest?>> =
+        pollingFlow.map { Resource.Success(it.firstOrNull()) as Resource<RideRequest?> }
+            .catch { emit(Resource.Error(it.localizedMessage ?: "Error observing rides")) }
+
+    override fun observePendingRequests(): Flow<Resource<List<RideRequest>>> =
+        _pendingRequests.asStateFlow()
+
+    override suspend fun acceptRide(rideId: String): Resource<Unit> = withContext(Dispatchers.IO) {
+        try {
+            apiService.acceptRide(rideId)
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Failed to accept ride")
         }
     }
 
-    override suspend fun markArrivedAtPickup(rideId: String) {
-        withContext(Dispatchers.IO) {
-            apiService.markArrived(rideId)
+    override suspend fun ignoreRide(rideId: String): Resource<Unit> = withContext(Dispatchers.IO) {
+        try {
+            apiService.ignoreRide(rideId)
+            val current = _pendingRequests.value
+            if (current is Resource.Success) {
+                _pendingRequests.value =
+                    Resource.Success(current.data.filterNot { it.id == rideId })
+            }
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Failed to ignore ride")
         }
     }
+
+    override suspend fun getBookingDetails(rideId: String): Resource<BookingDetails> =
+        withContext(Dispatchers.IO) {
+            try {
+                val dto = apiService.getBookingDetails(rideId)
+                val details = BookingDetails(
+                    bookingId = dto.bookingId,
+                    request = dto.ride.toDomain(),
+                    riderPhone = dto.riderPhone,
+                    note = dto.note ?: "",
+                    fareBreakdown = dto.fareBreakdown.map { FareLine(it.label, it.amount) },
+                    paidAmount = dto.paidAmount
+                )
+                Resource.Success(details)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Failed to load booking details")
+            }
+        }
+
+    override suspend fun cancelBooking(rideId: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                apiService.cancelBooking(rideId)
+                val current = _pendingRequests.value
+                if (current is Resource.Success) {
+                    _pendingRequests.value =
+                        Resource.Success(current.data.filterNot { it.id == rideId })
+                }
+                Resource.Success(Unit)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Failed to cancel booking")
+            }
+        }
+
+    override fun observePickupNavigation(rideId: String): Flow<Resource<PickupNavigationState>> =
+        flow {
+            while (true) {
+                try {
+                    val dto = apiService.getNavigationState(rideId)
+                    emit(
+                        Resource.Success(
+                            PickupNavigationState(
+                                rideId = dto.rideId,
+                                pickupAddress = dto.pickupAddress,
+                                etaMinutes = dto.etaMinutes,
+                                distanceKm = dto.distanceKm,
+                                fare = dto.fare,
+                                currentBanner = dto.currentStep.toDomain(),
+                                steps = dto.allSteps.map { it.toDomain() },
+                                routePolyline = dto.polylinePoints.map {
+                                    LatLngPoint(
+                                        it.lat, it.lng
+                                    )
+                                },
+                                driverLocation = LatLngPoint(dto.driverLat, dto.driverLng)
+                            )
+                        )
+                    )
+                } catch (e: Exception) {
+                    emit(Resource.Error(e.localizedMessage ?: "Navigation update failed"))
+                }
+                delay(3000)
+            }
+        }
+
+    override suspend fun markArrivedAtPickup(rideId: String): Resource<Unit> =
+        withContext(Dispatchers.IO) {
+            try {
+                apiService.markArrived(rideId)
+                Resource.Success(Unit)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Failed to mark arrival")
+            }
+        }
 
     // --- Mappers ---
 

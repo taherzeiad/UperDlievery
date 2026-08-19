@@ -47,12 +47,14 @@ fun HomeRoute(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToBookingDetails -> onNavigateToBookingDetails(event.rideId)
+                is HomeEvent.ShowError -> snackbarHostState.showSnackbar(event.message)
             }
         }
     }
@@ -86,7 +88,8 @@ fun HomeRoute(
             onMenuClick = { scope.launch { drawerState.open() } },
             onRequestCardClick = viewModel::onRequestCardClick,
             onAcceptClick = viewModel::onAcceptRide,
-            onIgnoreClick = viewModel::onIgnoreRide
+            onIgnoreClick = viewModel::onIgnoreRide,
+            snackbarHostState = snackbarHostState
         )
     }
 }
@@ -104,6 +107,7 @@ fun HomeScreen(
     onRequestCardClick: (String) -> Unit,
     onAcceptClick: (String) -> Unit,
     onIgnoreClick: (String) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val profile = uiState.driverProfile
     val hasRequests = uiState.isOnline && uiState.pendingRequests.isNotEmpty()
@@ -114,7 +118,7 @@ fun HomeScreen(
         )
     }
 
-    val sheetState = rememberBottomSheetScaffoldState()
+    val sheetState = rememberBottomSheetScaffoldState(snackbarHostState = snackbarHostState)
 
     BottomSheetScaffold(
         modifier = Modifier.semantics { paneTitle = "Home Screen" },
@@ -212,13 +216,24 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     HomeScreen(
         uiState = HomeUiState(
-        isOnline = false, driverProfile = DriverProfile(
-            "1", "Taher", "Pro", null, 100.0, "$", 5.0, 20.0, 10, 60.1699, 24.9384
-        )
-    ),
+            isOnline = false, driverProfile = DriverProfile(
+                id = "1",
+                name = "Taher",
+                level = "Pro",
+                avatarUrl = null,
+                totalEarned = 100.0,
+                currencySymbol = "$",
+                hoursOnline = 5.0,
+                totalDistanceKm = 20.0,
+                totalJobs = 10,
+                currentLat = 60.1699,
+                currentLng = 24.9384
+            )
+        ),
         onToggleOnline = {},
         onMenuClick = {},
         onRequestCardClick = {},
         onAcceptClick = {},
-        onIgnoreClick = {})
+        onIgnoreClick = {},
+        snackbarHostState = remember { SnackbarHostState() })
 }

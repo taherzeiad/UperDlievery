@@ -1,42 +1,38 @@
 package com.newuperapp.uper.ui.screens.home.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Navigation
+import androidx.compose.material.icons.filled.Straight
 import androidx.compose.material.icons.filled.TurnLeft
 import androidx.compose.material.icons.filled.TurnRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.newuperapp.uper.R
-import com.newuperapp.uper.domain.model.*
-import com.newuperapp.uper.ui.components.AberButton
-import com.newuperapp.uper.ui.components.AberButtonStyle
-import com.newuperapp.uper.ui.theme.AberColor
-import com.newuperapp.uper.ui.theme.AberTypography
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.newuperapp.uper.R
+import com.newuperapp.uper.domain.model.NavigationStep
+import com.newuperapp.uper.domain.model.PickupNavigationState
+import com.newuperapp.uper.domain.model.TurnManeuver
+import com.newuperapp.uper.ui.components.AberButton
+import com.newuperapp.uper.ui.components.AberButtonStyle
+import com.newuperapp.uper.ui.screens.home.SheetDragHandle
+import com.newuperapp.uper.ui.theme.AberColor
+import com.newuperapp.uper.ui.theme.AberTypography
 
 /**
- * Screen providing turn-by-turn navigation for the driver to reach the pickup location.
+ * Live navigation screen for the "Go to pickup" flow.
  * Integrates Google Maps with real-time route visualization and metric updates.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,30 +42,35 @@ fun PickupNavigationRoute(
     onBackClick: () -> Unit,
     onNavigateToDropoffFlow: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 PickupNavigationEvent.NavigateToDropoffFlow -> onNavigateToDropoffFlow()
+                is PickupNavigationEvent.ShowError -> snackbarHostState.showSnackbar(event.message)
             }
         }
     }
 
     PickupNavigationScreen(
-        state = uiState,
+        uiState = uiState,
         onBackClick = onBackClick,
-        onArrivedClick = viewModel::onArrivedAtPickupClick
+        onArrivedClick = viewModel::onArrivedAtPickupClick,
+        snackbarHostState = snackbarHostState
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickupNavigationScreen(
-    state: PickupNavigationState?,
+    uiState: PickupNavigationUiState,
     onBackClick: () -> Unit,
     onArrivedClick: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
+    val state = uiState.navigationState
     val cameraPositionState = rememberCameraPositionState {
         state?.let {
             position = CameraPosition.fromLatLngZoom(
@@ -77,7 +78,7 @@ fun PickupNavigationScreen(
             )
         }
     }
-    val sheetState = rememberBottomSheetScaffoldState()
+    val sheetState = rememberBottomSheetScaffoldState(snackbarHostState = snackbarHostState)
 
     BottomSheetScaffold(
         scaffoldState = sheetState,
@@ -123,260 +124,96 @@ fun PickupNavigationScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = false),
-                uiSettings = MapUiSettings(
-                    zoomControlsEnabled = false, myLocationButtonEnabled = false
-                )
-            ) {
-                state?.let {
+            if (state == null) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    if (uiState.errorMessage != null) {
+                        Text(uiState.errorMessage, color = AberColor.Orange)
+                    } else {
+                        CircularProgressIndicator(color = AberColor.Yellow)
+                    }
+                }
+            } else {
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    properties = MapProperties(isMyLocationEnabled = false),
+                    uiSettings = MapUiSettings(
+                        zoomControlsEnabled = false,
+                        myLocationButtonEnabled = false
+                    )
+                ) {
+                    val driverPos = remember(state.driverLocation) {
+                        LatLng(state.driverLocation.lat, state.driverLocation.lng)
+                    }
+                    val pickupPos = remember(state.routePolyline) {
+                        LatLng(state.routePolyline.last().lat, state.routePolyline.last().lng)
+                    }
+
+                    Marker(
+                        state = rememberMarkerState(position = driverPos),
+                        title = "You"
+                    )
+                    Marker(
+                        state = rememberMarkerState(position = pickupPos),
+                        title = "Pickup"
+                    )
                     Polyline(
-                        points = it.routePolyline.map { p -> LatLng(p.lat, p.lng) },
-                        color = AberColor.RouteBlue,
-                        width = 10f
+                        points = state.routePolyline.map { LatLng(it.lat, it.lng) },
+                        color = AberColor.Yellow,
+                        width = 12f
                     )
                 }
             }
-
-            state?.let {
-                DriverLocationMarker(modifier = Modifier.align(Alignment.Center))
-            }
         }
     }
 }
 
-/**
- * High-visibility banner showing the current navigation instruction at the top of the map.
- */
 @Composable
-private fun TurnBanner(step: NavigationStep) {
+fun TurnBanner(step: NavigationStep) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(AberColor.Orange)
+            .background(AberColor.Yellow)
             .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(step.maneuver.toIcon(), contentDescription = null, tint = AberColor.Ink)
-        Text(
-            text = step.distanceText,
-            style = AberTypography.semibody17(AberColor.Ink).copy(fontWeight = FontWeight.Bold)
+        Icon(
+            imageVector = when (step.maneuver) {
+                TurnManeuver.TURN_LEFT -> Icons.Default.TurnLeft
+                TurnManeuver.TURN_RIGHT -> Icons.Default.TurnRight
+                else -> Icons.Default.Straight
+            },
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = AberColor.Ink
         )
-        Text(
-            text = step.instruction, style = AberTypography.semibody17(AberColor.Ink), maxLines = 1
-        )
-    }
-}
-
-/**
- * Custom pulse-styled marker for the driver's current position on the map.
- */
-@Composable
-private fun DriverLocationMarker(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.size(140.dp), contentAlignment = Alignment.Center) {
-        Box(
-            modifier = Modifier
-                .size(140.dp)
-                .background(AberColor.Yellow.copy(alpha = 0.35f), CircleShape)
-        )
-        Box(
-            modifier = Modifier
-                .size(52.dp)
-                .background(AberColor.White, CircleShape)
-                .border(1.dp, AberColor.BorderGray.copy(alpha = 0.4f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(42.dp)
-                    .background(AberColor.Yellow, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Navigation, contentDescription = null, tint = AberColor.Ink)
-            }
+        Spacer(Modifier.width(16.dp))
+        Column {
+            Text(step.instruction, style = AberTypography.CardTitle)
+            Text(step.distanceText, style = AberTypography.Caption)
         }
     }
 }
 
 @Composable
-private fun SheetDragHandle() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .width(40.dp)
-                .height(4.dp)
-                .background(AberColor.BorderGray, RoundedCornerShape(2.dp))
-        )
-    }
-}
-
-/**
- * Bottom sheet content showing trip metrics (ETA, Distance, Fare) and the arrival confirmation action.
- */
-@Composable
-private fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () -> Unit) {
+fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 24.dp)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(AberColor.Orange),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "A",
-                    style = AberTypography.semibody17(AberColor.White)
-                        .copy(fontWeight = FontWeight.Bold)
-                )
-            }
-            Spacer(Modifier.width(14.dp))
-            Column {
-                Text(text = stringResource(R.string.nav_pickup_at), style = AberTypography.Caption)
-                Text(text = state.pickupAddress, style = AberTypography.CardTitle)
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            MetricColumn(
-                label = stringResource(R.string.nav_est_label), value = "${state.etaMinutes} min"
-            )
-            MetricColumn(
-                label = stringResource(R.string.nav_distance_label),
-                value = "${state.distanceKm} km"
-            )
-            MetricColumn(
-                label = stringResource(R.string.nav_fare_label),
-                value = "$${"%.2f".format(state.fare)}"
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            AberButton(
-                text = stringResource(R.string.nav_drop_off_cta),
-                onClick = onArrivedClick,
-                style = AberButtonStyle.Primary
-            )
-        }
-
-        Spacer(Modifier.height(8.dp))
-        HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
-
-        state.steps.forEach { step -> DirectionRow(step) }
-    }
-}
-
-@Composable
-private fun MetricColumn(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, style = AberTypography.Caption)
-        Spacer(Modifier.height(4.dp))
-        Text(value, style = AberTypography.CardTitle.copy(fontSize = 19.sp))
-    }
-}
-
-@Composable
-private fun DirectionRow(step: NavigationStep) {
-    val contentColor = if (step.isActive) AberColor.Orange else AberColor.Ink
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            Icon(
-                step.maneuver.toIcon(),
-                contentDescription = null,
-                tint = contentColor,
-                modifier = Modifier.size(22.dp)
-            )
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = step.instruction,
-                    style = AberTypography.semibody17(contentColor)
-                        .copy(fontWeight = FontWeight.Bold)
-                )
-                step.subtext?.let {
-                    Spacer(Modifier.height(2.dp))
-                    Text(text = it, style = AberTypography.Caption)
-                }
+                Text(state.pickupAddress, style = AberTypography.CardTitle)
+                Text("${state.distanceKm} km • ${state.etaMinutes} min", style = AberTypography.Caption)
             }
+            Text("$${state.fare}", style = AberTypography.PriceTag)
         }
-        if (step.distanceText.isNotEmpty()) {
-            Spacer(Modifier.height(8.dp))
-            HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.3f))
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = step.distanceText,
-                style = AberTypography.Caption.copy(color = if (step.isActive) AberColor.Orange else AberColor.IconMuted)
-            )
-        }
+        Spacer(Modifier.height(20.dp))
+        AberButton(
+            text = "ARRIVED",
+            onClick = onArrivedClick,
+            style = AberButtonStyle.Primary
+        )
     }
-}
-
-/**
- * Mapping of [TurnManeuver] enum to its visual [ImageVector] representation.
- */
-private fun TurnManeuver.toIcon(): ImageVector = when (this) {
-    TurnManeuver.STRAIGHT -> Icons.Default.ArrowUpward
-    TurnManeuver.TURN_LEFT -> Icons.Default.TurnLeft
-    TurnManeuver.TURN_RIGHT -> Icons.Default.TurnRight
-    TurnManeuver.SLIGHT_LEFT -> Icons.Default.TurnLeft
-    TurnManeuver.SLIGHT_RIGHT -> Icons.AutoMirrored.Filled.ArrowForward
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PickupNavigationScreenPreview() {
-    PickupNavigationScreen(
-        state = PickupNavigationState(
-            rideId = "1",
-            pickupAddress = "7958 Swift Village",
-            etaMinutes = 5,
-            distanceKm = 2.2,
-            fare = 25.0,
-            currentBanner = NavigationStep(
-                TurnManeuver.TURN_RIGHT, "Turn right at 105 William St", "250m", isActive = true
-            ),
-            steps = listOf(
-                NavigationStep(TurnManeuver.STRAIGHT, "Head southwest", "1km"), NavigationStep(
-                    TurnManeuver.TURN_RIGHT, "Turn right at 105 William St", "250m", isActive = true
-                )
-            ),
-            routePolyline = listOf(LatLngPoint(0.0, 0.0), LatLngPoint(0.001, 0.001)),
-            driverLocation = LatLngPoint(0.0, 0.0)
-        ), onBackClick = {}, onArrivedClick = {})
 }

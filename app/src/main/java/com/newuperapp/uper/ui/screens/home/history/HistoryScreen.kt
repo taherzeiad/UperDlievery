@@ -139,6 +139,17 @@ fun HistoryScreen(
                         CircularProgressIndicator(color = AberColor.Yellow)
                     }
                 }
+            } else if (uiState.errorMessage != null) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = uiState.errorMessage, color = AberColor.Orange)
+                    }
+                }
             } else {
                 items(uiState.trips.size) { index ->
                     HistoryItemCard(uiState.trips[index])
