@@ -44,6 +44,7 @@ fun HomeRoute(
     onNavigateToSettings: () -> Unit,
     onNavigateToWallet: () -> Unit,
     onNavigateToProfile: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -55,6 +56,7 @@ fun HomeRoute(
             when (event) {
                 is HomeEvent.NavigateToBookingDetails -> onNavigateToBookingDetails(event.rideId)
                 is HomeEvent.ShowError -> snackbarHostState.showSnackbar(event.message)
+                HomeEvent.NavigateToAuth -> onLogout()
             }
         }
     }
@@ -75,8 +77,7 @@ fun HomeRoute(
                         DrawerMenuItem.Settings -> onNavigateToSettings()
                         DrawerMenuItem.Wallet -> onNavigateToWallet()
                         DrawerMenuItem.Profile -> onNavigateToProfile()
-                        DrawerMenuItem.Logout -> { /* Handle logout */
-                        }
+                        DrawerMenuItem.Logout -> viewModel.onLogout()
                     }
                 }
             }
