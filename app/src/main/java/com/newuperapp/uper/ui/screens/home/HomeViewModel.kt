@@ -30,11 +30,13 @@ data class HomeUiState(
 sealed interface HomeEvent {
     data class NavigateToBookingDetails(val rideId: String) : HomeEvent
     data class ShowError(val message: String) : HomeEvent
+    data object NavigateToAuth : HomeEvent
 }
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val rideRequestRepository: RideRequestRepository
+    private val rideRequestRepository: RideRequestRepository,
+    private val onboardingRepository: com.newuperapp.uper.domain.onboarding.OnboardingRepository
 ) : ViewModel() {
 
     private val expandedRequestId = MutableStateFlow<String?>(null)
@@ -96,6 +98,13 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> _events.emit(HomeEvent.ShowError(result.message))
                 else -> {}
             }
+        }
+    }
+
+    fun onLogout() {
+        viewModelScope.launch {
+            // In a real app, we would also clear auth tokens
+            _events.emit(HomeEvent.NavigateToAuth)
         }
     }
 }

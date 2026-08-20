@@ -149,6 +149,11 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
             onNavigateToSettings = { navController.navigate(AberDestination.Settings.route) },
             onNavigateToWallet = { navController.navigate(AberDestination.Wallet.route) },
             onNavigateToProfile = { navController.navigate(AberDestination.Profile.route) },
+            onLogout = {
+                navController.navigate(AberDestination.Welcome.route) {
+                    popUpTo(0) { inclusive = true }
+                }
+            },
         )
     }
     // Ride Details & Active Navigation
