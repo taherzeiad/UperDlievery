@@ -63,6 +63,7 @@ fun PhoneVerifyScreen(
 ) {
     Scaffold(containerColor = AberColor.SurfaceGrayAlt) { padding ->
         Column(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
