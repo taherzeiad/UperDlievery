@@ -56,12 +56,4 @@ data class NotificationDto(
     val timestamp: String
 )
 
-@Serializable
-data class VehicleDto(
-    val id: String,
-    val brand: String,
-    val model: String,
-    val year: String,
-    val plateNumber: String,
-    val color: String
-)
+

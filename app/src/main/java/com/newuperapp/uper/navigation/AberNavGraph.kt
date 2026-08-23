@@ -16,7 +16,6 @@ import com.newuperapp.uper.ui.screens.auth.signin.SignInRoute
 import com.newuperapp.uper.ui.screens.auth.signup.SignUpRoute
 import com.newuperapp.uper.ui.screens.home.HomeRoute
 import com.newuperapp.uper.ui.screens.home.booking.BookingDetailsRoute
-import com.newuperapp.uper.ui.screens.home.chat.ChatScreen
 import com.newuperapp.uper.ui.screens.home.document.DocumentManagementScreen
 import com.newuperapp.uper.ui.screens.home.document.DrivingLicenseScreen
 import com.newuperapp.uper.ui.screens.home.history.HistoryScreen
@@ -194,13 +193,6 @@ private fun NavGraphBuilder.addHomeFlow(navController: NavHostController) {
     }
     composable(AberDestination.PaymentMethod.route) {
         PaymentMethodScreen(onBackClick = { navController.popBackStack() })
-    }
-    composable(
-        route = AberDestination.Chat.route,
-        arguments = listOf(navArgument("name") { type = NavType.StringType })
-    ) { backStackEntry ->
-        val name = backStackEntry.arguments?.getString("name") ?: ""
-        ChatScreen(name = name, onBackClick = { navController.popBackStack() })
     }
     // Account & Settings
     composable(AberDestination.Settings.route) {

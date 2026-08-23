@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.DriverProfile
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 import com.newuperapp.uper.ui.screens.home.settings.SettingsViewModel
@@ -95,13 +96,9 @@ fun ProfileScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
-                    }
-                },
+            AberTopBar(
+                title = "Profile",
+                onBackClick = onBackClick,
                 actions = {
                     TextButton(onClick = onEditClick) {
                         Text(
@@ -110,8 +107,7 @@ fun ProfileScreen(
                             style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+                }
             )
         },
         containerColor = AberColor.White

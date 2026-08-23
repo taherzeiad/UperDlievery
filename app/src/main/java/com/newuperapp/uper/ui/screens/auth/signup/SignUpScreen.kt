@@ -132,6 +132,7 @@ fun SignUpScreen(
                     dialCode = uiState.dialCode,
                     value = uiState.phoneNumber,
                     onValueChange = onPhoneChange,
+                    placeholder = stringResource(R.string.auth_phone_placeholder),
                     onCountryClick = onCountryClick
                 )
 

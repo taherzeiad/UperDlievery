@@ -30,39 +30,30 @@ import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.DriverProfile
 import com.newuperapp.uper.domain.model.RidePaymentTag
 import com.newuperapp.uper.domain.model.RideRequest
-import com.newuperapp.uper.ui.components.AberButton
-import com.newuperapp.uper.ui.components.AberButtonStyle
+import com.newuperapp.uper.ui.components.*
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
 @Composable
 fun HomeTopBar(isOnline: Boolean, onToggle: (Boolean) -> Unit, onMenuClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .background(AberColor.White)
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onMenuClick, modifier = Modifier.size(28.dp)) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = AberColor.Ink)
-        }
-        Text(
-            text = if (isOnline) stringResource(R.string.home_online) else stringResource(R.string.home_offline),
-            style = AberTypography.ScreenTitle.copy(fontSize = 20.sp),
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
-        )
-        Switch(
-            checked = isOnline, onCheckedChange = onToggle, colors = SwitchDefaults.colors(
-                checkedThumbColor = AberColor.White,
-                checkedTrackColor = AberColor.Orange,
-                uncheckedThumbColor = AberColor.White,
-                uncheckedTrackColor = AberColor.Ink
+    AberTopBar(
+        title = if (isOnline) stringResource(R.string.home_online) else stringResource(R.string.home_offline),
+        onBackClick = onMenuClick,
+        useMenuIcon = true,
+        actions = {
+            Switch(
+                checked = isOnline,
+                onCheckedChange = onToggle,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = AberColor.White,
+                    checkedTrackColor = AberColor.Orange,
+                    uncheckedThumbColor = AberColor.White,
+                    uncheckedTrackColor = AberColor.Ink
+                ),
+                modifier = Modifier.padding(end = 12.dp)
             )
-        )
-    }
+        }
+    )
 }
 
 @Composable
@@ -281,7 +272,7 @@ fun RequestQueueCard(
                 Text(request.riderName, style = AberTypography.CardTitle)
                 Spacer(Modifier.height(6.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    request.tags.forEach { tag -> RequestTagPill(tag) }
+                    request.tags.forEach { tag -> AberTagPill(tag.label) }
                 }
             }
             Column(horizontalAlignment = Alignment.End) {
@@ -294,12 +285,12 @@ fun RequestQueueCard(
         }
 
         Column(modifier = Modifier.background(AberColor.White)) {
-            AddressBlock(
+            AberAddressBlock(
                 label = stringResource(R.string.booking_pick_up_label),
                 address = request.pickupAddress
             )
             HorizontalDivider(color = AberColor.BorderGray.copy(alpha = 0.4f))
-            AddressBlock(
+            AberAddressBlock(
                 label = stringResource(R.string.booking_drop_off_label),
                 address = request.dropoffAddress
             )
@@ -322,37 +313,4 @@ fun RequestQueueCard(
     }
 }
 
-@Composable
-fun RequestTagPill(tag: RidePaymentTag) {
-    val label = when (tag) {
-        RidePaymentTag.APPLE_PAY -> "ApplePay"
-        RidePaymentTag.DISCOUNT -> "Discount"
-        RidePaymentTag.CASH -> "Cash"
-        RidePaymentTag.CARD -> "Card"
-    }
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(AberColor.TagBackground)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-    ) {
-        Text(
-            label, style = AberTypography.Caption.copy(
-                color = AberColor.Ink, fontWeight = FontWeight.SemiBold
-            )
-        )
-    }
-}
 
-@Composable
-fun AddressBlock(label: String, address: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp)
-    ) {
-        Text(label.uppercase(), style = AberTypography.SectionLabel)
-        Spacer(Modifier.height(6.dp))
-        Text(address, style = AberTypography.semibody17())
-    }
-}

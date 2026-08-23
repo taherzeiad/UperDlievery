@@ -151,11 +151,11 @@ fun PickupNavigationScreen(
 
                     Marker(
                         state = rememberMarkerState(position = driverPos),
-                        title = "You"
+                        title = stringResource(R.string.nav_marker_you)
                     )
                     Marker(
                         state = rememberMarkerState(position = pickupPos),
-                        title = "Pickup"
+                        title = stringResource(R.string.nav_marker_pickup)
                     )
                     Polyline(
                         points = state.routePolyline.map { LatLng(it.lat, it.lng) },
@@ -211,7 +211,7 @@ fun PickupSheetContent(state: PickupNavigationState, onArrivedClick: () -> Unit)
         }
         Spacer(Modifier.height(20.dp))
         AberButton(
-            text = "ARRIVED",
+            text = stringResource(R.string.nav_arrived_cta),
             onClick = onArrivedClick,
             style = AberButtonStyle.Primary
         )

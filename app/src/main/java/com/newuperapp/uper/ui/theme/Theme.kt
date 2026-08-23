@@ -25,6 +25,7 @@ object AberColor {
     val RouteBlue     = Color(0xFF3858F6) // لون مسار الخريطة
     val IconMuted     = Color(0xFF9AA0AC) // لون الأيقونات غير النشطة
     val Danger        = Color(0xFFE22D2D) // لون التنبيه/الخطأ
+    val Success       = Color(0xFF2ECC71) // لون النجاح/التأكيد
 }
 
 private val AberShapes = Shapes(

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.DriverProfile
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -154,25 +155,14 @@ fun SettingsScreen(
     onProfileClick: () -> Unit
 ) {
     Scaffold(
-
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.Default.Menu, contentDescription = "Back", tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.settings_title),
+                onBackClick = onBackClick,
+                useMenuIcon = true
             )
-        }, containerColor = AberColor.White
+        },
+        containerColor = AberColor.White
     ) { padding ->
 
         LazyColumn(modifier = Modifier.padding(padding)) {
@@ -197,7 +187,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.AssignmentInd,
                     label = stringResource(R.string.settings_document_management),
-                    iconBgColor = Color(0xFF2ECC71),
+                    iconBgColor = AberColor.Success,
                     onClick = onDocumentManagementClick
                 )
                 HorizontalDivider(
@@ -206,7 +196,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Star,
                     label = stringResource(R.string.settings_reviews),
-                    iconBgColor = Color(0xFFFFD428),
+                    iconBgColor = AberColor.Yellow,
                     onClick = {})
                 HorizontalDivider(
                     color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp)
@@ -214,7 +204,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Language,
                     label = stringResource(R.string.settings_language),
-                    iconBgColor = Color(0xFF3858F6),
+                    iconBgColor = AberColor.RouteBlue,
                     onClick = {})
 
                 Spacer(Modifier.height(16.dp))
@@ -225,7 +215,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Notifications,
                     label = stringResource(R.string.settings_notifications),
-                    iconBgColor = Color(0xFF3858F6),
+                    iconBgColor = AberColor.RouteBlue,
                     onClick = {})
                 HorizontalDivider(
                     color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp)
@@ -233,7 +223,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Policy,
                     label = stringResource(R.string.settings_terms_privacy),
-                    iconBgColor = Color(0xFF9AA0AC),
+                    iconBgColor = AberColor.IconMuted,
                     onClick = {})
                 HorizontalDivider(
                     color = AberColor.SurfaceGray, modifier = Modifier.padding(start = 60.dp)
@@ -241,7 +231,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Help,
                     label = stringResource(R.string.settings_contact_us),
-                    iconBgColor = Color(0xFFE22D2D),
+                    iconBgColor = AberColor.Danger,
                     onClick = {})
             }
         }

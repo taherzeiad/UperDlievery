@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -36,25 +37,12 @@ fun DocumentManagementScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                Text(
-                    text = stringResource(R.string.document_management_title),
-                    style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
-                )
-            },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.document_management_title),
+                onBackClick = onBackClick
             )
-        }, containerColor = AberColor.SurfaceGrayAlt
+        },
+        containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         LazyColumn(
             modifier = Modifier

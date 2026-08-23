@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.WalletTransaction
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -104,7 +105,7 @@ private fun TransactionItem(transaction: WalletTransaction) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = transaction.transactionNumber, style = AberTypography.Caption.copy(
-                    fontSize = 14.sp, color = Color.LightGray
+                    fontSize = 14.sp, color = AberColor.BorderGray
                 )
             )
         }
@@ -129,19 +130,13 @@ fun WalletScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.wallet_title),
-                        style = AberTypography.ScreenTitle.copy(
-                            fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
-                        )
-                    )
-                }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = AberColor.Yellow
-                )
+            AberTopBar(
+                title = stringResource(R.string.wallet_title),
+                onBackClick = onBackClick,
+                containerColor = AberColor.Yellow
             )
-        }, containerColor = AberColor.SurfaceGrayAlt
+        },
+        containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         Column(
             modifier = Modifier
@@ -206,12 +201,11 @@ fun WalletScreen(
                     .offset(y = (-40).dp)
                     .padding(horizontal = 16.dp)
             ) {
-                // Payment Method Quick Access Card
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = onPaymentMethodClick),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
@@ -248,7 +242,7 @@ fun WalletScreen(
                         Icon(
                             imageVector = Icons.Default.ChevronRight,
                             contentDescription = null,
-                            tint = Color.LightGray,
+                            tint = AberColor.BorderGray,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -256,21 +250,19 @@ fun WalletScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Payment History Title
                 Text(
                     text = stringResource(R.string.wallet_payment_history).uppercase(),
                     style = AberTypography.SectionLabel.copy(
-                        color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold
+                        color = AberColor.BorderGray, fontSize = 12.sp, fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
                 )
 
-                // Transactions List Container
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {

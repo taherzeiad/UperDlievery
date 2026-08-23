@@ -33,7 +33,7 @@ fun AberTextField(
         supportingText = supportingText?.let { { Text(it, style = AberTypography.Caption.copy(color = AberColor.Orange)) } },
         textStyle = AberTypography.semibody17(),
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+        shape = androidx.compose.material3.MaterialTheme.shapes.medium,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = AberColor.Yellow,
             unfocusedBorderColor = AberColor.BorderGray,

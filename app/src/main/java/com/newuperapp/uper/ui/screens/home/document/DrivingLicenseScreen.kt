@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberFormField
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -39,19 +41,9 @@ fun DrivingLicenseScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        text = stringResource(R.string.document_driving_license_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 20.sp)
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = AberColor.Yellow)
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.document_driving_license_title),
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
@@ -120,11 +112,22 @@ fun DrivingLicenseScreen(
                 }
 
                 item {
-                    DocumentField(stringResource(R.string.document_card_number_label), "1234 567 890")
+                    AberFormField(stringResource(R.string.document_card_number_label), "1234 567 890", trailingIcon = null)
                 }
 
                 item {
-                    DocumentField(stringResource(R.string.document_expiration_date_label), "MM/DD/YYYY", isDate = true)
+                    AberFormField(
+                        label = stringResource(R.string.document_expiration_date_label),
+                        value = "MM/DD/YYYY",
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = AberColor.BorderGray,
+                                modifier = Modifier.size(20.dp).rotate(180f)
+                            )
+                        }
+                    )
                 }
             }
 
@@ -135,31 +138,6 @@ fun DrivingLicenseScreen(
     }
 }
 
-/**
- * Reusable input field for document numbers or dates.
- */
-@Composable
-private fun DocumentField(label: String, value: String, isDate: Boolean = false) {
-    Column {
-        Text(label, style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray))
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = if (isDate) {
-                { Icon(Icons.Default.ArrowBack, contentDescription = null, tint = AberColor.BorderGray, modifier = Modifier.size(20.dp).rotate(180f)) }
-            } else null,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(12.dp)
-        )
-    }
-}
 
 /**
  * Bottom sheet style overlay for choosing photo source.
@@ -185,7 +163,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_take_picture),
-                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = AberColor.RouteBlue)
                 )
             }
             HorizontalDivider(color = AberColor.SurfaceGray)
@@ -195,7 +173,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_choose_picture),
-                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = AberColor.RouteBlue)
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -207,7 +185,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_cancel),
-                    style = AberTypography.semibody17(color = Color(0xFF3858F6))
+                    style = AberTypography.semibody17(color = AberColor.RouteBlue)
                 )
             }
         }

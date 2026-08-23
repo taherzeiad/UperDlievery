@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberFormField
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -32,23 +34,9 @@ fun AddVehicleScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.vehicle_add_new_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.vehicle_add_new_title),
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
@@ -78,18 +66,18 @@ fun AddVehicleScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { VehicleField(stringResource(R.string.vehicle_brand_label), "Toyota") }
-            item { VehicleField(stringResource(R.string.vehicle_model_label), "Camry") }
-            item { VehicleField(stringResource(R.string.vehicle_year_label), "2018") }
+            item { AberFormField(stringResource(R.string.vehicle_brand_label), "Toyota") }
+            item { AberFormField(stringResource(R.string.vehicle_model_label), "Camry") }
+            item { AberFormField(stringResource(R.string.vehicle_year_label), "2018") }
             item {
-                VehicleField(
+                AberFormField(
                     stringResource(R.string.vehicle_license_plate_label),
                     "43A 364.82"
                 )
             }
-            item { VehicleField(stringResource(R.string.vehicle_color_label), "Black") }
+            item { AberFormField(stringResource(R.string.vehicle_color_label), "Black") }
             item {
-                VehicleField(
+                AberFormField(
                     stringResource(R.string.vehicle_booking_type_label),
                     "Taxi 7 Seat"
                 )
@@ -98,35 +86,6 @@ fun AddVehicleScreen(
     }
 }
 
-/**
- * Single input field with a label and chevron for selection-based forms.
- */
-@Composable
-private fun VehicleField(label: String, value: String) {
-    Column {
-        Text(label, style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray))
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = {
-                Icon(
-                    Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    tint = AberColor.BorderGray
-                )
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
-            ),
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

@@ -23,17 +23,9 @@ data class VerifyOtpRequestDto(
 data class AuthResponseDto(
     val status: String,
     val token: String? = null,
-    val message: String? = null,
-    val user: UserDto? = null
+    val message: String? = null
 )
 
-@Serializable
-data class UserDto(
-    val id: String,
-    val name: String,
-    val email: String,
-    val phone: String
-)
 
 @Serializable
 data class ActionResponseDto(

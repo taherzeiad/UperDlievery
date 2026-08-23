@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,14 +28,16 @@ fun AberButton(
     isLoading: Boolean = false
 ) {
     val height = 56.dp
-    val shape = RoundedCornerShape(14.dp)
+    val shape = androidx.compose.material3.MaterialTheme.shapes.medium
 
     if (style == AberButtonStyle.Outline) {
         OutlinedButton(
             onClick = onClick,
             enabled = enabled && !isLoading,
             shape = shape,
-            modifier = modifier.fillMaxWidth().height(height),
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = AberColor.Ink)
         ) {
             ButtonContent(text, isLoading, AberColor.Ink)
@@ -55,7 +56,9 @@ fun AberButton(
         onClick = onClick,
         enabled = enabled && !isLoading,
         shape = shape,
-        modifier = modifier.fillMaxWidth().height(height),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = container,
             contentColor = content,
@@ -67,13 +70,13 @@ fun AberButton(
 }
 
 @Composable
-private fun ButtonContent(text: String, isLoading: Boolean, contentColor: androidx.compose.ui.graphics.Color) {
+private fun ButtonContent(
+    text: String, isLoading: Boolean, contentColor: androidx.compose.ui.graphics.Color
+) {
     Box(contentAlignment = Alignment.Center) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(22.dp),
-                color = contentColor,
-                strokeWidth = 2.5.dp
+                modifier = Modifier.size(22.dp), color = contentColor, strokeWidth = 2.5.dp
             )
         } else {
             Text(text.uppercase(), style = AberTypography.semibody17(contentColor))

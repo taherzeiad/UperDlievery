@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.*
 import com.newuperapp.uper.ui.components.AberButton
 import com.newuperapp.uper.ui.components.AberButtonStyle
@@ -106,7 +107,7 @@ fun BookingDetailsScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.nav_back_content_desc),
                         tint = AberColor.Yellow,
                         modifier = Modifier.size(30.dp)
                     )
@@ -288,7 +289,6 @@ fun BookingDetailsScreen(
                 }
             }
 
-            // Bottom Actions
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -296,13 +296,13 @@ fun BookingDetailsScreen(
                     .padding(horizontal = 20.dp, vertical = 24.dp)
             ) {
                 AberButton(
-                    text = "GO TO PICKUP",
+                    text = stringResource(R.string.booking_go_to_pick_up),
                     onClick = onGoToPickupClick,
                     style = AberButtonStyle.Dark
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "CANCEL BOOKING",
+                    text = stringResource(R.string.booking_cancel).uppercase(),
                     style = AberTypography.Subtitle.copy(
                         color = AberColor.Orange,
                         fontWeight = FontWeight.Bold

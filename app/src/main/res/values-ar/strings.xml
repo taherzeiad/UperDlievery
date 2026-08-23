@@ -48,6 +48,10 @@
     <string name="nav_fare_label">الأجرة</string>
     <string name="nav_drop_off_cta">إنزال الراكب</string>
     <string name="nav_back_content_desc">رجوع</string>
+    <string name="nav_menu_content_desc">القائمة</string>
+    <string name="nav_arrived_cta">وصلت</string>
+    <string name="nav_marker_you">أنت هنا</string>
+    <string name="nav_marker_pickup">موقع الاستلام</string>
 
     <!-- History Screen -->
     <string name="history_title">السجل</string>
@@ -163,6 +167,7 @@
     <string name="home_stat_jobs">إجمالي الرحلات</string>
     <string name="home_marker_you">أنت هنا</string>
     <string name="auth_email_placeholder">البريد الإلكتروني</string>
+    <string name="auth_phone_placeholder">رقم الهاتف</string>
     <string name="drawer_home">الرئيسية</string>
     <string name="drawer_wallet">محفظتي</string>
     <string name="drawer_history">السجل</string>
