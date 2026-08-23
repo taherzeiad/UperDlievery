@@ -25,9 +25,6 @@ sealed class AberDestination(val route: String) {
     data object InviteFriends : AberDestination("invite_friends")
     data object Settings : AberDestination("settings")
     data object Wallet : AberDestination("wallet")
-    data object Chat : AberDestination("chat/{name}") {
-        fun createRoute(name: String) = "chat/$name"
-    }
 
     data object Profile : AberDestination("profile")
     data object EditProfile : AberDestination("edit_profile")

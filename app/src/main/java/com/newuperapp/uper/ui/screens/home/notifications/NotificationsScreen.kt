@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.Notification
 import com.newuperapp.uper.domain.model.NotificationType
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberColor.White
 import com.newuperapp.uper.ui.theme.AberTypography
@@ -62,29 +63,12 @@ fun NotificationsScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.notifications_title),
-                        style = AberTypography.ScreenTitle.copy(
-                            fontSize = 22.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.notifications_title),
+                onBackClick = onBackClick,
+                useMenuIcon = true
             )
         },
-        // Light gray shows through above the first row and below the last one,
-        // matching the subtle band visible in the design.
         containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         LazyColumn(

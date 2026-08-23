@@ -22,8 +22,6 @@ interface ApiService {
     @GET("driver/profile")
     suspend fun getProfile(): DriverProfileDto
 
-    @PUT("driver/profile")
-    suspend fun updateProfile(@Body profile: DriverProfileDto): ActionResponseDto
 
     @GET("driver/history")
     suspend fun getHistory(): List<HistoryItemDto>
@@ -34,8 +32,6 @@ interface ApiService {
     @GET("driver/notifications")
     suspend fun getNotifications(): List<NotificationDto>
 
-    @GET("driver/vehicles")
-    suspend fun getVehicles(): List<VehicleDto>
 
     @POST("driver/online")
     suspend fun setOnline(@Query("isOnline") isOnline: Boolean): ActionResponseDto

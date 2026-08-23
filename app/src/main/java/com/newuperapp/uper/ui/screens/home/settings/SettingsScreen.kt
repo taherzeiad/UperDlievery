@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.DriverProfile
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -154,25 +155,14 @@ fun SettingsScreen(
     onProfileClick: () -> Unit
 ) {
     Scaffold(
-
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.Default.Menu, contentDescription = "Back", tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.settings_title),
+                onBackClick = onBackClick,
+                useMenuIcon = true
             )
-        }, containerColor = AberColor.White
+        },
+        containerColor = AberColor.White
     ) { padding ->
 
         LazyColumn(modifier = Modifier.padding(padding)) {

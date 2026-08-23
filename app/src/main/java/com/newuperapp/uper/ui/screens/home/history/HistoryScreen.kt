@@ -36,6 +36,9 @@ import coil3.compose.AsyncImage
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.HistoryItem
 import com.newuperapp.uper.domain.model.RidePaymentTag
+import com.newuperapp.uper.ui.components.AberAddressBlock
+import com.newuperapp.uper.ui.components.AberTagPill
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -66,27 +69,13 @@ fun HistoryScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                Text(
-                    text = stringResource(R.string.history_title),
-                    style = AberTypography.ScreenTitle.copy(
-                        fontSize = 22.sp, fontWeight = FontWeight.Bold
-                    )
-                )
-            },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.history_title),
+                onBackClick = onBackClick,
+                useMenuIcon = true
             )
-        }, containerColor = AberColor.SurfaceGrayAlt
+        },
+        containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -310,7 +299,7 @@ private fun HistoryItemCard(item: HistoryItem) {
                         Spacer(Modifier.height(6.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             item.paymentTags.forEach { tag ->
-                                TagChip(tag.label)
+                                AberTagPill(tag.label, color = AberColor.Yellow)
                             }
                         }
                     }
@@ -330,63 +319,24 @@ private fun HistoryItemCard(item: HistoryItem) {
                 }
             }
 
-            // White inner panel with the pickup / drop-off details
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(AberColor.White)
-                    .padding(16.dp)
+                    .padding(vertical = 4.dp)
             ) {
-                AddressBlock(stringResource(R.string.booking_pick_up_label), item.pickupAddress)
-                Spacer(Modifier.height(12.dp))
-                HorizontalDivider(color = AberColor.SurfaceGray)
-                Spacer(Modifier.height(12.dp))
-                AddressBlock(stringResource(R.string.booking_drop_off_label), item.dropoffAddress)
+                AberAddressBlock(stringResource(R.string.booking_pick_up_label), item.pickupAddress)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    color = AberColor.SurfaceGray
+                )
+                AberAddressBlock(stringResource(R.string.booking_drop_off_label), item.dropoffAddress)
             }
         }
     }
 }
 
-/**
- * Small rounded pill used for payment method / discount tags
- * (e.g. "ApplePay", "Discount").
- */
-@Composable
-private fun TagChip(text: String) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(AberColor.Yellow)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-    ) {
-        Text(
-            text = text, style = AberTypography.Caption.copy(
-                fontWeight = FontWeight.Bold, color = AberColor.Ink
-            )
-        )
-    }
-}
 
-/**
- * Address block with the label (e.g. "PICK UP") stacked above the
- * address text, matching the vertical layout in the design.
- */
-@Composable
-private fun AddressBlock(label: String, address: String) {
-    Column {
-        Text(
-            text = label.uppercase(), style = AberTypography.SectionLabel.copy(
-                fontSize = 11.sp, color = AberColor.BorderGray
-            )
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            text = address, style = AberTypography.CardTitle.copy(
-                fontSize = 16.sp, color = AberColor.Ink
-            )
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
