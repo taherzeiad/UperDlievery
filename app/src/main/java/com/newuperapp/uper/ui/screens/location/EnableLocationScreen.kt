@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +21,7 @@ import com.newuperapp.uper.R
 import com.newuperapp.uper.ui.components.AberButton
 import com.newuperapp.uper.ui.components.AberTextLink
 import com.newuperapp.uper.ui.theme.AberColor
+import com.newuperapp.uper.ui.theme.AberTypography
 
 @Composable
 fun EnableLocationRoute(
@@ -72,16 +72,13 @@ fun EnableLocationScreen(
         Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = stringResource(id = R.string.location_title),
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = AberColor.Ink,
+            style = AberTypography.ScreenTitle.copy(fontSize = 30.sp),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = stringResource(id = R.string.location_description),
-            fontSize = 17.sp,
-            color = AberColor.Ink,
+            style = AberTypography.Subtitle.copy(fontSize = 17.sp),
             textAlign = TextAlign.Center,
             lineHeight = 20.sp
         )

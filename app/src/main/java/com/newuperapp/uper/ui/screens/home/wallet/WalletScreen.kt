@@ -201,12 +201,11 @@ fun WalletScreen(
                     .offset(y = (-40).dp)
                     .padding(horizontal = 16.dp)
             ) {
-                // Payment Method Quick Access Card
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = onPaymentMethodClick),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
@@ -259,12 +258,11 @@ fun WalletScreen(
                     modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
                 )
 
-                // Transactions List Container
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {

@@ -60,7 +60,7 @@ fun PaymentMethodScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White),
                     onClick = { /* Implement add card action */ }) {
                     Row(
@@ -113,7 +113,7 @@ fun PaymentMethodScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Column {

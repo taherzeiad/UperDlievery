@@ -35,7 +35,9 @@ fun AberButton(
             onClick = onClick,
             enabled = enabled && !isLoading,
             shape = shape,
-            modifier = modifier.fillMaxWidth().height(height),
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = AberColor.Ink)
         ) {
             ButtonContent(text, isLoading, AberColor.Ink)
@@ -54,7 +56,9 @@ fun AberButton(
         onClick = onClick,
         enabled = enabled && !isLoading,
         shape = shape,
-        modifier = modifier.fillMaxWidth().height(height),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = container,
             contentColor = content,
@@ -66,13 +70,13 @@ fun AberButton(
 }
 
 @Composable
-private fun ButtonContent(text: String, isLoading: Boolean, contentColor: androidx.compose.ui.graphics.Color) {
+private fun ButtonContent(
+    text: String, isLoading: Boolean, contentColor: androidx.compose.ui.graphics.Color
+) {
     Box(contentAlignment = Alignment.Center) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(22.dp),
-                color = contentColor,
-                strokeWidth = 2.5.dp
+                modifier = Modifier.size(22.dp), color = contentColor, strokeWidth = 2.5.dp
             )
         } else {
             Text(text.uppercase(), style = AberTypography.semibody17(contentColor))
