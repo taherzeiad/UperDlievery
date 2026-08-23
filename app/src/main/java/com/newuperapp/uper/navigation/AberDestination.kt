@@ -9,14 +9,17 @@ sealed class AberDestination(val route: String) {
     data object PhoneVerify : AberDestination("phone_verify/{phone}") {
         fun createRoute(phone: String) = "phone_verify/$phone"
     }
+
     data object EnableLocation : AberDestination("enable_location")
     data object Home : AberDestination("home")
     data object BookingDetails : AberDestination("booking_details/{rideId}") {
         fun createRoute(rideId: String) = "booking_details/$rideId"
     }
+
     data object PickupNavigation : AberDestination("pickup_navigation/{rideId}") {
         fun createRoute(rideId: String) = "pickup_navigation/$rideId"
     }
+
     data object History : AberDestination("history")
     data object Notifications : AberDestination("notifications")
     data object InviteFriends : AberDestination("invite_friends")
@@ -25,6 +28,7 @@ sealed class AberDestination(val route: String) {
     data object Chat : AberDestination("chat/{name}") {
         fun createRoute(name: String) = "chat/$name"
     }
+
     data object Profile : AberDestination("profile")
     data object EditProfile : AberDestination("edit_profile")
     data object VehicleManagement : AberDestination("vehicle_management")
