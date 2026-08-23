@@ -107,14 +107,14 @@ fun NotificationsScreen(
 private data class NotificationStyle(val icon: ImageVector, val backgroundColor: Color)
 
 private fun styleFor(type: NotificationType): NotificationStyle = when (type) {
-    NotificationType.BOOKING_SUCCESS -> NotificationStyle(Icons.Default.Check, Color(0xFF3858F6))
-    NotificationType.BOOKING_CANCELLED -> NotificationStyle(Icons.Default.Close, Color(0xFFEF3355))
+    NotificationType.BOOKING_SUCCESS -> NotificationStyle(Icons.Default.Check, AberColor.RouteBlue)
+    NotificationType.BOOKING_CANCELLED -> NotificationStyle(Icons.Default.Close, AberColor.Danger)
     NotificationType.PROMOTION -> NotificationStyle(
         Icons.Default.ConfirmationNumber, AberColor.Yellow
     )
 
     NotificationType.PAYMENT -> NotificationStyle(
-        Icons.Default.AccountBalanceWallet, Color(0xFF2ED9A6)
+        Icons.Default.AccountBalanceWallet, AberColor.Success
     )
 
     NotificationType.SYSTEM -> NotificationStyle(Icons.Default.Notifications, AberColor.BorderGray)

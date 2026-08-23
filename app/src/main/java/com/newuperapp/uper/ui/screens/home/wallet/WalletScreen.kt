@@ -105,7 +105,7 @@ private fun TransactionItem(transaction: WalletTransaction) {
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = transaction.transactionNumber, style = AberTypography.Caption.copy(
-                    fontSize = 14.sp, color = Color.LightGray
+                    fontSize = 14.sp, color = AberColor.BorderGray
                 )
             )
         }
@@ -243,7 +243,7 @@ fun WalletScreen(
                         Icon(
                             imageVector = Icons.Default.ChevronRight,
                             contentDescription = null,
-                            tint = Color.LightGray,
+                            tint = AberColor.BorderGray,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -251,11 +251,10 @@ fun WalletScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Payment History Title
                 Text(
                     text = stringResource(R.string.wallet_payment_history).uppercase(),
                     style = AberTypography.SectionLabel.copy(
-                        color = Color.LightGray, fontSize = 12.sp, fontWeight = FontWeight.Bold
+                        color = AberColor.BorderGray, fontSize = 12.sp, fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
                 )

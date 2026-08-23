@@ -55,7 +55,7 @@ fun AberFormField(
                 disabledBorderColor = Color.Transparent,
                 errorBorderColor = Color.Transparent
             ),
-            shape = RoundedCornerShape(12.dp)
+            shape = MaterialTheme.shapes.small
         )
     }
 }

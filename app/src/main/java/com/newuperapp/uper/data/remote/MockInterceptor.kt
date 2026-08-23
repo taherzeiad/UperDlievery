@@ -34,7 +34,7 @@ class MockInterceptor @Inject constructor() : Interceptor {
                     "totalJobs": 54,
                     "currentLat": 60.1699,
                     "currentLng": 24.9384,
-                    "currencySymbol": "${'$'}"
+                    "currencySymbol": "$"
                 }"""
             }
             uri.contains("driver/history") -> {

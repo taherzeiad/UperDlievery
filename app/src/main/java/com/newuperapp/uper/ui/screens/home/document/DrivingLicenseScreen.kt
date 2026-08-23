@@ -163,7 +163,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_take_picture),
-                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = AberColor.RouteBlue)
                 )
             }
             HorizontalDivider(color = AberColor.SurfaceGray)
@@ -173,7 +173,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_choose_picture),
-                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = Color(0xFF3858F6))
+                    style = AberTypography.Subtitle.copy(fontSize = 20.sp, color = AberColor.RouteBlue)
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -185,7 +185,7 @@ private fun PhotoOptionsBottomSheet(onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.document_cancel),
-                    style = AberTypography.semibody17(color = Color(0xFF3858F6))
+                    style = AberTypography.semibody17(color = AberColor.RouteBlue)
                 )
             }
         }
