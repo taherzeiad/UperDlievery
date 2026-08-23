@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -36,17 +37,9 @@ fun EditProfileScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { },
-                navigationIcon = {
-                    TextButton(onClick = onCancelClick) {
-                        Text(
-                            text = stringResource(R.string.profile_cancel),
-                            color = AberColor.Orange,
-                            style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
-                },
+            AberTopBar(
+                title = "Edit Profile",
+                onBackClick = onCancelClick,
                 actions = {
                     TextButton(onClick = onDoneClick) {
                         Text(
@@ -55,8 +48,7 @@ fun EditProfileScreen(
                             style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+                }
             )
         },
         containerColor = AberColor.White

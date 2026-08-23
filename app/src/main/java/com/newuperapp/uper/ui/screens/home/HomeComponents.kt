@@ -30,41 +30,30 @@ import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.DriverProfile
 import com.newuperapp.uper.domain.model.RidePaymentTag
 import com.newuperapp.uper.domain.model.RideRequest
-import com.newuperapp.uper.ui.components.AberAddressBlock
-import com.newuperapp.uper.ui.components.AberButton
-import com.newuperapp.uper.ui.components.AberTagPill
-import com.newuperapp.uper.ui.components.AberButtonStyle
+import com.newuperapp.uper.ui.components.*
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
 @Composable
 fun HomeTopBar(isOnline: Boolean, onToggle: (Boolean) -> Unit, onMenuClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .background(AberColor.White)
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onMenuClick, modifier = Modifier.size(28.dp)) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = AberColor.Ink)
-        }
-        Text(
-            text = if (isOnline) stringResource(R.string.home_online) else stringResource(R.string.home_offline),
-            style = AberTypography.ScreenTitle.copy(fontSize = 20.sp),
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
-        )
-        Switch(
-            checked = isOnline, onCheckedChange = onToggle, colors = SwitchDefaults.colors(
-                checkedThumbColor = AberColor.White,
-                checkedTrackColor = AberColor.Orange,
-                uncheckedThumbColor = AberColor.White,
-                uncheckedTrackColor = AberColor.Ink
+    AberTopBar(
+        title = if (isOnline) stringResource(R.string.home_online) else stringResource(R.string.home_offline),
+        onBackClick = onMenuClick,
+        useMenuIcon = true,
+        actions = {
+            Switch(
+                checked = isOnline,
+                onCheckedChange = onToggle,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = AberColor.White,
+                    checkedTrackColor = AberColor.Orange,
+                    uncheckedThumbColor = AberColor.White,
+                    uncheckedTrackColor = AberColor.Ink
+                ),
+                modifier = Modifier.padding(end = 12.dp)
             )
-        )
-    }
+        }
+    )
 }
 
 @Composable

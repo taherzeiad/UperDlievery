@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberFormField
 import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
@@ -111,11 +112,22 @@ fun DrivingLicenseScreen(
                 }
 
                 item {
-                    DocumentField(stringResource(R.string.document_card_number_label), "1234 567 890")
+                    AberFormField(stringResource(R.string.document_card_number_label), "1234 567 890", trailingIcon = null)
                 }
 
                 item {
-                    DocumentField(stringResource(R.string.document_expiration_date_label), "MM/DD/YYYY", isDate = true)
+                    AberFormField(
+                        label = stringResource(R.string.document_expiration_date_label),
+                        value = "MM/DD/YYYY",
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = AberColor.BorderGray,
+                                modifier = Modifier.size(20.dp).rotate(180f)
+                            )
+                        }
+                    )
                 }
             }
 
@@ -126,31 +138,6 @@ fun DrivingLicenseScreen(
     }
 }
 
-/**
- * Reusable input field for document numbers or dates.
- */
-@Composable
-private fun DocumentField(label: String, value: String, isDate: Boolean = false) {
-    Column {
-        Text(label, style = AberTypography.SectionLabel.copy(color = AberColor.BorderGray))
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = if (isDate) {
-                { Icon(Icons.Default.ArrowBack, contentDescription = null, tint = AberColor.BorderGray, modifier = Modifier.size(20.dp).rotate(180f)) }
-            } else null,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(12.dp)
-        )
-    }
-}
 
 /**
  * Bottom sheet style overlay for choosing photo source.

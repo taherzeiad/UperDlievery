@@ -88,9 +88,19 @@ private fun DialButton(digit: String, letters: String, onClick: () -> Unit, modi
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(digit, fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = AberColor.Ink)
+        Text(
+            text = digit,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AberColor.Ink
+        )
         if (letters.isNotEmpty()) {
-            Text(letters, fontSize = 9.sp, color = AberColor.IconMuted, letterSpacing = 1.sp)
+            Text(
+                text = letters,
+                fontSize = 9.sp,
+                color = AberColor.Ink.copy(alpha = 0.5f),
+                letterSpacing = 1.sp
+            )
         }
     }
 }

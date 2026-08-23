@@ -25,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.newuperapp.uper.R
+import com.newuperapp.uper.ui.components.AberButton
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -45,27 +47,13 @@ fun InviteFriendsScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.invite_friends_title),
-                        style = AberTypography.ScreenTitle.copy(
-                            fontSize = 22.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.invite_friends_title),
+                onBackClick = onBackClick,
+                useMenuIcon = true
             )
-        }, containerColor = AberColor.White
+        },
+        containerColor = AberColor.White
     ) { padding ->
         Column(
             modifier = Modifier
@@ -153,21 +141,11 @@ fun InviteFriendsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Button(
+            AberButton(
+                text = stringResource(R.string.invite_cta),
                 onClick = onInviteClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AberColor.Yellow, contentColor = AberColor.Ink
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.invite_cta),
-                    style = AberTypography.Subtitle.copy(fontWeight = FontWeight.Bold)
-                )
-            }
+                style = com.newuperapp.uper.ui.components.AberButtonStyle.Primary
+            )
 
             Spacer(Modifier.height(24.dp))
         }

@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.PaymentMethod
 import com.newuperapp.uper.domain.model.PaymentMethodType
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -42,25 +43,12 @@ fun PaymentMethodScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                Text(
-                    text = stringResource(R.string.payment_method_title),
-                    style = AberTypography.ScreenTitle.copy(fontSize = 17.sp)
-                )
-            },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = AberColor.Yellow
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AberColor.White)
+            AberTopBar(
+                title = stringResource(R.string.payment_method_title),
+                onBackClick = onBackClick
             )
-        }, containerColor = AberColor.SurfaceGrayAlt
+        },
+        containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         LazyColumn(
             modifier = Modifier

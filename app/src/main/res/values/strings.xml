@@ -51,6 +51,10 @@
     <string name="nav_fare_label">Fare</string>
     <string name="nav_drop_off_cta">Drop off</string>
     <string name="nav_back_content_desc">Back</string>
+    <string name="nav_menu_content_desc">Menu</string>
+    <string name="nav_arrived_cta">ARRIVED</string>
+    <string name="nav_marker_you">You</string>
+    <string name="nav_marker_pickup">Pickup</string>
 
     <!-- History Screen -->
     <string name="history_title">History</string>
@@ -168,6 +172,7 @@
     <string name="home_stat_jobs">TOTAL JOBS</string>
     <string name="home_marker_you">You</string>
     <string name="auth_email_placeholder">name@example.com</string>
+    <string name="auth_phone_placeholder">Mobile number</string>
     <string name="drawer_home">Home</string>
     <string name="drawer_wallet">My Wallet</string>
     <string name="drawer_history">History</string>

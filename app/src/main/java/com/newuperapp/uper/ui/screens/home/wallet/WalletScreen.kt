@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.newuperapp.uper.R
 import com.newuperapp.uper.domain.model.WalletTransaction
+import com.newuperapp.uper.ui.components.AberTopBar
 import com.newuperapp.uper.ui.theme.AberColor
 import com.newuperapp.uper.ui.theme.AberTypography
 
@@ -129,19 +130,13 @@ fun WalletScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.wallet_title),
-                        style = AberTypography.ScreenTitle.copy(
-                            fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AberColor.Ink
-                        )
-                    )
-                }, colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = AberColor.Yellow
-                )
+            AberTopBar(
+                title = stringResource(R.string.wallet_title),
+                onBackClick = onBackClick,
+                containerColor = AberColor.Yellow
             )
-        }, containerColor = AberColor.SurfaceGrayAlt
+        },
+        containerColor = AberColor.SurfaceGrayAlt
     ) { padding ->
         Column(
             modifier = Modifier

@@ -31,6 +31,7 @@ fun AberPhoneField(
     dialCode: String,
     value: String,
     onValueChange: (String) -> Unit,
+    placeholder: String = "Mobile number",
     onCountryClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -42,7 +43,7 @@ fun AberPhoneField(
             singleLine = true,
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Phone),
             decorationBox = { inner ->
-                if (value.isEmpty()) Text("Mobile number", style = AberTypography.FieldHint)
+                if (value.isEmpty()) Text(placeholder, style = AberTypography.FieldHint)
                 inner()
             },
             modifier = Modifier.fillMaxWidth()
