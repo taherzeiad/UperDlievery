@@ -35,9 +35,7 @@ fun AberButton(
             onClick = onClick,
             enabled = enabled && !isLoading,
             shape = shape,
-            modifier = modifier
-                .fillMaxWidth()
-                .height(height),
+            modifier = modifier.fillMaxWidth().height(height),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = AberColor.Ink)
         ) {
             ButtonContent(text, isLoading, AberColor.Ink)
@@ -56,9 +54,7 @@ fun AberButton(
         onClick = onClick,
         enabled = enabled && !isLoading,
         shape = shape,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(height),
+        modifier = modifier.fillMaxWidth().height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = container,
             contentColor = content,
