@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,14 +29,16 @@ fun AberButton(
     isLoading: Boolean = false
 ) {
     val height = 56.dp
-    val shape = androidx.compose.material3.MaterialTheme.shapes.medium
+    val shape = MaterialTheme.shapes.medium
 
     if (style == AberButtonStyle.Outline) {
         OutlinedButton(
             onClick = onClick,
             enabled = enabled && !isLoading,
             shape = shape,
-            modifier = modifier.fillMaxWidth().height(height),
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = AberColor.Ink)
         ) {
             ButtonContent(text, isLoading, AberColor.Ink)
@@ -54,7 +57,9 @@ fun AberButton(
         onClick = onClick,
         enabled = enabled && !isLoading,
         shape = shape,
-        modifier = modifier.fillMaxWidth().height(height),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = container,
             contentColor = content,
